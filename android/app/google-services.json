@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1040068314281",
+    "project_id": "dertly-4dc39",
+    "storage_bucket": "dertly-4dc39.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040068314281:android:ceaee4c12081d4004715b8",
+        "android_client_info": {
+          "package_name": "com.insch.dertly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040068314281-cd7a0ilriguuqaibhjl1of3abgnen82n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOZkusy3eaF7fM_2cvkhU4NZnUU4HGun8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040068314281-cd7a0ilriguuqaibhjl1of3abgnen82n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1040068314281-k7mti2efal4apn65vp6rmmhm9ph8rc0o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.insch.dertly"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
