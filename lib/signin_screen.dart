@@ -1,5 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:dertly/auth_service.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -11,20 +13,6 @@ class SignInScreen extends StatefulWidget {
 class SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  void signIn() async {
-    final String email = _emailController.text;
-    final String password = _passwordController.text;
-    try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +37,12 @@ class SignInScreenState extends State<SignInScreen> {
               ),
             ),
             ElevatedButton(
-              onPressed: signIn,
+              onPressed: (){
+                Provider.of<AuthService>(context, listen: false).signIn(
+                  email: _emailController.text.trim(),
+                  password: _passwordController.text.trim(),
+                );
+              },
               child: const Text('Sign In'),
             ),
           ],

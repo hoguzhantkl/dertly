@@ -1,12 +1,11 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'auth_listener.dart';
+import 'landing_screen.dart';
+import 'auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,12 +21,19 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Dertly App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const AuthListener(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthService(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Dertly App',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const LandingScreen(),
+      )
     );
   }
 }

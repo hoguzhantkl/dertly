@@ -1,6 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
+
+import 'package:dertly/auth_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -20,29 +22,13 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void signIn() async {
-    const String email = 'test1234@gmail.com';
-    const String password = 'test1234';
-    try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    signIn();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -50,21 +36,14 @@ class HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: () {
+          Provider.of<AuthService>(context, listen: false).signOut();
+        },
+        tooltip: 'Logout',
+        child: const Icon(Icons.logout),
       ),
     );
   }
