@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1040068314281-krek9u0cq7odsk8mnl5pak517iac2u8d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.insch.dertly",
+            "certificate_hash": "3007d64365090db2580ca88e6cede3b5aa789e31"
+          }
+        },
+        {
           "client_id": "1040068314281-cd7a0ilriguuqaibhjl1of3abgnen82n.apps.googleusercontent.com",
           "client_type": 3
         }

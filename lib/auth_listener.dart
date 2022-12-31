@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'home_screen.dart';
 import 'signin_screen.dart';
+import 'recorder_screen.dart';
 
 class AuthListener extends StatelessWidget {
   const AuthListener({super.key});
@@ -13,7 +14,7 @@ class AuthListener extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return const HomeScreen(title: 'Dertly App');
+          return const RecorderScreen(); //HomeScreen(title: 'Dertly App');
         }
 
         return const SignInScreen();

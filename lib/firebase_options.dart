@@ -67,6 +67,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1040068314281',
     projectId: 'dertly-4dc39',
     storageBucket: 'dertly-4dc39.appspot.com',
+    androidClientId: '1040068314281-krek9u0cq7odsk8mnl5pak517iac2u8d.apps.googleusercontent.com',
     iosClientId: '1040068314281-k7mti2efal4apn65vp6rmmhm9ph8rc0o.apps.googleusercontent.com',
     iosBundleId: 'com.insch.dertly',
   );
@@ -77,6 +78,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1040068314281',
     projectId: 'dertly-4dc39',
     storageBucket: 'dertly-4dc39.appspot.com',
+    androidClientId: '1040068314281-krek9u0cq7odsk8mnl5pak517iac2u8d.apps.googleusercontent.com',
     iosClientId: '1040068314281-k7mti2efal4apn65vp6rmmhm9ph8rc0o.apps.googleusercontent.com',
     iosBundleId: 'com.insch.dertly',
   );
