@@ -5,10 +5,7 @@ class AuthService extends ChangeNotifier{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseAuth get auth => _auth;
 
-  Stream<User?> get onAuthStateChanged => _auth.authStateChanges();
-
   bool get isSignedIn => _auth.currentUser != null;
-
 
   Future<void> signIn({required String email, required String password}) async {
     try {
@@ -24,5 +21,11 @@ class AuthService extends ChangeNotifier{
 
   Future<void> signOut() async {
     await _auth.signOut();
+  }
+
+  Future<void> getUserData() async {
+    if (_auth.currentUser != null) {
+      // TODO: Get user data from Firestore
+    }
   }
 }

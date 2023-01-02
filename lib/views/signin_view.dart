@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:dertly/auth_service.dart';
+import 'package:dertly/services/auth_service.dart';
+
+import '../view_models/auth_viewmodel.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -16,6 +18,7 @@ class SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AuthViewModel authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign In'),
@@ -38,9 +41,9 @@ class SignInScreenState extends State<SignInScreen> {
             ),
             ElevatedButton(
               onPressed: (){
-                Provider.of<AuthService>(context, listen: false).signIn(
-                  email: _emailController.text.trim(),
-                  password: _passwordController.text.trim(),
+                authViewModel.signIn(
+                  _emailController.text.trim(),
+                  _passwordController.text.trim(),
                 );
               },
               child: const Text('Sign In'),

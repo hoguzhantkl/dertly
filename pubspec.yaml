@@ -43,6 +43,8 @@ dependencies:
   permission_handler: ^10.2.0
   audioplayers: ^1.1.1
   provider: ^6.0.5
+  get_it: ^7.2.0
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:
