@@ -1,5 +1,6 @@
-import 'package:dertly/repositories/auth_repository.dart';
+import 'package:dertly/repositories/user_repository.dart';
 import 'package:dertly/view_models/auth_viewmodel.dart';
+import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/landing_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'services/firebase_options.dart';
@@ -7,7 +8,6 @@ import 'services/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'services/auth_service.dart';
 import 'locator.dart';
 
 void main() async {
@@ -28,9 +28,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => AuthViewModel(authRepository: locator<AuthRepository>()),
-        ),
+        ChangeNotifierProvider(create: (context) => AuthViewModel()),
+        ChangeNotifierProvider(create: (context) => UserViewModel(userRepository: locator<UserRepository>()))
       ],
       child: MaterialApp(
         title: 'Dertly App',

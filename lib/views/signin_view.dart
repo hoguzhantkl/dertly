@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:dertly/services/auth_service.dart';
-
 import '../view_models/auth_viewmodel.dart';
 
 class SignInScreen extends StatefulWidget {

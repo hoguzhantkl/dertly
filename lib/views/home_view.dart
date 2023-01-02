@@ -1,8 +1,9 @@
+import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:dertly/services/auth_service.dart';
+import '../view_models/auth_viewmodel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -14,6 +15,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  late UserViewModel userViewModel;
+
   int _counter = 0;
 
   void _incrementCounter() {
@@ -29,6 +32,13 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AuthViewModel authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+
+    userViewModel = Provider.of<UserViewModel>(context);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      userViewModel.fetchUserData();
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -58,7 +68,7 @@ class HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () {
-              Provider.of<AuthService>(context, listen: false).signOut();
+              authViewModel.signOut();
             },
             tooltip: 'Sign Out',
             child: const Icon(Icons.logout),
