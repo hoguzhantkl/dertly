@@ -1,4 +1,5 @@
 import 'package:dertly/view_models/user_viewmodel.dart';
+import 'package:dertly/views/recorder_view.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
@@ -25,6 +26,10 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _goToRecorderScreen(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const RecorderScreen()));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -35,9 +40,6 @@ class HomeScreenState extends State<HomeScreen> {
     AuthViewModel authViewModel = Provider.of<AuthViewModel>(context, listen: false);
 
     userViewModel = Provider.of<UserViewModel>(context);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      userViewModel.fetchUserData();
-    });
 
     return Scaffold(
       appBar: AppBar(
@@ -54,6 +56,15 @@ class HomeScreenState extends State<HomeScreen> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            const SizedBox(height: 20),
+            Text(
+              'Your user id is:',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            Text(
+              '${userViewModel.userModel.userID}',
+              style: Theme.of(context).textTheme.headline6,
+            ),
           ],
         ),
       ),
@@ -61,12 +72,21 @@ class HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           FloatingActionButton(
+            heroTag: null,
             onPressed: _incrementCounter,
             tooltip: 'Increment',
             child: const Icon(Icons.add),
           ),
           const SizedBox(height: 10),
           FloatingActionButton(
+            heroTag: null,
+            onPressed: _goToRecorderScreen,
+            tooltip: 'Go to Recording Page',
+            child: const Icon(Icons.route),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            heroTag: null,
             onPressed: () {
               authViewModel.signOut();
             },

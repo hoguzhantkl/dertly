@@ -1,5 +1,6 @@
-import 'package:dertly/services/auth_service.dart';
 import 'package:dertly/view_models/auth_viewmodel.dart';
+import 'package:dertly/view_models/user_viewmodel.dart';
+import 'package:dertly/views/createprofile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,11 +13,31 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthViewModel authViewModel = Provider.of<AuthViewModel>(context);
+    UserViewModel userViewModel = Provider.of<UserViewModel>(context);
     return StreamBuilder(
       stream: authViewModel.onAuthStateChanged,
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return const HomeScreen(title: 'Dertly App');
+        if (snapshot.hasData && authViewModel.isSignedIn()) {
+          return FutureBuilder(
+              future: userViewModel.fetchUserData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasData && snapshot.data != null) {
+                    return const HomeScreen(title: 'Dertly App');
+                  }
+                  else {
+                    return Navigator(
+                      onGenerateRoute: (settings) {
+                        return MaterialPageRoute(
+                            builder: (context) => const CreateProfileScreen());
+                      },
+                    );
+                  }
+                }
+
+                return const CircularProgressIndicator();
+              }
+          );
         }
         return const SignInScreen();
       },
