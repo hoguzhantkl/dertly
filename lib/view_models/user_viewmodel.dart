@@ -16,7 +16,11 @@ class UserViewModel extends ChangeNotifier{
   UserService userService = locator<UserService>();
 
   Future fetchUserData() async{
-    userModel = await userRepository.fetchUserData();
-    return userModel;
+    try {
+      userModel = await userRepository.fetchUserData();
+      return userModel;
+    } catch (e) {
+      return null;
+    }
   }
 }

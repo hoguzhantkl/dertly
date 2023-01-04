@@ -1,8 +1,10 @@
+import 'package:dertly/core/routes/routing_constants.dart';
 import 'package:dertly/repositories/user_repository.dart';
 import 'package:dertly/view_models/auth_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/landing_view.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'services/firebase_options.dart';
 
 import 'package:flutter/material.dart';
@@ -10,13 +12,15 @@ import 'package:provider/provider.dart';
 
 import 'locator.dart';
 
+import 'core/routes/router.dart' as router;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  setupLocator();
+  await setupLocator();
 
   runApp(const App());
 }
@@ -36,7 +40,9 @@ class App extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const LandingScreen(),
+        initialRoute: landingRoute,
+        navigatorKey: StackedService.navigatorKey,
+        onGenerateRoute: locator<router.Router>().onGenerateRoute,
       )
     );
   }

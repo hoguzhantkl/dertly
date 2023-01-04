@@ -1,6 +1,11 @@
 import 'package:dertly/view_models/createprofile_viewmodel.dart';
+import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/home_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../core/routes/router.dart' as router;
+import '../locator.dart';
 
 class CreateProfileScreen extends StatefulWidget{
   const CreateProfileScreen({Key? key}) : super(key: key);
@@ -30,12 +35,8 @@ class CreateProfileScreenState extends State<CreateProfileScreen>{
             ElevatedButton(
               onPressed: () {
                 createProfileViewModel.createUserProfile().then((value) =>
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen(title: 'Home Screen'),
-                        ),
-                    ),
+                    Provider.of<UserViewModel>(context, listen: false).fetchUserData().then((value) => locator<router.Router>().navigateHomeScreen())
+                    //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen(title: 'Dertly App')))
                 );
               },
               child: const Text('Create Profile'),
