@@ -1,9 +1,9 @@
 import 'package:dertly/core/routes/routing_constants.dart';
 import 'package:dertly/repositories/user_repository.dart';
+import 'package:dertly/services/emulator_service.dart';
 import 'package:dertly/view_models/auth_viewmodel.dart';
 import 'package:dertly/view_models/createEntry_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
-import 'package:dertly/views/landing_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'services/firebase_options.dart';
@@ -22,6 +22,13 @@ void main() async {
   );
 
   await setupLocator();
+
+  if (true) { //const bool.fromEnvironment("USE_FIREBASE_EMU")
+    EmulatorService emulatorService = locator<EmulatorService>();
+    await emulatorService.configureFirebaseAuth();
+    await emulatorService.configureFirebaseStorage();
+    emulatorService.configureFirebaseFirestore();
+  }
 
   runApp(const App());
 }

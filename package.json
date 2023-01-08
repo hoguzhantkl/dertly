@@ -1,0 +1,28 @@
+{
+  "name": "dertly",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.4.1",
+    "firebase-functions": "^4.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alperimo/dertly.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alperimo/dertly/issues"
+  },
+  "homepage": "https://github.com/alperimo/dertly#readme"
+}
