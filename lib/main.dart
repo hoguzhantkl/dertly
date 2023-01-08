@@ -1,6 +1,7 @@
 import 'package:dertly/core/routes/routing_constants.dart';
 import 'package:dertly/repositories/user_repository.dart';
 import 'package:dertly/view_models/auth_viewmodel.dart';
+import 'package:dertly/view_models/createEntry_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/landing_view.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,7 +34,8 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthViewModel()),
-        ChangeNotifierProvider(create: (context) => UserViewModel(userRepository: locator<UserRepository>()))
+        ChangeNotifierProvider(create: (context) => UserViewModel(userRepository: locator<UserRepository>())),
+        ChangeNotifierProvider(create: (context) => CreateEntryViewModel()),
       ],
       child: MaterialApp(
         title: 'Dertly App',

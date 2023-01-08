@@ -26,7 +26,7 @@ class AuthService extends ChangeNotifier{
     return _auth.currentUser!;
   }
 
-  Future<String> getCurrentUserUID() async{
+  Future<String> getCurrentUserUID() async {
     return _auth.currentUser!.uid;
   }
 

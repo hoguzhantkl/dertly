@@ -35,8 +35,8 @@ class CreateProfileScreenState extends State<CreateProfileScreen>{
             ElevatedButton(
               onPressed: () {
                 createProfileViewModel.createUserProfile().then((value) =>
-                    Provider.of<UserViewModel>(context, listen: false).fetchUserData().then((value) => locator<router.Router>().navigateHomeScreen())
-                    //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen(title: 'Dertly App')))
+                    Provider.of<UserViewModel>(context, listen: false).fetchUserData()
+                        .then((value) => locator<router.Router>().navigateHomeScreen())
                 );
               },
               child: const Text('Create Profile'),

@@ -1,6 +1,7 @@
 import 'package:dertly/core/routes/router.dart';
 import 'package:dertly/repositories/user_repository.dart';
 import 'package:dertly/services/auth_service.dart';
+import 'package:dertly/services/entry_service.dart';
 import 'package:dertly/services/user_service.dart';
 
 import 'package:get_it/get_it.dart';
@@ -17,6 +18,7 @@ Future<void> setupLocator() async{
   locator.registerLazySingleton<Router>(() => Router());
   locator.registerLazySingleton<AuthService>(() => AuthService());
   locator.registerLazySingleton<UserService>(() => UserService());
+  locator.registerLazySingleton<EntryService>(() => EntryService());
 
   // repositories
   locator.registerLazySingleton<UserRepository>(() => UserRepository());
