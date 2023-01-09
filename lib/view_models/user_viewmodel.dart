@@ -11,16 +11,22 @@ class UserViewModel extends ChangeNotifier{
 
   final UserRepository userRepository;
 
-  late UserModel userModel;
+  UserModel? userModel;
 
   UserService userService = locator<UserService>();
 
-  Future fetchUserData() async{
-    try {
-      userModel = await userRepository.fetchUserData();
-      return userModel;
-    } catch (e) {
-      return null;
+  Future<dynamic> fetchUserData() async{
+    try{
+      var userData = await userRepository.fetchUserData();
+      if (userData == null){
+        return null;
+      }
+      else{
+        userModel = userData;
+        return userModel;
+      }
+    }catch(e){
+      return Future.error(Exception(e));
     }
   }
 }

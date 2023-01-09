@@ -52,7 +52,7 @@ class HomeScreenState extends State<HomeScreen> {
               style: Theme.of(context).textTheme.headline5,
             ),
             Text(
-              '${userViewModel.userModel.userID}',
+              '${userViewModel.userModel?.userID}',
               style: Theme.of(context).textTheme.headline6,
             ),
           ],

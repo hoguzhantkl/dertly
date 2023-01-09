@@ -10,11 +10,11 @@ class UserRepository{
 
   Future fetchUserData() async{
     final user = authService.getCurrentUser();
-    final userData = await userService.getUserData(user.uid);
-    if (userData != null) {
+    var userData = await userService.getUserData(user.uid);
+    if (userData == null) {
+      return null;
+    } else{
       return UserModel.fromMap(userData);
     }
-
-    return null;
   }
 }

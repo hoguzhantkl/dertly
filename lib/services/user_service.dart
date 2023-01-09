@@ -26,18 +26,14 @@ class UserService{
   }
 
   Future getUserData(String uid) async{
-    try {
-      var userCollectionRef = firestore.collection("users");
-      var userDoc = await userCollectionRef.doc(uid).get();
+    var userCollectionRef = firestore.collection("users");
+    var userDoc = await userCollectionRef.doc(uid).get();
 
-      if (userDoc.exists){
-        return userDoc.data();
-      }
-      else
-      {
-        return null;
-      }
-
-    } catch (e) {return null;}
+    if (userDoc.exists){
+      return userDoc.data();
+    }
+    else {
+      return null;
+    }
   }
 }

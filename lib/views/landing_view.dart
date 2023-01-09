@@ -29,13 +29,18 @@ class LandingScreen extends StatelessWidget {
         router.navigateSignInScreen();
       }
       else {
-        var userData = await userViewModel.fetchUserData();
-        if (userData == null) {
-          router.navigateCreateProfileScreen();
-        }
-        else {
-          router.navigateHomeScreen();
-        }
+        await userViewModel.fetchUserData()
+            .then((userData) {
+              if (userData == null) {
+                router.navigateCreateProfileScreen();
+              }
+              else {
+                router.navigateHomeScreen();
+              }
+            })
+            .catchError((error) {
+              print("Error while fetching userData in landing screen: $error");
+            });
       }
     });
 
