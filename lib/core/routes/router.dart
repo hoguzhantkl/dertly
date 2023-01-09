@@ -1,5 +1,6 @@
 import 'package:dertly/core/routes/routing_constants.dart';
 import 'package:dertly/core/routes/undefined_route.dart';
+import 'package:dertly/views/createEntry_view.dart';
 import 'package:dertly/views/landing_view.dart';
 import 'package:dertly/views/recorder_view.dart';
 import 'package:dertly/views/signin_view.dart';
@@ -25,6 +26,8 @@ class Router{
         return MaterialPageRoute(builder: (_) => const HomeScreen(title: 'Dertly App'));
       case recorderRoute:
         return MaterialPageRoute(builder: (_) => const RecorderScreen());
+      case createEntryRoute:
+        return MaterialPageRoute(builder: (_) => const CreateEntryScreen());
       default:
         return MaterialPageRoute(builder: (_) => const UndefinedRouteView());
     }

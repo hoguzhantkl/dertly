@@ -27,12 +27,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -52,13 +46,6 @@ class HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
             const SizedBox(height: 20),
             Text(
               'Your user id is:',
@@ -76,8 +63,10 @@ class HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           FloatingActionButton(
             heroTag: null,
-            onPressed: _incrementCounter,
-            tooltip: 'Increment',
+            onPressed: (){
+              router.navigateTo(createEntryRoute);
+            },
+            tooltip: 'Create a new Entry',
             child: const Icon(Icons.add),
           ),
           const SizedBox(height: 10),

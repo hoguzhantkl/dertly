@@ -42,7 +42,6 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthViewModel()),
         ChangeNotifierProvider(create: (context) => UserViewModel(userRepository: locator<UserRepository>())),
-        ChangeNotifierProvider(create: (context) => CreateEntryViewModel()),
       ],
       child: MaterialApp(
         title: 'Dertly App',
