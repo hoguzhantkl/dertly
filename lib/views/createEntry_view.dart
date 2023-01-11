@@ -18,7 +18,7 @@ class CreateEntryScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Create a auto generated test entry',
+              'Create an auto generated test entry',
               style: Theme.of(context).textTheme.headline5,
               textAlign: TextAlign.center,
             ),

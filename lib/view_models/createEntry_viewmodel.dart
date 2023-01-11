@@ -15,7 +15,7 @@ class CreateEntryViewModel{
 
   Future<dynamic> createTestEntry() async {
     var userID = await authService.getCurrentUserUID();
-    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", content: "Test Content", date: Timestamp.now(), upVote: 0, downVote: 0, totalAnswers: 0);
+    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", content: "Test Content", date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
     return await entryService.createEntry(entryModel);
   }
 }

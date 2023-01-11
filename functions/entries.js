@@ -45,53 +45,80 @@ exports.onEntryRemoved = functions.firestore.document('entries/{entryId}').onDel
 
 // TODO: func tryAddToTrendEntry should be called when entry is created or updated with answer or up/down votes
 async function tryAddToTrendEntry(entryData) {
-    var trendDoc = admin.firestore().collection('feeds').doc('trendings');
-    var trendDocSnapshot = await trendDoc.get();
-    var trendDocData = trendDocSnapshot.data();
-    var totalTrendEntries = (trendDocData.totalTrendEntries != undefined) ? trendDocData.totalTrendEntries : 0;
+    const db = admin.firestore();
+    return db.runTransaction(async (transaction) => {
+        var trendDoc = db.collection('feeds').doc('trendings');
+        var trendDocSnapshot = await transaction.get(trendDoc);
+        var trendDocData = trendDocSnapshot.data();
+        var totalTrendEntries = (trendDocData.totalTrendEntries != undefined) ? trendDocData.totalTrendEntries : 0;
 
-    var trendColRef = await trendDoc.collection("list");
+        var trendColRef = await trendDoc.collection("list");
 
-    // TODO: calculate the score of the entry with a func
-    const entryScore = entryData.upVote + entryData.downVote + entryData.totalAnswers;
+        // TODO: calculate the score of the entry with a func
+        const entryScore = entryData.upVote + entryData.downVote + entryData.totalAnswers;
 
-    // TODO: make a condition for entry to be added to Trending List
+        // TODO: make a condition for entry to be added to Trending List
 
-    const entryMap = {
-        'entryID': entryData.entryID,
-        'score': entryScore,
-        'date': entryData.date
-    }
-
-    var addEntry = true;
-    if (totalTrendEntries >= process.env.MAX_TREND_ENTRIES) {
-        var entryDocWithLowestScore = await trendColRef.orderBy("score", "asc").limit(1).get();
-        var entryDataWithLowestScore = entryDocWithLowestScore.docs[0].data();
-        functions.logger.log("addedEntryScore:", entryScore, "lowestEntryScore:", entryDataWithLowestScore.score);
-        if (entryScore >= entryDataWithLowestScore.score) {
-            await trendColRef.doc(entryDataWithLowestScore.entryID).delete();
-            totalTrendEntries--;
+        const entryMap = {
+            'entryID': entryData.entryID,
+            'score': entryScore,
+            'date': entryData.date
         }
-        else
-            addEntry = false;
-    }
 
-    if (addEntry) {
-        functions.logger.log("Entry is being added to trending:", entryData.entryID);
-        await trendColRef.doc(entryData.entryID).set(entryMap);
-        functions.logger.log("current totalTrendEntries:", totalTrendEntries, "new totalTrendEntries:", totalTrendEntries + 1);
-        await trendDoc.update({ totalTrendEntries: totalTrendEntries + 1 });
-    }
+        var addEntry = true;
+        if (totalTrendEntries >= process.env.MAX_TREND_ENTRIES) {
+            var entryDocSnapShotWithLowestScore = await transaction.get(trendColRef.orderBy("score", "asc").limit(1));
+            var entryDataWithLowestScore = entryDocSnapShotWithLowestScore.docs[0].data();
+            functions.logger.log("addedEntryScore:", entryScore, "lowestEntryScore:", entryDataWithLowestScore.score);
+            if (entryScore >= entryDataWithLowestScore.score) {
+                functions.logger.log("Entry lowestEntryScore is being deleted from trending:", entryDataWithLowestScore.entryID);
+                await transaction.delete(trendColRef.doc(entryDataWithLowestScore.entryID));
+                totalTrendEntries--;
+            }
+            else
+                addEntry = false;
+        }
+
+        if (addEntry) {
+            functions.logger.log("Entry is being added to trending:", entryData.entryID);
+            totalTrendEntries++;
+            await transaction.set(trendColRef.doc(entryData.entryID), entryMap); //await trendColRef.doc(entryData.entryID).set(entryMap);
+            await transaction.update(trendDoc, { totalTrendEntries: totalTrendEntries }); //await trendDoc.update({ totalTrendEntries: totalTrendEntries + 1 });
+        }
+        else{
+            functions.logger.log("Entry", entryData.entryID, " has not enough score to be added to trending");
+        }
+
+        return totalTrendEntries;
+    })
+    .then((totalTrendEntries) => {
+        functions.logger.log("AddTrendEntry transaction success!");
+        functions.logger.log("Total Trend Entries:", totalTrendEntries);
+    })
+    .catch((error) => {
+        functions.logger.log("AddTrendEntry transaction failed: ", error);
+    });
 }
 
 async function addRecentEntry(entryID) {
-    var recentDocSnapshot = await admin.firestore().collection('feeds').doc('recents').get();
-    var recentDocData = recentDocSnapshot.data();
-    var recentEntriesIDList = recentDocData.recentEntriesIDList;
+    const db = admin.firestore();
+    functions.logger.log("Entry is being added to recents:", entryID);
+    return db.runTransaction(async (transaction) => {
 
-    if (recentEntriesIDList != undefined && recentEntriesIDList.length >= process.env.MAX_RECENT_ENTRIES) {
-        await recentDocSnapshot.ref.update({recentEntriesIDList: admin.firestore.FieldValue.arrayRemove(recentEntriesIDList[0])});
-    }
+        var recentDocSnapshot = await transaction.get(db.collection('feeds').doc('recents'));
+        var recentDocData = recentDocSnapshot.data();
+        var recentEntriesIDList = recentDocData.recentEntriesIDList;
 
-    return await recentDocSnapshot.ref.update({recentEntriesIDList: admin.firestore.FieldValue.arrayUnion(entryID)});
+        if (recentEntriesIDList != undefined && recentEntriesIDList.length >= process.env.MAX_RECENT_ENTRIES) {
+            await transaction.update(recentDocSnapshot.ref, { recentEntriesIDList: admin.firestore.FieldValue.arrayRemove(recentEntriesIDList[0]) });
+        }
+
+        return await transaction.update(recentDocSnapshot.ref, { recentEntriesIDList: admin.firestore.FieldValue.arrayUnion(entryID) });
+    })
+    .then(() => {
+        functions.logger.log("AddRecentEntry transaction success!");
+    })
+    .catch((error) => {
+        functions.logger.log("AddRecentEntry transaction failed: ", error);
+    });
 }
