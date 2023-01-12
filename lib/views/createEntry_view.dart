@@ -1,5 +1,7 @@
 import 'package:dertly/view_models/createEntry_viewmodel.dart';
+import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateEntryScreen extends StatelessWidget {
   const CreateEntryScreen({super.key});
@@ -7,6 +9,7 @@ class CreateEntryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CreateEntryViewModel createEntryViewModel = CreateEntryViewModel();
+    FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
     
     return Scaffold(
       appBar: AppBar(
@@ -27,13 +30,22 @@ class CreateEntryScreen extends StatelessWidget {
                 onPressed: (){
                   createEntryViewModel.createTestEntry()
                       .then((value) => {
-                        print("Entry Created ${value.entryID}")
+                        debugPrint("Entry Created ${value.entryID}")
                       })
                       .catchError((error) => {
-                        print("Entry Creation Failed ${error.toString()}")
+                        debugPrint("Entry Creation Failed ${error.toString()}")
                       });
                 },
                 child: const Text("Create Entry")
+            ),
+            ElevatedButton(
+                onPressed: (){
+                  feedsViewModel.fetchSomeRecentEntries(0, 2)
+                      .catchError((error) => {
+                        debugPrint("Recent Entry Fetching Failed ${error.toString()}")
+                    });
+                },
+                child: const Text("Fetch and List Recent Entries")
             )
           ],
         ),

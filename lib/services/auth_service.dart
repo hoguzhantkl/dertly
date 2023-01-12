@@ -13,11 +13,11 @@ class AuthService extends ChangeNotifier{
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       if (e.code == "invalid-email") {
-        print("invalid email");
+        debugPrint("invalid email");
       } else if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        debugPrint('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        debugPrint('Wrong password provided for that user.');
       }
     }
   }

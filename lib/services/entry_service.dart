@@ -20,4 +20,16 @@ class EntryService{
       return Future.error(e);
     }
   }
+
+  Future<dynamic> fetchEntryData(String entryID) async{
+    var entryCollectionRef = firestore.collection("entries");
+    var entryDocRef = entryCollectionRef.doc(entryID);
+    var entryDocSnapshot = await entryDocRef.get();
+    if (entryDocSnapshot.exists){
+      return entryDocSnapshot.data();
+    }
+    else{
+      return null;
+    }
+  }
 }

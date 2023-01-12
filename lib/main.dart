@@ -1,8 +1,10 @@
 import 'package:dertly/core/routes/routing_constants.dart';
+import 'package:dertly/repositories/feeds_repository.dart';
 import 'package:dertly/repositories/user_repository.dart';
 import 'package:dertly/services/emulator_service.dart';
 import 'package:dertly/view_models/auth_viewmodel.dart';
 import 'package:dertly/view_models/createEntry_viewmodel.dart';
+import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -42,6 +44,7 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthViewModel()),
         ChangeNotifierProvider(create: (context) => UserViewModel(userRepository: locator<UserRepository>())),
+        ChangeNotifierProvider(create: (context) => FeedsViewModel(feedsRepository: locator<FeedsRepository>())),
       ],
       child: MaterialApp(
         title: 'Dertly App',

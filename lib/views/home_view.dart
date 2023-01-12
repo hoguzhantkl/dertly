@@ -25,8 +25,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   rtr.Router router = locator<rtr.Router>();
 
-  int _counter = 0;
-
   @override
   void initState() {
     super.initState();
@@ -66,7 +64,7 @@ class HomeScreenState extends State<HomeScreen> {
             onPressed: (){
               router.navigateTo(createEntryRoute);
             },
-            tooltip: 'Create a new Entry',
+            tooltip: 'Entry Tests',
             child: const Icon(Icons.add),
           ),
           const SizedBox(height: 10),
