@@ -16,6 +16,7 @@ class FeedsViewModel extends ChangeNotifier{
   List<String> recentEntriesIDList = [];
   Map<String, EntryModel> recentEntriesMap = {};
 
+  // Recents
   Future fetchRecentEntryIDs() async{
     try{
       final recentEntriesIDList = await feedsRepository.fetchRecentEntriesIDList();
@@ -30,7 +31,7 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
-  Future fetchAllRecentEntries() async{
+  Future<void> fetchAllRecentEntries() async{
     try{
       await fetchRecentEntryIDs();
       for (var entryID in recentEntriesIDList){
@@ -48,7 +49,7 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
-  Future<dynamic> fetchSomeRecentEntries(int startIndex, int endIndex) async{
+  Future<void> fetchSomeRecentEntries(int startIndex, int endIndex) async{
     await fetchRecentEntryIDs();
 
     startIndex = max(0, min(startIndex, recentEntriesIDList.length));
@@ -66,6 +67,40 @@ class FeedsViewModel extends ChangeNotifier{
           debugPrint("some, Fetched entry data for entryID: $entryID from data entryID ${recentEntriesMap[entryID]?.entryID}");
         }
       }
+    }catch(e){
+      return Future.error(Exception(e));
+    }
+  }
+
+  // Trendings
+  Future<dynamic> fetchAllTrendEntries() async{
+    try{
+      List<EntryModel> trendEntriesData = [];
+      var trendEntriesDocuments = await feedsRepository.fetchAllTrendEntriesDocuments();
+      if (trendEntriesDocuments != null){
+
+        if (trendEntriesDocuments.isEmpty){
+          debugPrint("No trend entries found");
+        }
+
+        for (var trendEntryDoc in trendEntriesDocuments){
+          var entryID = trendEntryDoc["entryID"];
+          EntryModel? entry = await entryRepository.fetchEntry(entryID);
+          if (entry == null){
+            debugPrint("Could not fetch entry data for entryID: $entryID");
+          }
+          else{
+            trendEntriesData.add(entry);
+            debugPrint("trend, Fetched entry data for entryID: $entryID from data entryID ${entry.entryID}");
+          }
+        }
+      }else{
+        debugPrint("Could not fetch trend entries documents, trendEntriesDocuments is null");
+        return null;
+      }
+
+      return trendEntriesData;
+
     }catch(e){
       return Future.error(Exception(e));
     }

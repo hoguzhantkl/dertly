@@ -43,9 +43,18 @@ class CreateEntryScreen extends StatelessWidget {
                   feedsViewModel.fetchSomeRecentEntries(0, 2)
                       .catchError((error) => {
                         debugPrint("Recent Entry Fetching Failed ${error.toString()}")
-                    });
+                      });
                 },
                 child: const Text("Fetch and List Recent Entries")
+            ),
+            ElevatedButton(
+                onPressed: (){
+                  feedsViewModel.fetchAllTrendEntries()
+                      .catchError((error) {
+                        debugPrint("Trend Entry Fetching Failed ${error.toString()}");
+                      });
+                },
+                child: const Text("Fetch and List Trending Entries")
             )
           ],
         ),
