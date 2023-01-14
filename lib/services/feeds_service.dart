@@ -31,7 +31,7 @@ class FeedsService{
     var trendEntriesColRef = firestore.collection("feeds").doc("trendings").collection("list");
     if (limited){
       if (!atCursor){
-        await trendEntriesColRef.orderBy("score", descending: true).limit(trendEntriesPaginateLimit).get()
+        return await trendEntriesColRef.orderBy("score", descending: true).limit(trendEntriesPaginateLimit).get()
             .then((documentSnapshots) {
               if (documentSnapshots.docs.isNotEmpty) {
                 lastTrendEntryDocSnapshot = documentSnapshots.docs[documentSnapshots.docs.length - 1];
@@ -41,7 +41,7 @@ class FeedsService{
       }
       else{
         if (lastTrendEntryDocSnapshot != null) {
-          await trendEntriesColRef
+          return await trendEntriesColRef
               .orderBy("score", descending: true)
               .startAfterDocument(lastTrendEntryDocSnapshot!)
               .limit(trendEntriesPaginateLimit)
@@ -65,16 +65,14 @@ class FeedsService{
     return null;
   }
 
-  Future<dynamic> fetchTrendEntriesDocumentsBetweenPages({List<int> betweenPages = const [0, 1]}) async{
+  Future<dynamic> fetchTrendEntriesDocumentsBetweenPages(List<int> betweenPages) async{
     var trendEntriesColRef = firestore.collection("feeds").doc("trendings").collection("list");
-    final startIndex = betweenPages[0] * trendEntriesPaginateLimit; // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+    final startIndex = betweenPages[0] * trendEntriesPaginateLimit;
     final endIndex = betweenPages[1] * trendEntriesPaginateLimit;
-    await trendEntriesColRef.orderBy("score", descending: true)
+    return await trendEntriesColRef.orderBy("score", descending: true)
         .startAt([startIndex]).endAt([endIndex]).get()
         .then((documentSnapshots) {
           return documentSnapshots.docs;
         });
-
-    return null;
   }
 }

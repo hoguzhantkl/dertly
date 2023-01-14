@@ -2,9 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dertly/locator.dart';
 import 'package:dertly/repositories/entry_repository.dart';
 import 'package:dertly/services/feeds_service.dart';
-import 'package:flutter/cupertino.dart';
-
-import '../models/entry_model.dart';
 
 class FeedsRepository{
   FeedsService feedsService = locator<FeedsService>();
@@ -26,6 +23,18 @@ class FeedsRepository{
     return trendEntriesDocuments;
   }
 
-  // TODO: implement fetchFirstTrendEntriesDocuments() with limited = true
-  // TODO: implement fetchNextTrendEntriesDocuments() with limited = true, atCursor = true
+  Future<List<QueryDocumentSnapshot>?> fetchFirstTrendEntriesDocuments() async{
+    var trendEntriesDocuments = await feedsService.fetchTrendEntriesDocuments(limited: true, atCursor: false);
+    return trendEntriesDocuments;
+  }
+
+  Future<List<QueryDocumentSnapshot>?> fetchNextTrendEntriesDocuments() async{
+    var trendEntriesDocuments = await feedsService.fetchTrendEntriesDocuments(limited: true, atCursor: true);
+    return trendEntriesDocuments;
+  }
+
+  Future<List<QueryDocumentSnapshot>?> fetchTrendEntriesDocumentsBetweenPages({List<int> betweenPages = const [0, 1]}) async{
+    var trendEntriesDocuments = await feedsService.fetchTrendEntriesDocumentsBetweenPages(betweenPages);
+    return trendEntriesDocuments;
+  }
 }

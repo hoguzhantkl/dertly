@@ -1,6 +1,8 @@
 import 'package:dertly/core/routes/routing_constants.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/recorder_view.dart';
+import 'package:dertly/views/widgets/feeds/feedswidget.dart';
+
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
@@ -39,23 +41,10 @@ class HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        backgroundColor: Colors.green,
+        shadowColor: Colors.transparent,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const SizedBox(height: 20),
-            Text(
-              'Your user id is:',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            Text(
-              '${userViewModel.userModel?.userID}',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-          ],
-        ),
-      ),
+      body: const FeedsWidget(),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -65,6 +54,7 @@ class HomeScreenState extends State<HomeScreen> {
               router.navigateTo(createEntryRoute);
             },
             tooltip: 'Entry Tests',
+            backgroundColor: Colors.green,
             child: const Icon(Icons.add),
           ),
           const SizedBox(height: 10),
@@ -74,6 +64,7 @@ class HomeScreenState extends State<HomeScreen> {
               router.navigateTo(recorderRoute);
             },
             tooltip: 'Go to Recording Page',
+            backgroundColor: Colors.green,
             child: const Icon(Icons.route),
           ),
           const SizedBox(height: 10),
@@ -83,6 +74,7 @@ class HomeScreenState extends State<HomeScreen> {
               authViewModel.signOut();
             },
             tooltip: 'Sign Out',
+            backgroundColor: Colors.green,
             child: const Icon(Icons.logout),
           ),
         ],

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:dertly/locator.dart';
@@ -14,7 +15,7 @@ class FeedsViewModel extends ChangeNotifier{
   EntryRepository entryRepository = locator<EntryRepository>();
 
   List<String> recentEntriesIDList = [];
-  Map<String, EntryModel> recentEntriesMap = {};
+  LinkedHashMap<String, EntryModel> recentEntriesMap = LinkedHashMap.of({});
 
   // Recents
   Future fetchRecentEntryIDs() async{
@@ -44,6 +45,7 @@ class FeedsViewModel extends ChangeNotifier{
           debugPrint("Fetched entry data for entryID: $entryID from data entryID ${recentEntriesMap[entryID]?.entryID}");
         }
       }
+      //notifyListeners();
     }catch(e){
       return Future.error(Exception(e));
     }
@@ -79,7 +81,7 @@ class FeedsViewModel extends ChangeNotifier{
       var trendEntriesDocuments = await feedsRepository.fetchAllTrendEntriesDocuments();
       if (trendEntriesDocuments != null){
 
-        if (trendEntriesDocuments.isEmpty){
+        if (trendEntriesDocuments.isEmpty) {
           debugPrint("No trend entries found");
         }
 
