@@ -1,4 +1,5 @@
 import 'package:dertly/core/routes/routing_constants.dart';
+import 'package:dertly/core/themes/custom_themes.dart';
 import 'package:dertly/repositories/feeds_repository.dart';
 import 'package:dertly/repositories/user_repository.dart';
 import 'package:dertly/services/emulator_service.dart';
@@ -48,9 +49,7 @@ class App extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Dertly App',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme: CustomThemes.defaultTheme,
         initialRoute: landingRoute,
         navigatorKey: StackedService.navigatorKey,
         onGenerateRoute: locator<router.Router>().onGenerateRoute,

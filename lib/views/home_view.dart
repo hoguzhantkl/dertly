@@ -41,7 +41,7 @@ class HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         shadowColor: Colors.transparent,
       ),
       body: const FeedsWidget(),
@@ -54,7 +54,6 @@ class HomeScreenState extends State<HomeScreen> {
               router.navigateTo(createEntryRoute);
             },
             tooltip: 'Entry Tests',
-            backgroundColor: Colors.green,
             child: const Icon(Icons.add),
           ),
           const SizedBox(height: 10),
@@ -64,7 +63,6 @@ class HomeScreenState extends State<HomeScreen> {
               router.navigateTo(recorderRoute);
             },
             tooltip: 'Go to Recording Page',
-            backgroundColor: Colors.green,
             child: const Icon(Icons.route),
           ),
           const SizedBox(height: 10),
@@ -74,7 +72,6 @@ class HomeScreenState extends State<HomeScreen> {
               authViewModel.signOut();
             },
             tooltip: 'Sign Out',
-            backgroundColor: Colors.green,
             child: const Icon(Icons.logout),
           ),
         ],

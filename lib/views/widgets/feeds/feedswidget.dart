@@ -34,7 +34,6 @@ class FeedsWidgetState extends State<FeedsWidget> with SingleTickerProviderState
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Container(
-          color: Colors.green,
           child: TabBar(
             tabs: const [
               Tab(text: 'TRENDS'),
@@ -44,6 +43,17 @@ class FeedsWidgetState extends State<FeedsWidget> with SingleTickerProviderState
             ],
             indicatorColor: Colors.white,
             controller: tabController,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).appBarTheme.backgroundColor,
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).appBarTheme.shadowColor!,
+                blurRadius: 5.0,
+                spreadRadius: 0.0,
+                offset: Offset(0.0, 2.0),
+              )
+            ],
           )
         ),
         
