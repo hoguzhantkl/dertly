@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../../locator.dart';
+import '../../../services/entry_service.dart';
+
 class EntriesListItem extends StatelessWidget{
-  const EntriesListItem({super.key, required this.entryID, required this.entryContent,
+  const EntriesListItem({super.key, required this.entryID, required this.contentUrl,
                 this.upVote, this.downVote, this.totalAnswers});
 
   final String entryID;
-  final String? entryContent;
+  final String? contentUrl;
   final int? upVote;
   final int? downVote;
   final int? totalAnswers;
 
   @override
   Widget build(BuildContext context) {
+    var entryService = locator<EntryService>();
+
     return Column(
       children: <Widget>[
         Padding(
@@ -27,10 +32,15 @@ class EntriesListItem extends StatelessWidget{
                       Row(
                         children: <Widget>[
                           const SizedBox(width: 4.0),
-                          IconButton(onPressed: (){}, icon: const Icon(Icons.play_arrow, size: 42)),
+                          IconButton(
+                              onPressed: (){
+                                  entryService.listenEntryContentAudio(contentUrl);
+                                  },
+                              icon: const Icon(Icons.play_arrow, size: 42)
+                          ),
                           Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                              child: Text("$entryContent", style: Theme.of(context).textTheme.subtitle1)
+                              child: Text("...", style: Theme.of(context).textTheme.subtitle1)
                           )
                         ],
                       ),

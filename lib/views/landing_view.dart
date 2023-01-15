@@ -1,6 +1,8 @@
 import 'package:dertly/locator.dart';
+import 'package:dertly/services/audio_service.dart';
 import 'package:dertly/services/auth_service.dart';
 import 'package:dertly/view_models/auth_viewmodel.dart';
+import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/createprofile_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,11 +28,16 @@ class LandingScreen extends StatelessWidget {
 
     authService.auth.authStateChanges().listen((User? user) async{
       if (user == null) {
+
+        // TODO: write a more proper way to clear all model data (for auth and userViewModels too)
+        Provider.of<FeedsViewModel>(context, listen: false).clearModelData();
+
         router.navigateSignInScreen();
       }
       else {
+        await locator<AudioService>().initialize();
         await userViewModel.fetchUserData()
-            .then((userData) {
+            .then((userData){
               if (userData == null) {
                 router.navigateCreateProfileScreen();
               }

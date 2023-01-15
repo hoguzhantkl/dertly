@@ -17,6 +17,14 @@ class FeedsViewModel extends ChangeNotifier{
   List<String> recentEntriesIDList = [];
   LinkedHashMap<String, EntryModel> recentEntriesMap = LinkedHashMap.of({});
 
+  void clearModelData(){
+    recentEntriesIDList.clear();
+    recentEntriesMap = LinkedHashMap.of({});
+    debugPrint('FeedsViewModel: Cleared all data');
+    debugPrint('FeedsViewModel: recentEntriesIDList: $recentEntriesIDList');
+    debugPrint('FeedsViewModel: recentEntriesMap: $recentEntriesMap');
+  }
+
   // Recents
   Future fetchRecentEntryIDs() async{
     try{
@@ -45,7 +53,7 @@ class FeedsViewModel extends ChangeNotifier{
           debugPrint("Fetched entry data for entryID: $entryID from data entryID ${recentEntriesMap[entryID]?.entryID}");
         }
       }
-      //notifyListeners();
+      notifyListeners();
     }catch(e){
       return Future.error(Exception(e));
     }

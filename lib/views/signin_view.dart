@@ -27,13 +27,15 @@ class SignInScreenState extends State<SignInScreen> {
           children: <Widget>[
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
+                hintStyle: Theme.of(context).textTheme.bodyText1,
                 hintText: 'Email',
               ),
             ),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
+                hintStyle: Theme.of(context).textTheme.bodyText1,
                 hintText: 'Password',
               ),
             ),

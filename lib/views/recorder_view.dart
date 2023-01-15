@@ -1,11 +1,19 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dertly/locator.dart';
+import 'package:dertly/services/entry_service.dart';
+import 'package:dertly/services/storage_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:permission_handler/permission_handler.dart';
+
+import '../models/entry_model.dart';
+import '../services/audio_service.dart';
+import '../services/auth_service.dart';
 
 class RecorderScreen extends StatefulWidget {
   const RecorderScreen({super.key});
@@ -15,53 +23,16 @@ class RecorderScreen extends StatefulWidget {
 }
 
 class _RecorderScreenState extends State<RecorderScreen>{
-  final recorder = FlutterSoundRecorder();
-  final audioPlayer = AudioPlayer();
-
-  bool isRecorderReady = false;
+  var audioService = locator<AudioService>();
 
   @override
   void initState() {
     super.initState();
-    initRecorder();
   }
 
   @override
   void dispose() {
-    recorder.closeRecorder();
     super.dispose();
-  }
-
-  Future initRecorder() async {
-    final status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
-      throw RecordingPermissionException('Microphone permission not granted');
-    }
-
-    recorder.openRecorder();
-
-    isRecorderReady = true;
-
-    recorder.setSubscriptionDuration(
-      const Duration(milliseconds: 500),
-    );
-  }
-
-  Future record() async {
-    if (!isRecorderReady) return;
-    await recorder.startRecorder(toFile: 'audio.aac');
-  }
-
-  Future stop() async {
-    if (!isRecorderReady) return;
-
-    final path = await recorder.stopRecorder();
-    final audioFile = File(path!);
-    print('Recorded audio: $path');
-
-    //await audioPlayer.setSourceAsset("sounds/Evillaugh.mp3");
-    await audioPlayer.setSource(DeviceFileSource(path));
-    await audioPlayer.resume();
   }
 
   @override
@@ -75,7 +46,7 @@ class _RecorderScreenState extends State<RecorderScreen>{
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             StreamBuilder(
-              stream: recorder.onProgress,
+              stream: audioService.recorder.onProgress,
               builder: (context, snapshot) {
                 final duration = snapshot.hasData ? snapshot.data!.duration : Duration.zero;
 
@@ -94,14 +65,14 @@ class _RecorderScreenState extends State<RecorderScreen>{
             ),
             ElevatedButton(
               child: Icon(
-                  recorder.isRecording ? Icons.stop : Icons.mic,
+                  audioService.recorder.isRecording ? Icons.stop : Icons.mic,
                   size: 80
               ),
               onPressed: () async {
-                if (recorder.isRecording) {
-                  await stop();
+                if (audioService.recorder.isRecording) {
+                  await audioService.stopRecord();
                 } else {
-                  await record();
+                  await audioService.startRecord();
                 }
                 setState(() {});
               },
