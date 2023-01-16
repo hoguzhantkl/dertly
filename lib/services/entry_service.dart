@@ -23,10 +23,10 @@ class EntryService{
       DocumentSnapshot entryDocumentSnapshot = await entryDocumentRef.get();
       entryModel.entryID = entryDocumentSnapshot.reference.id;
 
-      debugPrint("uploading the audio in local path contentUrl: ${entryModel.contentUrl}");
-      var contentStorageUrl = await storageService.uploadEntryContentAudio(entryModel.entryID, entryModel.contentUrl);
+      debugPrint("uploading the audio in local path contentUrl: ${entryModel.contentAudioUrl}");
+      var contentStorageUrl = await storageService.uploadEntryContentAudio(entryModel.entryID, entryModel.contentAudioUrl);
       debugPrint("uploaded audioFile contentStorageUrl: $contentStorageUrl");
-      entryModel.contentUrl = contentStorageUrl;
+      entryModel.contentAudioUrl = contentStorageUrl;
 
       await entryDocumentSnapshot.reference.set(entryModel.toJson());
       return entryModel;
@@ -47,20 +47,20 @@ class EntryService{
     }
   }
 
-  Future<dynamic> listenEntryContentAudio(String? audioStorageUrl) async {
+  Future<dynamic> listenEntryAudio(String? audioStorageUrl) async{
     bool validateStorageUrl(){
       if (audioStorageUrl == null || audioStorageUrl.isEmpty) {
         return false;
       }
-      
+
       const pattern = r"^([\w\/]+)(\.[\w]+)*$";
       return RegExp(pattern).hasMatch(audioStorageUrl);
     }
-    
+
     if (!validateStorageUrl()){
       return Future.error(Exception("audioStorageUrl is not valid"));
     }
-    
+
     try {
       debugPrint("playing audio from storageUrl: $audioStorageUrl");
       var downloadUrl = await storageService.getDownloadUrl(audioStorageUrl!);
@@ -72,5 +72,14 @@ class EntryService{
     } on Exception catch(e){
       return Future.error(Exception("error playing audio from storageUrl: $audioStorageUrl, error: $e"));
     }
+  }
+
+  Future listenEntryContentAudio(String? audioStorageUrl) async {
+    return await listenEntryAudio(audioStorageUrl);
+  }
+
+  // TODO: use this function when user tries to listen to an answer in entry.
+  Future listenEntryAnswerAudio(String? audioStorageUrl) async {
+    return await listenEntryAudio(audioStorageUrl);
   }
 }

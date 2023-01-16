@@ -11,20 +11,13 @@ class EntriesList extends StatefulWidget{
 }
 
 class EntriesListState extends State<EntriesList>{
-  late Future future;
-
   @override
   void initState() {
-    future = _fetchAllRecentEntries();
     super.initState();
   }
 
   void onRefreshList() async {
-    future = _fetchAllRecentEntries();
-  }
-
-  Future _fetchAllRecentEntries() async {
-    await Provider.of<FeedsViewModel>(context, listen: false).fetchAllRecentEntries();
+    debugPrint("onRefreshList");
   }
 
   @override
@@ -48,7 +41,7 @@ class EntriesListState extends State<EntriesList>{
                     final entryData = feedsViewModel.recentEntriesMap[entryID];
                     return EntriesListItem(
                         entryID: entryID,
-                        contentUrl: entryData?.contentUrl,
+                        contentUrl: entryData?.contentAudioUrl,
                         upVote: entryData?.upVote,
                         downVote: entryData?.downVote,
                         totalAnswers: entryData?.totalAnswers);

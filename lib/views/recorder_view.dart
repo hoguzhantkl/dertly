@@ -48,7 +48,7 @@ class _RecorderScreenState extends State<RecorderScreen>{
             StreamBuilder(
               stream: audioService.recorder.onProgress,
               builder: (context, snapshot) {
-                final duration = snapshot.hasData ? snapshot.data!.duration : Duration.zero;
+                final duration = (snapshot.hasData && !audioService.recorder.isStopped) ? snapshot.data!.duration : Duration.zero;
 
                 String twoDigits(int n) => n.toString().padLeft(2, '0');
                 String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
@@ -70,13 +70,15 @@ class _RecorderScreenState extends State<RecorderScreen>{
               ),
               onPressed: () async {
                 if (audioService.recorder.isRecording) {
-                  await audioService.stopRecord();
+                  var recordedAudioFile = await audioService.stopRecord();
+                  audioService.createTestEntry(recordedAudioFile);
                 } else {
-                  await audioService.startRecord();
+                  await audioService.startRecord(); 
                 }
                 setState(() {});
               },
             ),
+
           ],
         ),
       ),

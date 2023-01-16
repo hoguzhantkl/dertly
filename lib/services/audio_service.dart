@@ -36,8 +36,8 @@ class AudioService {
     );
   }
 
-  void dispose() {
-    recorder.closeRecorder();
+  void dispose() async {
+    await recorder.closeRecorder();
   }
 
   Future startRecord() async {
@@ -52,7 +52,7 @@ class AudioService {
     final audioFile = File(path!);
     debugPrint('Recorded audio: $path');
 
-    createTestEntry(path);
+    return path;
   }
 
   // NOTE: just for test purposes
@@ -62,7 +62,7 @@ class AudioService {
 
     var userID = await authService.getCurrentUserUID();
 
-    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentUrl: recordedContentVoiceLocalUrl!, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
+    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentAudioUrl: recordedContentVoiceLocalUrl!, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
     await entryService.createEntry(entryModel);
   }
 

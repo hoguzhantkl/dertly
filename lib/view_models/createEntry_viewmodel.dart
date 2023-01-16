@@ -13,13 +13,12 @@ class CreateEntryViewModel {
     await entryService.createEntry(entryModel);
   }
 
+  // Note: This creating entry func doesn't record an audio to entry.
   Future<dynamic> createTestEntry() async {
     var userID = await authService.getCurrentUserUID();
     var contentUrl = "";
 
-    // TODO: record audio and upload to firebase storage then set the contentUrl to the download url
-
-    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentUrl: contentUrl, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
+    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentAudioUrl: contentUrl, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
     return await entryService.createEntry(entryModel);
   }
 }

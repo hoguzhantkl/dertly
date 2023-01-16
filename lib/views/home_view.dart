@@ -1,4 +1,5 @@
 import 'package:dertly/core/routes/routing_constants.dart';
+import 'package:dertly/services/audio_service.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/recorder_view.dart';
 import 'package:dertly/views/widgets/feeds/feedswidget.dart';
@@ -30,6 +31,14 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose(){
+    debugPrint("HomeScreen Dispose");
+    // TODO: find a way of dispose audioService to close Recorder
+    //locator<AudioService>().dispose();
+    super.dispose();
   }
 
   @override
