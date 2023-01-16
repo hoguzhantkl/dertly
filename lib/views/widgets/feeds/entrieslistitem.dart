@@ -34,7 +34,10 @@ class EntriesListItem extends StatelessWidget{
                           const SizedBox(width: 4.0),
                           IconButton(
                               onPressed: (){
-                                  entryService.listenEntryContentAudio(contentUrl);
+                                  entryService.listenEntryContentAudio(contentUrl)
+                                      .catchError((onError){
+                                          debugPrint(onError.toString());
+                                      });
                                   },
                               icon: const Icon(Icons.play_arrow, size: 42)
                           ),

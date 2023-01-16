@@ -23,7 +23,6 @@ class EntryService{
       DocumentSnapshot entryDocumentSnapshot = await entryDocumentRef.get();
       entryModel.entryID = entryDocumentSnapshot.reference.id;
 
-      // TODO: upload the recordedContentAudioUrl to firebase storage then set the contentUrl to the downloadUrl
       debugPrint("uploading the audio in local path contentUrl: ${entryModel.contentUrl}");
       var contentStorageUrl = await storageService.uploadEntryContentAudio(entryModel.entryID, entryModel.contentUrl);
       debugPrint("uploaded audioFile contentStorageUrl: $contentStorageUrl");
@@ -48,24 +47,30 @@ class EntryService{
     }
   }
 
-  Future listenEntryContentAudio(String? audioStorageUrl) async {
-    if (audioStorageUrl == null || audioStorageUrl.isEmpty){
-      debugPrint("audioStorageUrl is empty");
-      return;
+  Future<dynamic> listenEntryContentAudio(String? audioStorageUrl) async {
+    bool validateStorageUrl(){
+      if (audioStorageUrl == null || audioStorageUrl.isEmpty) {
+        return false;
+      }
+      
+      const pattern = r"^([\w\/]+)(\.[\w]+)*$";
+      return RegExp(pattern).hasMatch(audioStorageUrl);
     }
-
+    
+    if (!validateStorageUrl()){
+      return Future.error(Exception("audioStorageUrl is not valid"));
+    }
+    
     try {
       debugPrint("playing audio from storageUrl: $audioStorageUrl");
-      var downloadUrl = await storageService.getDownloadUrl(audioStorageUrl)
-          .catchError((onError){
-            debugPrint("error getting downloadUrl: $onError");
-          });
-      await audioService.player.setSource(UrlSource(downloadUrl));
-      await audioService.player.resume();
-    }catch(e){
-      debugPrint("error playing audio from storageUrl: $audioStorageUrl, error: $e");
-      return Future.error(Exception(e));
+      var downloadUrl = await storageService.getDownloadUrl(audioStorageUrl!);
+      if (downloadUrl != null)
+      {
+        await audioService.player.setSource(UrlSource(downloadUrl));
+        await audioService.player.resume();
+      }
+    } on Exception catch(e){
+      return Future.error(Exception("error playing audio from storageUrl: $audioStorageUrl, error: $e"));
     }
-
   }
 }

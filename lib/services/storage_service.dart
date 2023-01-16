@@ -32,12 +32,8 @@ class StorageService{
   }
 
   Future<dynamic> getDownloadUrl(String storageUrl) async{
-    try{
-      var audioFileRef = storageRef.child(storageUrl);
-      return await audioFileRef.getDownloadURL();
-    }catch(e){
-      return Future.error(e);
-    }
+    var audioFileRef = storageRef.child(storageUrl);
+    return await audioFileRef.getDownloadURL();
   }
 
 }
