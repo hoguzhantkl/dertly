@@ -73,12 +73,11 @@ class _RecorderScreenState extends State<RecorderScreen>{
                   var recordedAudioFile = await audioService.stopRecord();
                   audioService.createTestEntry(recordedAudioFile);
                 } else {
-                  await audioService.startRecord(); 
+                  await audioService.startRecord();
                 }
                 setState(() {});
               },
             ),
-
           ],
         ),
       ),

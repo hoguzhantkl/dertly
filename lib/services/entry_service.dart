@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dertly/models/answer_model.dart';
 import 'package:dertly/services/audio_service.dart';
 import 'package:dertly/services/auth_service.dart';
 import 'package:dertly/services/storage_service.dart';
@@ -81,5 +82,25 @@ class EntryService{
   // TODO: use this function when user tries to listen to an answer in entry.
   Future listenEntryAnswerAudio(String? audioStorageUrl) async {
     return await listenEntryAudio(audioStorageUrl);
+  }
+
+  Future<dynamic> createAnswer(AnswerModel answerModel) async{
+    try {
+      var answersCollectionRef = firestore.collection("answers");
+      DocumentReference answerDocumentRef = answersCollectionRef.doc();
+      DocumentSnapshot answerDocumentSnapshot = await answerDocumentRef.get();
+      answerModel.answerID = answerDocumentSnapshot.reference.id;
+
+      debugPrint("uploading the audio in local path answerUrl: ${answerModel.answerAudioUrl}");
+
+      var answerStorageUrl = await storageService.uploadEntryAnswerAudio(answerModel.entryID, answerModel.answerID, answerModel.answerAudioUrl);
+      debugPrint("uploaded audioFile answerStorageUrl: $answerStorageUrl");
+      answerModel.answerAudioUrl = answerStorageUrl;
+
+      await answerDocumentSnapshot.reference.set(answerModel.toJson());
+      return answerModel;
+    } catch (e) {
+      return Future.error(e);
+    }
   }
 }

@@ -35,10 +35,10 @@ class EntriesListState extends State<EntriesList>{
                     },
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: feedsViewModel.recentEntriesMap.length,
+                  itemCount: feedsViewModel.model.recentEntriesMap.length,
                   itemBuilder: (context, index){
-                    final entryID = feedsViewModel.recentEntriesMap.keys.elementAt(index);
-                    final entryData = feedsViewModel.recentEntriesMap[entryID];
+                    final entryID = feedsViewModel.model.recentEntriesMap.keys.elementAt(index);
+                    final entryData = feedsViewModel.model.recentEntriesMap[entryID];
                     return EntriesListItem(
                         entryID: entryID,
                         contentUrl: entryData?.contentAudioUrl,

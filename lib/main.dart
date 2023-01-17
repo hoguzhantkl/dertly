@@ -48,7 +48,7 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => FeedsViewModel(feedsRepository: locator<FeedsRepository>())),
       ],
       child: MaterialApp(
-        title: 'Dertly App',
+        title: 'Dertly',
         theme: CustomThemes.defaultTheme,
         initialRoute: landingRoute,
         navigatorKey: StackedService.navigatorKey,

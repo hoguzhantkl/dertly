@@ -7,6 +7,7 @@ import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../locator.dart';
+import '../models/answer_model.dart';
 import '../models/entry_model.dart';
 import 'auth_service.dart';
 import 'entry_service.dart';
@@ -49,7 +50,6 @@ class AudioService {
     if (!isRecorderReady) return;
 
     final path = await recorder.stopRecorder();
-    final audioFile = File(path!);
     debugPrint('Recorded audio: $path');
 
     return path;
@@ -66,5 +66,17 @@ class AudioService {
     await entryService.createEntry(entryModel);
   }
 
+  Future<void> createTestAnswerToEntry(String entryID, String? recordedAnswerVoiceLocalUrl) async {
+    var authService = locator<AuthService>();
+    var entryService = locator<EntryService>();
 
+    var userID = await authService.getCurrentUserUID();
+
+    AnswerModel answerModel = AnswerModel(
+        entryID: entryID, answerID: "", userID: userID,
+        answerAudioUrl: recordedAnswerVoiceLocalUrl!, answerType: AnswerType.opposite,
+        date: Timestamp.now(), upVote: 3, downVote: 0);
+
+    await entryService.createAnswer(answerModel);
+  }
 }

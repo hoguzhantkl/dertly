@@ -6,6 +6,7 @@ class CustomThemes{
   static ThemeData get defaultTheme => ThemeData(
     primaryColor: CustomColors.black,
     scaffoldBackgroundColor: CustomColors.black,
+    indicatorColor: CustomColors.green,
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.black,
       shadowColor: Colors.black26,
