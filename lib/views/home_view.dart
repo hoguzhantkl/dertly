@@ -4,7 +4,7 @@ import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/recorder_view.dart';
 import 'package:dertly/views/widgets/bottomsheet/bottomsheetwidget.dart';
-import 'package:dertly/views/widgets/feeds/feedswidget.dart';
+import 'package:dertly/views/feeds_view.dart';
 
 import 'package:provider/provider.dart';
 
@@ -19,7 +19,7 @@ import '../core/routes/router.dart' as rtr;
 import '../core/routes/routing_constants.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key, required this.title});
+  const HomeScreen({super.key, required this.title});
 
   final String title;
 
@@ -57,7 +57,7 @@ class HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         shadowColor: Colors.transparent,
       ),
-      body: const FeedsWidget(),
+      body: const FeedsScreen(),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[

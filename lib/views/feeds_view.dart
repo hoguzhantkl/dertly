@@ -2,14 +2,14 @@ import 'package:dertly/main.dart';
 import 'package:dertly/views/widgets/feeds/entrieslist.dart';
 import 'package:flutter/material.dart';
 
-class FeedsWidget extends StatefulWidget {
-  const FeedsWidget({super.key});
+class FeedsScreen extends StatefulWidget {
+  const FeedsScreen({super.key});
 
   @override
-  State<FeedsWidget> createState() => FeedsWidgetState();
+  State<FeedsScreen> createState() => FeedsScreenState();
 }
 
-class FeedsWidgetState extends State<FeedsWidget> with SingleTickerProviderStateMixin{
+class FeedsScreenState extends State<FeedsScreen> with SingleTickerProviderStateMixin{
   late TabController tabController;
 
   @override

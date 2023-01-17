@@ -1,3 +1,4 @@
+import 'package:dertly/views/widgets/bottomsheet/bottomsheetcontent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,12 +34,7 @@ class BottomSheetWidgetState extends State<BottomSheetWidget>{
       builder: (BuildContext context, ScrollController scrollController) {
         return InkWell(
           onTap: _onBottomSheetClicked,
-          child: Container(
-              height: MediaQuery.of(context).size.height,
-              decoration: const BoxDecoration(
-                color: CustomColors.foreground,
-             )
-          )
+          child: const BottomSheetContent()
         );
       },
       minChildSize: initialChildSize,

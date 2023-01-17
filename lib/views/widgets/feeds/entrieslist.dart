@@ -39,13 +39,7 @@ class EntriesListState extends State<EntriesList>{
                   itemBuilder: (context, index){
                     final entryID = feedsViewModel.model.recentEntriesMap.keys.elementAt(index);
                     final entryData = feedsViewModel.model.recentEntriesMap[entryID];
-                    return EntriesListItem(
-                        entryID: entryID,
-                        contentUrl: entryData?.contentAudioUrl,
-                        upVote: entryData?.upVote,
-                        downVote: entryData?.downVote,
-                        totalAnswers: entryData?.totalAnswers);
-                  },
+                    return EntriesListItem(entryModel: entryData!);},
                 )
               );
             },

@@ -118,21 +118,19 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
-  void setEntryBottomSheetVisibility(bool isVisible){
-    model.isEntryBottomSheetVisible = isVisible;
-    notifyListeners();
-  }
-
-  // Signals from View
-  Future onEntryListenButtonClicked(String? contentUrl) async{
+  Future onEntryListenButtonClicked(String? entryID, String? contentUrl) async{
     await entryService.listenEntryContentAudio(contentUrl)
+        .then((audioStorageUrl) {
+            if (audioStorageUrl != null){
+              if (!model.isEntryBottomSheetVisible){
+                setEntryBottomSheetVisibility(true);
+              }
+              setCurrentListeningEntryID(entryID);
+            }
+          })
         .catchError((onError){
-      debugPrint(onError.toString());
-    });
-
-    if (!model.isEntryBottomSheetVisible){
-      setEntryBottomSheetVisibility(true);
-    }
+          debugPrint(onError.toString());
+        });
   }
 
   Future onEntryCreateTestAnswerButtonClicked(String entryID) async{
@@ -142,6 +140,16 @@ class FeedsViewModel extends ChangeNotifier{
     } else {
       await audioService.startRecord();
     }
+  }
 
+  // Interactions with Model
+  void setEntryBottomSheetVisibility(bool isVisible){
+    model.isEntryBottomSheetVisible = isVisible;
+    notifyListeners();
+  }
+
+  void setCurrentListeningEntryID(String? entryID){
+    model.currentListeningEntryID = entryID;
+    notifyListeners();
   }
 }

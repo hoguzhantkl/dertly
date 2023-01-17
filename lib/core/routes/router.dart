@@ -23,7 +23,7 @@ class Router{
       case createProfileRoute:
         return MaterialPageRoute(builder: (_) => const CreateProfileScreen());
       case homeRoute:
-        return MaterialPageRoute(builder: (_) => HomeScreen(title: 'Dertly App'));
+        return MaterialPageRoute(builder: (_) => const HomeScreen(title: 'Dertly App'));
       case recorderRoute:
         return MaterialPageRoute(builder: (_) => const RecorderScreen());
       case createEntryRoute:

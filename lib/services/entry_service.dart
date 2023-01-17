@@ -68,8 +68,9 @@ class EntryService{
       if (downloadUrl != null)
       {
         await audioService.player.setSource(UrlSource(downloadUrl));
-        await audioService.player.resume();
+        audioService.player.resume();
       }
+      return downloadUrl;
     } on Exception catch(e){
       return Future.error(Exception("error playing audio from storageUrl: $audioStorageUrl, error: $e"));
     }

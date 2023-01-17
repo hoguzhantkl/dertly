@@ -4,18 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../locator.dart';
+import '../../../models/entry_model.dart';
 import '../../../services/entry_service.dart';
 import '../../../view_models/feeds_viewmodel.dart';
 
 class EntriesListItem extends StatefulWidget{
-  const EntriesListItem({super.key, required this.entryID, required this.contentUrl,
-    this.upVote, this.downVote, this.totalAnswers});
+  const EntriesListItem({super.key, required this.entryModel});
 
-  final String entryID;
-  final String? contentUrl;
-  final int? upVote;
-  final int? downVote;
-  final int? totalAnswers;
+  final EntryModel entryModel;
 
   @override
   State<EntriesListItem> createState() => EntriesListItemState();
@@ -26,6 +22,7 @@ class EntriesListItemState extends State<EntriesListItem>{
 
   @override
   Widget build(BuildContext context) {
+    final model = widget.entryModel;
     var audioService = locator<AudioService>();
 
     var feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
@@ -36,7 +33,7 @@ class EntriesListItemState extends State<EntriesListItem>{
           padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0),
           child: Row(
             children: <Widget>[
-              Icon(Icons.account_circle, size: 68),
+              const Icon(Icons.account_circle, size: 68),
               Expanded(
                 child: Column(
                   children: <Widget>[
@@ -45,7 +42,7 @@ class EntriesListItemState extends State<EntriesListItem>{
                         const SizedBox(width: 4.0),
                         IconButton(
                             onPressed: () async{
-                                await feedsViewModel.onEntryListenButtonClicked(widget.contentUrl);
+                                await feedsViewModel.onEntryListenButtonClicked(model.entryID, model.contentAudioUrl);
                                 setState(() {});
                               },
                             icon: const Icon(Icons.play_arrow, size: 42)
@@ -54,7 +51,7 @@ class EntriesListItemState extends State<EntriesListItem>{
                           margin: const EdgeInsets.only(top: 10.0),
                           child: IconButton(
                               onPressed: () async {
-                                  await feedsViewModel.onEntryCreateTestAnswerButtonClicked(widget.entryID);
+                                  await feedsViewModel.onEntryCreateTestAnswerButtonClicked(model.entryID);
                                   setState(() {});
                                 },
                               icon: Icon(audioService.recorder.isRecording ? Icons.stop : Icons.mic, size: 34)
@@ -72,19 +69,19 @@ class EntriesListItemState extends State<EntriesListItem>{
                         Row(
                           children: <Widget>[
                             const Icon(Icons.arrow_upward, size: 20),
-                            Text(widget.upVote.toString())
+                            Text(model.upVote.toString())
                           ],
                         ),
                         Row(
                           children: <Widget>[
                             const Icon(Icons.arrow_downward, size: 20),
-                            Text(widget.downVote.toString())
+                            Text(model.downVote.toString())
                           ],
                         ),
                         Row(
                           children: <Widget>[
                             const Icon(Icons.mic, size: 20),
-                            Text(widget.totalAnswers.toString())
+                            Text(model.totalAnswers.toString())
                           ],
                         ),
                       ],
