@@ -33,7 +33,7 @@ class EntriesListItemState extends State<EntriesListItem>{
           padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0),
           child: Row(
             children: <Widget>[
-              const Icon(Icons.account_circle, size: 68),
+              const Icon(Icons.account_box, size: 68),
               Expanded(
                 child: Column(
                   children: <Widget>[

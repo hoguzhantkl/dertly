@@ -4,6 +4,7 @@ import 'custom_colors.dart';
 
 class CustomThemes{
   static ThemeData get defaultTheme => ThemeData(
+    backgroundColor: CustomColors.black,
     primaryColor: CustomColors.black,
     scaffoldBackgroundColor: CustomColors.black,
     indicatorColor: CustomColors.green,

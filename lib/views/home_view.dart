@@ -9,14 +9,11 @@ import 'package:dertly/views/feeds_view.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:stacked_services/stacked_services.dart';
 
-import '../core/themes/custom_colors.dart';
 import '../locator.dart';
 import '../view_models/auth_viewmodel.dart';
 
 import '../core/routes/router.dart' as rtr;
-import '../core/routes/routing_constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});

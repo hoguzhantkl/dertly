@@ -1,6 +1,8 @@
 import 'package:dertly/views/widgets/bottomsheet/bottomsheetcontent.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../../locator.dart';
+import '../../../core/routes/router.dart' as rtr;
 
 import '../../../core/themes/custom_colors.dart';
 
@@ -24,6 +26,7 @@ class BottomSheetWidgetState extends State<BottomSheetWidget>{
   void _onBottomSheetClicked(){
     setState(() {
       // TODO: Navigate to entry view by scrolling to top from bottom
+      locator<rtr.Router>().navigateEntryScreen();
     });
   }
 

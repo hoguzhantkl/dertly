@@ -16,6 +16,7 @@ class BottomSheetContentState extends State<BottomSheetContent>{
   Widget build(BuildContext context){
     return Consumer<FeedsViewModel>(
       builder: (context, feedsViewModel, child){
+        final listeningEntryModel = feedsViewModel.getCurrentListeningEntryModel();
         return Container(
             height: MediaQuery.of(context).size.height,
             // TODO: Create a BottomSheetTheme in custom_themes
@@ -23,11 +24,10 @@ class BottomSheetContentState extends State<BottomSheetContent>{
               color: CustomColors.foreground,
             ),
             child: Center(
-              child: Text("${feedsViewModel.model.currentListeningEntryID!}!", style: TextStyle(fontSize: 16))
+              child: Text("${listeningEntryModel?.entryID}!", style: const TextStyle(fontSize: 16))
             ),
         );
       }
     );
-
   }
 }

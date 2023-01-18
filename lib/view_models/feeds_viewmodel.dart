@@ -142,6 +142,15 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
+  EntryModel? getCurrentListeningEntryModel(){
+    switch(model.currentListeningEntryCategory){
+      case EntryCategory.recents:
+        return model.recentEntriesMap[model.currentListeningEntryID]!;
+      default:
+        return null;
+    }
+  }
+
   // Interactions with Model
   void setEntryBottomSheetVisibility(bool isVisible){
     model.isEntryBottomSheetVisible = isVisible;

@@ -74,7 +74,7 @@ class AudioService {
 
     AnswerModel answerModel = AnswerModel(
         entryID: entryID, answerID: "", userID: userID,
-        answerAudioUrl: recordedAnswerVoiceLocalUrl!, answerType: AnswerType.opposite,
+        answerAudioUrl: recordedAnswerVoiceLocalUrl!, answerType: AnswerType.opponent,
         date: Timestamp.now(), upVote: 3, downVote: 0);
 
     await entryService.createAnswer(answerModel);

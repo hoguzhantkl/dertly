@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'answer_model.dart';
 import 'entry_model.dart';
 
+enum EntryCategory { trendings, recents, yourturn, follower }
+
 class FeedsModel{
   List<String> recentEntriesIDList = [];
   LinkedHashMap<String, EntryModel> recentEntriesMap = LinkedHashMap.of({});
@@ -12,6 +14,7 @@ class FeedsModel{
   bool isEntryBottomSheetVisible = false;
 
   String? currentListeningEntryID; // TODO: specify in which map(trends, recents, etc.) should we use this id.
+  EntryCategory currentListeningEntryCategory = EntryCategory.recents;
 
   void clear(){
     recentEntriesIDList.clear();
