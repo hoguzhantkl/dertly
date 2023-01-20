@@ -12,7 +12,7 @@ import firebase_auth
 import firebase_core
 import firebase_storage
 import path_provider_macos
-import shared_preferences_macos
+import shared_preferences_foundation
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   AudioplayersDarwinPlugin.register(with: registry.registrar(forPlugin: "AudioplayersDarwinPlugin"))
