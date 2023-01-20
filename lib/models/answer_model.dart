@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 enum AnswerType{
   support,
   neutral,
-  opponent // TODO: find a better name
+  opponent
 }
 
 class AnswerModel{

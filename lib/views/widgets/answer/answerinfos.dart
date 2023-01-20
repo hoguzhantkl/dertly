@@ -1,7 +1,11 @@
+import 'package:dertly/models/answer_model.dart';
 import 'package:flutter/material.dart';
 
 class AnswerInfos extends StatelessWidget{
   const AnswerInfos({super.key});
+
+  final mentionedAnswerID = "";
+  final AnswerType answerType = AnswerType.support;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,15 @@ class AnswerInfos extends StatelessWidget{
             ],
           ),
           SizedBox(width: 20),
+
+          // TODO: show answer type if answer is for entry. (answer is not for another answer)
+          /*
+          Visibility(
+            visible: mentionedAnswerID.isEmpty,
+            child: Icon(Icons.dangerous_outlined, size: 14, color: Colors.redAccent),
+          ),
+          SizedBox(width: 20),
+           */
 
           Text("04.01.2023, 10:16", style: TextStyle(fontSize: 10, color: Colors.white))
 

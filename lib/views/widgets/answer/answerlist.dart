@@ -18,7 +18,8 @@ class AnswerListState extends State<AnswerList> {
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.all(0),
-      shrinkWrap: true,
+        shrinkWrap: true,
+      physics: const BouncingScrollPhysics(),
       itemCount: widget.testAnswerListItems.length,
       itemBuilder: (context, index) {
         return widget.testAnswerListItems[index];

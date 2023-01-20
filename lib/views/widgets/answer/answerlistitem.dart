@@ -10,10 +10,10 @@ import 'answerlist.dart';
 
 class AnswerListItem extends StatefulWidget
 {
-  const AnswerListItem({super.key, this.testAnswerListItems = const []});
+  const AnswerListItem({super.key, this.testAnswerListItems = const [], this.mentionedAnswer = false});
 
   final hasAnswer = true;
-  final mentionedAnswer = false;
+  final mentionedAnswer;
 
   final List<AnswerListItem> testAnswerListItems;
 

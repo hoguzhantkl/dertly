@@ -86,6 +86,7 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      // TODO: change this wih ValueListenableBuilder
       bottomSheet: Consumer<FeedsViewModel>(
         builder: (context, feedsViewModel, child) {
           if (feedsViewModel.model.isEntryBottomSheetVisible) {

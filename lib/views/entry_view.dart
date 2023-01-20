@@ -1,7 +1,12 @@
 import 'package:dertly/core/themes/custom_colors.dart';
+import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/views/widgets/answer/answerlist.dart';
 import 'package:dertly/views/widgets/answer/answerlistitem.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../locator.dart';
+import '../models/entry_model.dart';
 
 class EntryScreen extends StatefulWidget{
   const EntryScreen({super.key});
@@ -12,7 +17,15 @@ class EntryScreen extends StatefulWidget{
 
 class EntryScreenState extends State<EntryScreen>{
     @override
+    void initState() {
+      super.initState();
+    }
+
+    @override
     Widget build(BuildContext context){
+      FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+      EntryModel listeningEntryModel = feedsViewModel.getCurrentListeningEntryModel()!;
+
       return Scaffold(
         body: Container(
           decoration: BoxDecoration(
@@ -49,46 +62,56 @@ class EntryScreenState extends State<EntryScreen>{
 
                                   // Entry Info
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Column(
-                                        children: const [
+                                        children: [
                                           Icon(Icons.arrow_upward_rounded, size: 24),
-                                          Text("10", style: TextStyle(fontSize: 12)),
+                                          Text("${listeningEntryModel.upVote}", style: TextStyle(fontSize: 12)),
                                         ],
                                       ),
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: 10),
                                       Column(
-                                        children: const [
+                                        children: [
                                           Icon(Icons.arrow_downward_rounded, size: 24),
-                                          Text("8", style: TextStyle(fontSize: 12)),
+                                          Text("${listeningEntryModel.downVote}", style: TextStyle(fontSize: 12)),
                                         ],
                                       ),
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: 10),
                                       Column(
-                                        children: const [
+                                        children: [
                                           Icon(Icons.mic, size: 24),
+                                          Text("${listeningEntryModel.totalAnswers}", style: TextStyle(fontSize: 12)),
+                                        ],
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Column(
+                                        children: const [
+                                          Icon(Icons.star, size: 24, color: Colors.amberAccent),
+                                          // TODO: create score in entryModel
                                           Text("8", style: TextStyle(fontSize: 12)),
                                         ],
                                       ),
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: 10),
                                       Column(
                                         children: const [
-                                          Icon(Icons.star, size: 24),
+                                          Icon(Icons.add, size: 24, color: Colors.green),
                                           Text("8", style: TextStyle(fontSize: 12)),
                                         ],
                                       ),
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: 10),
                                       Column(
                                         children: const [
-                                          Icon(Icons.add, size: 24),
+                                          Icon(Icons.support_rounded, size: 24, color: Colors.grey),
                                           Text("8", style: TextStyle(fontSize: 12)),
                                         ],
                                       ),
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: 10),
                                       Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+
                                         children: const [
-                                          Icon(Icons.support_rounded, size: 24),
+                                          Icon(Icons.dangerous_outlined, size: 24, color: Colors.red),
                                           Text("8", style: TextStyle(fontSize: 12)),
                                         ],
                                       ),
@@ -109,7 +132,7 @@ class EntryScreenState extends State<EntryScreen>{
 
                                   const SizedBox(height: 8),
 
-                                  const Text("04/01/2023, 08:00:00", style: TextStyle(fontSize: 12)),
+                                  Text("${listeningEntryModel.date.toDate()}", style: TextStyle(fontSize: 12)),
 
                                   const SizedBox(height: 8),
 
@@ -137,13 +160,18 @@ class EntryScreenState extends State<EntryScreen>{
                   const SizedBox(height: 8),
 
                   // TODO: Add a ListView for Answers
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(left: 8, right: 8),
                     child: AnswerList(
                       testAnswerListItems: [
                         AnswerListItem(
                           testAnswerListItems: [
-                            AnswerListItem()
+                            AnswerListItem(),
+                            AnswerListItem(mentionedAnswer: true),
+                            AnswerListItem(),
+                            AnswerListItem(),
+                            AnswerListItem(),
+                            AnswerListItem(),
                           ],
                         ),
                         AnswerListItem(),
