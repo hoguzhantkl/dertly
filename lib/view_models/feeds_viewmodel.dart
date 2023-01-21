@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:math';
 
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dertly/locator.dart';
 import 'package:dertly/models/feeds_model.dart';
 import 'package:dertly/repositories/entry_repository.dart';
@@ -47,16 +48,20 @@ class FeedsViewModel extends ChangeNotifier{
       await fetchRecentEntryIDs();
       for (var entryID in model.recentEntriesIDList){
         var entry = await entryRepository.fetchEntry(entryID);
+
         if (entry == null){
+
           debugPrint("Could not fetch entry data for entryID: $entryID");
         }
         else{
+
           model.recentEntriesMap[entryID] = entry;
           debugPrint("Fetched entry data for entryID: $entryID from data entryID ${model.recentEntriesMap[entryID]?.entryID}");
         }
       }
       notifyListeners();
     }catch(e){
+      debugPrint("Could not fetch all recent entries, error: $e");
       return Future.error(Exception(e));
     }
   }
@@ -114,12 +119,13 @@ class FeedsViewModel extends ChangeNotifier{
       return trendEntriesData;
 
     }catch(e){
+      debugPrint("Could not fetch all trend entries, error: $e");
       return Future.error(Exception(e));
     }
   }
 
-  Future onEntryListenButtonClicked(String? entryID, String? contentUrl) async{
-    await entryService.listenEntryContentAudio(contentUrl)
+  Future onEntryListenButtonClicked(String? entryID, String? contentUrl, PlayerController playerController) async{
+    await entryService.listenEntryContentAudio(contentUrl, playerController)
         .then((audioStorageUrl) {
             if (audioStorageUrl != null){
               if (!model.isEntryBottomSheetVisible){

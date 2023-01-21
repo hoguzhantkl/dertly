@@ -5,13 +5,15 @@ class EntryModel{
   final String userID;
   final String title;
   String contentAudioUrl;
+  List<double>? contentAudioWaveData;
   final Timestamp date;
   final int upVote;
   final int downVote;
   final int totalAnswers;
 
   EntryModel({
-      required this.entryID, required this.userID, required this.title, required this.contentAudioUrl,
+      required this.entryID, required this.userID, required this.title,
+      required this.contentAudioUrl, required this.contentAudioWaveData,
       required this.date, required this.upVote, required this.downVote, required this.totalAnswers
   });
 
@@ -21,6 +23,7 @@ class EntryModel{
       userID: data['userID'],
       title: data['title'],
       contentAudioUrl: data['contentUrl'],
+      contentAudioWaveData: data['contentAudioWaveData'].cast<double>(),
       date: data['date'],
       upVote: data['upVote'],
       downVote: data['downVote'],
@@ -34,6 +37,7 @@ class EntryModel{
       'userID': userID,
       'title': title,
       'contentUrl': contentAudioUrl,
+      'contentAudioWaveData': contentAudioWaveData,
       'date': date,
       'upVote': upVote,
       'downVote': downVote,

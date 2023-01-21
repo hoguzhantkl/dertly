@@ -15,6 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.9.0"
+  audio_waveforms:
+    dependency: "direct main"
+    description:
+      name: audio_waveforms
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   audioplayers:
     dependency: "direct main"
     description:

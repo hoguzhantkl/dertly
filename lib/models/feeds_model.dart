@@ -7,6 +7,11 @@ import 'entry_model.dart';
 
 enum EntryCategory { trendings, recents, yourturn, follower }
 
+class WaveNoOfSamples {
+  static const int entry = 45;
+  static const int answer = 100;
+}
+
 class FeedsModel{
   List<String> recentEntriesIDList = [];
   LinkedHashMap<String, EntryModel> recentEntriesMap = LinkedHashMap.of({});

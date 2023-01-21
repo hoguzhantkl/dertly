@@ -45,7 +45,7 @@ class _RecorderScreenState extends State<RecorderScreen>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            StreamBuilder(
+            /*StreamBuilder(
               stream: audioService.recorder.onProgress,
               builder: (context, snapshot) {
                 final duration = (snapshot.hasData && !audioService.recorder.isStopped) ? snapshot.data!.duration : Duration.zero;
@@ -62,19 +62,46 @@ class _RecorderScreenState extends State<RecorderScreen>{
                     )
                 );
               }
+            ),*/
+
+            ValueListenableBuilder(
+                valueListenable: audioService.recorderController.currentScrolledDuration,
+                builder: (context, value, child) {
+                  final duration = value;
+
+                  String twoDigits(int n) => n.toString().padLeft(2, '0');
+                  /*String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+                  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));*/
+
+                  return Text(
+                      //'$twoDigitMinutes:$twoDigitSeconds',
+                      '$duration',
+                      style: const TextStyle(
+                          fontSize: 80,
+                          fontWeight: FontWeight.bold
+                      )
+                  );
+                }
             ),
+
             ElevatedButton(
               child: Icon(
                   audioService.recorder.isRecording ? Icons.stop : Icons.mic,
                   size: 80
               ),
               onPressed: () async {
-                if (audioService.recorder.isRecording) {
+                if (audioService.recorderController.isRecording){
+                  var recordedAudioFilePath = await audioService.stopWaveRecord();
+                  audioService.createTestEntry(recordedAudioFilePath);
+                }else{
+                  await audioService.startWaveRecord();
+                }
+                /*if (audioService.recorder.isRecording) {
                   var recordedAudioFile = await audioService.stopRecord();
                   audioService.createTestEntry(recordedAudioFile);
                 } else {
                   await audioService.startRecord();
-                }
+                }*/
                 setState(() {});
               },
             ),

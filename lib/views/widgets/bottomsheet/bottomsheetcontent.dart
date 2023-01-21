@@ -14,6 +14,7 @@ class BottomSheetContent extends StatefulWidget {
 class BottomSheetContentState extends State<BottomSheetContent>{
   @override
   Widget build(BuildContext context){
+    // TODO make this depend on listeningEntryModel without rebuilding everytime when feedsViewModel changes
     return Consumer<FeedsViewModel>(
       builder: (context, feedsViewModel, child){
         final listeningEntryModel = feedsViewModel.getCurrentListeningEntryModel();

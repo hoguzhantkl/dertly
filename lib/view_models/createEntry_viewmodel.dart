@@ -18,7 +18,7 @@ class CreateEntryViewModel {
     var userID = await authService.getCurrentUserUID();
     var contentUrl = "";
 
-    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentAudioUrl: contentUrl, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
+    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentAudioUrl: contentUrl, contentAudioWaveData: [], date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
     return await entryService.createEntry(entryModel);
   }
 }

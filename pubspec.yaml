@@ -49,6 +49,7 @@ dependencies:
   cloud_functions: ^4.0.7
   firebase_storage: ^11.0.10
   tuple: ^2.0.1
+  audio_waveforms: ^1.0.1
 
 dev_dependencies:
   flutter_test:

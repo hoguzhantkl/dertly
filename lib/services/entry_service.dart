@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dertly/models/answer_model.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import '../locator.dart';
 import '../models/entry_model.dart';
+import '../models/feeds_model.dart';
 
 class EntryService{
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -37,6 +39,7 @@ class EntryService{
   }
 
   Future<dynamic> fetchEntryData(String entryID) async{
+
     var entryCollectionRef = firestore.collection("entries");
     var entryDocRef = entryCollectionRef.doc(entryID);
     var entryDocSnapshot = await entryDocRef.get();
@@ -48,7 +51,7 @@ class EntryService{
     }
   }
 
-  Future<dynamic> listenEntryAudio(String? audioStorageUrl) async{
+  Future<dynamic> listenEntryAudio(String? audioStorageUrl, PlayerController playerController, {noOfSamples = 100}) async{
     bool validateStorageUrl(){
       if (audioStorageUrl == null || audioStorageUrl.isEmpty) {
         return false;
@@ -64,25 +67,35 @@ class EntryService{
 
     try {
       debugPrint("playing audio from storageUrl: $audioStorageUrl");
-      var downloadUrl = await storageService.getDownloadUrl(audioStorageUrl!);
-      if (downloadUrl != null)
-      {
-        await audioService.player.setSource(UrlSource(downloadUrl));
-        audioService.player.resume();
-      }
-      return downloadUrl;
+      return await storageService.downloadFile(audioStorageUrl!)
+        .then((downloadedAudioFileLocalPath) async {
+          debugPrint("downloaded audioFileLocalPath: $downloadedAudioFileLocalPath");
+
+          await playerController.preparePlayer(
+              path: downloadedAudioFileLocalPath,
+              noOfSamples: noOfSamples,
+              volume: 1.0
+          );
+
+          //await audioService.playerController.startPlayer(finishMode: FinishMode.stop);
+          await playerController.startPlayer(finishMode: FinishMode.stop);
+
+          return downloadedAudioFileLocalPath;
+        })
+        .catchError((onError) {return null;});
+
     } on Exception catch(e){
       return Future.error(Exception("error playing audio from storageUrl: $audioStorageUrl, error: $e"));
     }
   }
 
-  Future listenEntryContentAudio(String? audioStorageUrl) async {
-    return await listenEntryAudio(audioStorageUrl);
+  Future listenEntryContentAudio(String? audioStorageUrl, PlayerController playerController) async {
+    return await listenEntryAudio(audioStorageUrl, playerController, noOfSamples: WaveNoOfSamples.entry);
   }
 
   // TODO: use this function when user tries to listen to an answer in entry.
-  Future listenEntryAnswerAudio(String? audioStorageUrl) async {
-    return await listenEntryAudio(audioStorageUrl);
+  Future listenEntryAnswerAudio(String? audioStorageUrl, PlayerController playerController) async {
+    return await listenEntryAudio(audioStorageUrl, playerController);
   }
 
   Future<dynamic> createAnswer(AnswerModel answerModel) async{

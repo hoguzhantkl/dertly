@@ -36,4 +36,22 @@ class StorageService{
     return await audioFileRef.getDownloadURL();
   }
 
+  Future<dynamic> downloadFile(String storageUrl) async{
+    var audioFileRef = storageRef.child(storageUrl);
+    var tempDir = await path_provider.getApplicationDocumentsDirectory(); // await path_provider.getTemporaryDirectory();
+    var tempFile = File("${tempDir.path}/$storageUrl");
+
+    var file = await tempFile.create(recursive: true);
+    final downloadTask = await audioFileRef.writeToFile(file);
+
+    switch(downloadTask.state) {
+      case TaskState.success:
+        return file.path;
+      case TaskState.error:
+        return Future.error("error downloading file");
+      default:
+        return Future.error(Exception("downloadFile failed"));
+    }
+  }
+
 }

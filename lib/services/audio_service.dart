@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,12 +10,22 @@ import 'package:permission_handler/permission_handler.dart';
 import '../locator.dart';
 import '../models/answer_model.dart';
 import '../models/entry_model.dart';
+import '../models/feeds_model.dart';
 import 'auth_service.dart';
 import 'entry_service.dart';
 
 class AudioService {
   final recorder = FlutterSoundRecorder();
   final player = AudioPlayer();
+
+  final RecorderController recorderController = RecorderController();
+
+        /*..androidEncoder = AndroidEncoder.aac
+        ..androidOutputFormat = AndroidOutputFormat.aac_adts
+        ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
+        ..sampleRate = 44100;*/
+
+  final PlayerController playerController = PlayerController();
 
   bool isRecorderReady = false;
 
@@ -28,17 +39,22 @@ class AudioService {
       throw RecordingPermissionException('Microphone permission not granted');
     }
 
-    recorder.openRecorder();
+    /*recorder.openRecorder();
 
     isRecorderReady = true;
 
     recorder.setSubscriptionDuration(
       const Duration(milliseconds: 500),
-    );
+    );*/
   }
 
   void dispose() async {
     await recorder.closeRecorder();
+
+    recorderController.refresh();
+    recorderController.dispose();
+
+    playerController.dispose();
   }
 
   Future startRecord() async {
@@ -55,6 +71,23 @@ class AudioService {
     return path;
   }
 
+  Future<List<double>> getPlayingWaveformData(String path, {int noOfSamples = 100}) async{
+    final waveformData = await playerController.extractWaveformData(
+        path: path,
+        noOfSamples: noOfSamples
+    );
+    return waveformData;
+  }
+
+  Future startWaveRecord() async {
+    await recorderController.record();
+  }
+
+  Future stopWaveRecord() async {
+    final path = await recorderController.stop();
+    return path;
+  }
+
   // NOTE: just for test purposes
   Future<void> createTestEntry(String? recordedContentVoiceLocalUrl) async {
     var authService = locator<AuthService>();
@@ -62,7 +95,9 @@ class AudioService {
 
     var userID = await authService.getCurrentUserUID();
 
-    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentAudioUrl: recordedContentVoiceLocalUrl!, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
+    final audioWaveformData = await getPlayingWaveformData(recordedContentVoiceLocalUrl!, noOfSamples: WaveNoOfSamples.entry); //playerController.extractWaveformData(path: recordedContentVoiceLocalUrl!, noOfSamples: 100);
+    debugPrint(audioWaveformData.toString());
+    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentAudioUrl: recordedContentVoiceLocalUrl, contentAudioWaveData: audioWaveformData, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
     await entryService.createEntry(entryModel);
   }
 
