@@ -30,9 +30,9 @@ class EntriesListState extends State<EntriesList>{
             builder: (context, feedsViewModel, child){
               return RefreshIndicator(
                 onRefresh: () async {
-                  debugPrint("Refreshing list");
+                    debugPrint("Refreshing list");
                     onRefreshList();
-                    },
+                },
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: feedsViewModel.model.recentEntriesMap.length,

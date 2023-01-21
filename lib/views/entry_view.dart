@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../locator.dart';
 import '../models/entry_model.dart';
+import '../view_models/entry_viewmodel.dart';
 
 class EntryScreen extends StatefulWidget{
   const EntryScreen({super.key});
@@ -27,7 +28,7 @@ class EntryScreenState extends State<EntryScreen>{
     @override
     Widget build(BuildContext context){
       FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
-      EntryModel listeningEntryModel = feedsViewModel.getCurrentListeningEntryModel()!;
+      EntryViewModel entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
 
       return Scaffold(
         body: Container(
@@ -77,7 +78,7 @@ class EntryScreenState extends State<EntryScreen>{
 
                                   const SizedBox(height: 8),
 
-                                  Text("${listeningEntryModel.date.toDate()}", style: const TextStyle(fontSize: 12)),
+                                  Text("${entryViewModel.model?.date.toDate()}", style: const TextStyle(fontSize: 12)),
 
                                   const SizedBox(height: 8),
 

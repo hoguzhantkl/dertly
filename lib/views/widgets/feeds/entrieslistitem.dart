@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dertly/core/themes/custom_colors.dart';
 import 'package:dertly/services/audio_service.dart';
+import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/views/widgets/audiowave.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,9 +24,7 @@ class EntriesListItem extends StatefulWidget{
 }
 
 class EntriesListItemState extends State<EntriesListItem>{
-  bool isBottomSheetVisible = false;
-
-  // TODO: Move this to feedModel with entryID as key to avoid stopping while disposing this widget
+  // TODO: Move this to feedsModel with entryID as key to avoid stopping while disposing this widget
   late PlayerController playerController;
 
   @override
@@ -44,7 +43,8 @@ class EntriesListItemState extends State<EntriesListItem>{
   Widget build(BuildContext context) {
     final model = widget.entryModel;
 
-    var feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+    final feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+    final entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
 
     return Flex(
       direction: Axis.vertical,
@@ -53,7 +53,6 @@ class EntriesListItemState extends State<EntriesListItem>{
           padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0),
           child: Row(
             children: <Widget>[
-              //const Icon(Icons.account_box, size: 68),
               const UserImage(width: 56, height: 56, borderRadius: 6),
               Expanded(
                 child: Column(
@@ -73,8 +72,7 @@ class EntriesListItemState extends State<EntriesListItem>{
                                       playerController.startPlayer();
                                     }
                                     else {
-                                      await feedsViewModel.onEntryListenButtonClicked(model.entryID, model.contentAudioUrl, playerController);
-                                      debugPrint("noOfsamples::: ${PlayerWaveStyle(spacing: 6).getSamplesForWidth(270)}");
+                                      await feedsViewModel.listenEntry(model.entryID, model.contentAudioUrl, playerController);
                                     }
                                     setState(() {});
                                   },

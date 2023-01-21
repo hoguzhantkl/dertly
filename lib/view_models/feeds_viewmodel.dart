@@ -152,21 +152,6 @@ class FeedsViewModel extends ChangeNotifier{
     await entryService.createAnswer(answerModel);
   }
 
-  Future onEntryListenButtonClicked(String? entryID, String? contentUrl, PlayerController playerController) async{
-    await entryService.listenEntryContentAudio(contentUrl, playerController)
-        .then((audioStorageUrl) {
-            if (audioStorageUrl != null){
-              if (!model.isEntryBottomSheetVisible){
-                setEntryBottomSheetVisibility(true);
-              }
-              setCurrentListeningEntryID(entryID);
-            }
-          })
-        .catchError((onError){
-          debugPrint(onError.toString());
-        });
-  }
-
   Future onEntryCreateAnswerButtonClicked(String entryID, AnswerType answerType) async{
     if (audioService.recorder.isRecording) {
       var recordedAudioFile = await audioService.stopRecord();
@@ -185,14 +170,36 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
+  Future listenEntry(String? entryID, String? contentUrl, PlayerController playerController) async{
+    await entryService.listenEntryContentAudio(contentUrl, playerController)
+        .then((audioStorageUrl) {
+      if (audioStorageUrl != null){
+        setCurrentListeningEntryID(entryID);
+      }
+    })
+        .catchError((onError){
+      debugPrint(onError.toString());
+    });
+  }
+
   // Interactions with Model
   void setEntryBottomSheetVisibility(bool isVisible){
     model.isEntryBottomSheetVisible = isVisible;
     notifyListeners();
   }
 
-  void setCurrentListeningEntryID(String? entryID){
+  void setCurrentListeningEntryID(String? entryID) async{
     model.currentListeningEntryID = entryID;
     notifyListeners();
+
+    var currentEntryModel = getCurrentListeningEntryModel();
+    if (currentEntryModel != null){
+      if (!model.isEntryBottomSheetVisible){
+        setEntryBottomSheetVisibility(true);
+      }
+    }
+    else{
+      setEntryBottomSheetVisibility(false);
+    }
   }
 }
