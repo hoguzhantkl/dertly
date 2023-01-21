@@ -87,31 +87,4 @@ class AudioService {
     final path = await recorderController.stop();
     return path;
   }
-
-  // NOTE: just for test purposes
-  Future<void> createTestEntry(String? recordedContentVoiceLocalUrl) async {
-    var authService = locator<AuthService>();
-    var entryService = locator<EntryService>();
-
-    var userID = await authService.getCurrentUserUID();
-
-    final audioWaveformData = await getPlayingWaveformData(recordedContentVoiceLocalUrl!, noOfSamples: WaveNoOfSamples.entry); //playerController.extractWaveformData(path: recordedContentVoiceLocalUrl!, noOfSamples: 100);
-    debugPrint(audioWaveformData.toString());
-    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentAudioUrl: recordedContentVoiceLocalUrl, contentAudioWaveData: audioWaveformData, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
-    await entryService.createEntry(entryModel);
-  }
-
-  Future<void> createTestAnswerToEntry(String entryID, String? recordedAnswerVoiceLocalUrl) async {
-    var authService = locator<AuthService>();
-    var entryService = locator<EntryService>();
-
-    var userID = await authService.getCurrentUserUID();
-
-    AnswerModel answerModel = AnswerModel(
-        entryID: entryID, answerID: "", userID: userID,
-        answerAudioUrl: recordedAnswerVoiceLocalUrl!, answerType: AnswerType.opponent,
-        date: Timestamp.now(), upVote: 3, downVote: 0);
-
-    await entryService.createAnswer(answerModel);
-  }
 }

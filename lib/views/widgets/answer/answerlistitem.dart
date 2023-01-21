@@ -1,11 +1,12 @@
 import 'dart:math';
 
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dertly/views/widgets/answer/answerinfos.dart';
-import 'package:dertly/views/widgets/answer/audiowave.dart';
 import 'package:dertly/views/widgets/answer/userimage.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/themes/custom_colors.dart';
+import '../audiowave.dart';
 import 'answerlist.dart';
 
 class AnswerListItem extends StatefulWidget
@@ -64,16 +65,19 @@ class AnswerListItemState extends State<AnswerListItem>{
                               )
                             ),
 
+                            // TODO: Edit this AudioWave
                             Expanded(
-                              child: AudioWaveForm(),
+                              child: AudioWave(
+                                playerController: PlayerController(),
+                              )
                             )
                           ],
                         ),
-                        SizedBox(height: 6),
+                        const SizedBox(height: 6),
 
-                        AnswerInfos(),
+                        const AnswerInfos(),
 
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
 
                         ValueListenableBuilder(
                             valueListenable: listedAnswerItemCount,
@@ -85,7 +89,6 @@ class AnswerListItemState extends State<AnswerListItem>{
                               );
                             }
                         ),
-
 
                         // Answers to this answer
                         Visibility(
@@ -126,7 +129,6 @@ class AnswerListItemState extends State<AnswerListItem>{
                                 )
                             )
                         ),
-
                       ],
                     ),
                   )

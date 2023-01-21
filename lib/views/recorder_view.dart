@@ -4,12 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dertly/locator.dart';
 import 'package:dertly/services/entry_service.dart';
 import 'package:dertly/services/storage_service.dart';
+import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 import '../models/entry_model.dart';
 import '../services/audio_service.dart';
@@ -37,6 +39,8 @@ class _RecorderScreenState extends State<RecorderScreen>{
 
   @override
   Widget build(BuildContext context) {
+    FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Recorder'),
@@ -92,16 +96,11 @@ class _RecorderScreenState extends State<RecorderScreen>{
               onPressed: () async {
                 if (audioService.recorderController.isRecording){
                   var recordedAudioFilePath = await audioService.stopWaveRecord();
-                  audioService.createTestEntry(recordedAudioFilePath);
+                  feedsViewModel.createEntry(recordedAudioFilePath);
                 }else{
                   await audioService.startWaveRecord();
                 }
-                /*if (audioService.recorder.isRecording) {
-                  var recordedAudioFile = await audioService.stopRecord();
-                  audioService.createTestEntry(recordedAudioFile);
-                } else {
-                  await audioService.startRecord();
-                }*/
+
                 setState(() {});
               },
             ),

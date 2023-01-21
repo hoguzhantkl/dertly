@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dertly/core/themes/custom_colors.dart';
 import 'package:dertly/services/audio_service.dart';
+import 'package:dertly/views/widgets/audiowave.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,7 @@ class EntriesListItem extends StatefulWidget{
 class EntriesListItemState extends State<EntriesListItem>{
   bool isBottomSheetVisible = false;
 
-  // TOOD: Move this to feedModel with entryID as key to avoid stopping while disposing this widget
+  // TODO: Move this to feedModel with entryID as key to avoid stopping while disposing this widget
   late PlayerController playerController;
 
   @override
@@ -42,7 +43,6 @@ class EntriesListItemState extends State<EntriesListItem>{
   @override
   Widget build(BuildContext context) {
     final model = widget.entryModel;
-    var audioService = locator<AudioService>();
 
     var feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
 
@@ -88,7 +88,7 @@ class EntriesListItemState extends State<EntriesListItem>{
                           margin: const EdgeInsets.only(top: 10.0),
                           child: IconButton(
                               onPressed: () async {
-                                  await feedsViewModel.onEntryCreateTestAnswerButtonClicked(model.entryID);
+                                  await feedsViewModel.onEntryCreateAnswerButtonClicked(model.entryID, AnswerType.neutral);
                                   setState(() {});
                                 },
                               icon: Icon(audioService.recorder.isRecording ? Icons.stop : Icons.mic, size: 34)
@@ -99,16 +99,9 @@ class EntriesListItemState extends State<EntriesListItem>{
                           width: 270,
                           child: Padding(
                               padding: const EdgeInsets.only(top: 10),
-                              child: AudioFileWaveforms(
-                                size: Size(270, 30), //MediaQueryData.fromWindow(window).size.width
+                              child: AudioWave(
                                 playerController: playerController,
-                                enableSeekGesture: true,
-                                waveformType: WaveformType.fitWidth,
-                                waveformData: (model.contentAudioWaveData != null) ? model.contentAudioWaveData! : [],
-                                playerWaveStyle: const PlayerWaveStyle(
-                                  liveWaveColor: CustomColors.green,
-                                  spacing: 6,
-                                ),
+                                audioWaveData: model.contentAudioWaveData!,
                               )
                           ),
                         )

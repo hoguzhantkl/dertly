@@ -1,7 +1,10 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dertly/core/themes/custom_colors.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/views/widgets/answer/answerlist.dart';
 import 'package:dertly/views/widgets/answer/answerlistitem.dart';
+import 'package:dertly/views/widgets/audiowave.dart';
+import 'package:dertly/views/widgets/entry/entryinfos.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +50,7 @@ class EntryScreenState extends State<EntryScreen>{
                   Column(
                       children: <Widget>[
                         Padding(
-                            padding: EdgeInsets.only(left: 42, right: 42, top: 8),
+                            padding: const EdgeInsets.only(left: 42, right: 42, top: 8),
                             child: Column(
                                 children: [
                                   const ClipRRect(
@@ -58,81 +61,23 @@ class EntryScreenState extends State<EntryScreen>{
                                     ),
                                   ),
 
-                                  SizedBox(height: 12),
+                                  const SizedBox(height: 12),
 
-                                  // Entry Info
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Icon(Icons.arrow_upward_rounded, size: 24),
-                                          Text("${listeningEntryModel.upVote}", style: TextStyle(fontSize: 12)),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Column(
-                                        children: [
-                                          Icon(Icons.arrow_downward_rounded, size: 24),
-                                          Text("${listeningEntryModel.downVote}", style: TextStyle(fontSize: 12)),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Column(
-                                        children: [
-                                          Icon(Icons.mic, size: 24),
-                                          Text("${listeningEntryModel.totalAnswers}", style: TextStyle(fontSize: 12)),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Column(
-                                        children: const [
-                                          Icon(Icons.star, size: 24, color: Colors.amberAccent),
-                                          // TODO: create score in entryModel
-                                          Text("8", style: TextStyle(fontSize: 12)),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Column(
-                                        children: const [
-                                          Icon(Icons.add, size: 24, color: Colors.green),
-                                          Text("8", style: TextStyle(fontSize: 12)),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Column(
-                                        children: const [
-                                          Icon(Icons.support_rounded, size: 24, color: Colors.grey),
-                                          Text("8", style: TextStyle(fontSize: 12)),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-
-                                        children: const [
-                                          Icon(Icons.dangerous_outlined, size: 24, color: Colors.red),
-                                          Text("8", style: TextStyle(fontSize: 12)),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                  // Entry Informations
+                                  const EntryInfos(),
 
                                   const SizedBox(height: 8.0),
 
-                                  //Text("Audio username", style: TextStyle(fontSize: 12)),
                                   const SizedBox(height: 12),
 
-                                  // TODO: Add Waveform
-                                  Container(
-                                    height: 32,
-                                    decoration: BoxDecoration(color: CustomColors.foreground2.withOpacity(0.5)),
-
+                                  // TODO: Edit this Waveform
+                                  AudioWave(
+                                      playerController: PlayerController()
                                   ),
 
                                   const SizedBox(height: 8),
 
-                                  Text("${listeningEntryModel.date.toDate()}", style: TextStyle(fontSize: 12)),
+                                  Text("${listeningEntryModel.date.toDate()}", style: const TextStyle(fontSize: 12)),
 
                                   const SizedBox(height: 8),
 

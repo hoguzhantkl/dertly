@@ -9,7 +9,9 @@ enum EntryCategory { trendings, recents, yourturn, follower }
 
 class WaveNoOfSamples {
   static const int entry = 45;
-  static const int answer = 100;
+  static const int answer = entry; // Answer to Entry
+  static const int subAnswer = 45; // Answer to an Answer(which is for an Entry)
+  static const int mentionedAnswer = 45; // Answer to a Sub-Answer
 }
 
 class FeedsModel{

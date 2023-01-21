@@ -2,12 +2,15 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dertly/locator.dart';
 import 'package:dertly/models/feeds_model.dart';
 import 'package:dertly/repositories/entry_repository.dart';
 import 'package:dertly/services/audio_service.dart';
+import 'package:dertly/services/auth_service.dart';
 import 'package:flutter/widgets.dart';
 
+import '../models/answer_model.dart';
 import '../models/entry_model.dart';
 
 import '../repositories/feeds_repository.dart';
@@ -21,6 +24,7 @@ class FeedsViewModel extends ChangeNotifier{
   FeedsModel model = FeedsModel();
 
   // Services
+  AuthService authService = locator<AuthService>();
   EntryService entryService = locator<EntryService>();
   AudioService audioService = locator<AudioService>();
 
@@ -124,6 +128,30 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
+  // General Feed Methods
+  Future<void> createEntry(String? recordedContentVoiceLocalUrl) async {
+    var userID = authService.getCurrentUserUID();
+
+    final audioWaveformData = await audioService.getPlayingWaveformData(recordedContentVoiceLocalUrl!, noOfSamples: WaveNoOfSamples.entry);
+    debugPrint(audioWaveformData.toString());
+    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentAudioUrl: recordedContentVoiceLocalUrl, contentAudioWaveData: audioWaveformData, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
+    await entryService.createEntry(entryModel);
+  }
+
+  Future<void> createAnswerToEntry(String entryID, AnswerType answerType, String? recordedAnswerVoiceLocalUrl) async {
+    var userID = authService.getCurrentUserUID();
+
+    final audioWaveformData = await audioService.getPlayingWaveformData(recordedAnswerVoiceLocalUrl!, noOfSamples: WaveNoOfSamples.answer);
+
+    AnswerModel answerModel = AnswerModel(
+        entryID: entryID, userID: userID,
+        answerID: "", mentionedAnswerID: "", mentionedUserID: "",
+        answerAudioUrl: recordedAnswerVoiceLocalUrl, audioWaveData: audioWaveformData, answerType: answerType,
+        date: Timestamp.now(), upVote: 3, downVote: 0);
+
+    await entryService.createAnswer(answerModel);
+  }
+
   Future onEntryListenButtonClicked(String? entryID, String? contentUrl, PlayerController playerController) async{
     await entryService.listenEntryContentAudio(contentUrl, playerController)
         .then((audioStorageUrl) {
@@ -139,10 +167,10 @@ class FeedsViewModel extends ChangeNotifier{
         });
   }
 
-  Future onEntryCreateTestAnswerButtonClicked(String entryID) async{
+  Future onEntryCreateAnswerButtonClicked(String entryID, AnswerType answerType) async{
     if (audioService.recorder.isRecording) {
       var recordedAudioFile = await audioService.stopRecord();
-      audioService.createTestAnswerToEntry(entryID, recordedAudioFile);
+      await createAnswerToEntry(entryID, answerType, recordedAudioFile);
     } else {
       await audioService.startRecord();
     }
