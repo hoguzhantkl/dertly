@@ -14,4 +14,5 @@ class EntryRepository{
 
     return null;
   }
+  
 }

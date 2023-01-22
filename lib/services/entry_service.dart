@@ -97,24 +97,4 @@ class EntryService{
   Future listenEntryAnswerAudio(String? audioStorageUrl, PlayerController playerController) async {
     return await listenEntryAudio(audioStorageUrl, playerController);
   }
-
-  Future<dynamic> createAnswer(AnswerModel answerModel) async{
-    try {
-      var answersCollectionRef = firestore.collection("answers");
-      DocumentReference answerDocumentRef = answersCollectionRef.doc();
-      DocumentSnapshot answerDocumentSnapshot = await answerDocumentRef.get();
-      answerModel.answerID = answerDocumentSnapshot.reference.id;
-
-      debugPrint("uploading the audio in local path answerUrl: ${answerModel.answerAudioUrl}");
-
-      var answerStorageUrl = await storageService.uploadEntryAnswerAudio(answerModel.entryID, answerModel.answerID, answerModel.answerAudioUrl);
-      debugPrint("uploaded audioFile answerStorageUrl: $answerStorageUrl");
-      answerModel.answerAudioUrl = answerStorageUrl;
-
-      await answerDocumentSnapshot.reference.set(answerModel.toJson());
-      return answerModel;
-    } catch (e) {
-      return Future.error(e);
-    }
-  }
 }

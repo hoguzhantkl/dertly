@@ -1,7 +1,9 @@
 import 'package:dertly/core/routes/router.dart';
+import 'package:dertly/repositories/answers_repository.dart';
 import 'package:dertly/repositories/entry_repository.dart';
 import 'package:dertly/repositories/feeds_repository.dart';
 import 'package:dertly/repositories/user_repository.dart';
+import 'package:dertly/services/answers_service.dart';
 import 'package:dertly/services/audio_service.dart';
 import 'package:dertly/services/auth_service.dart';
 import 'package:dertly/services/emulator_service.dart';
@@ -30,11 +32,13 @@ Future<void> setupLocator() async{
   locator.registerLazySingleton<UserService>(() => UserService());
   locator.registerLazySingleton<EntryService>(() => EntryService());
   locator.registerLazySingleton<FeedsService>(() => FeedsService());
+  locator.registerLazySingleton<AnswersService>(() => AnswersService());
 
   // repositories
   locator.registerLazySingleton<UserRepository>(() => UserRepository());
   locator.registerLazySingleton<EntryRepository>(() => EntryRepository());
   locator.registerLazySingleton<FeedsRepository>(() => FeedsRepository());
+  locator.registerLazySingleton<AnswersRepository>(() => AnswersRepository());
 
   // third party services (stacked_services)
   locator.registerLazySingleton<NavigationService>(() => NavigationService());

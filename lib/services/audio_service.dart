@@ -80,6 +80,11 @@ class AudioService {
   }
 
   Future startWaveRecord() async {
+    if (recorderController.isRecording){
+      debugPrint("Recorder is already active");
+      return;
+    }
+
     await recorderController.record();
   }
 

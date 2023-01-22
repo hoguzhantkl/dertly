@@ -90,7 +90,7 @@ class _RecorderScreenState extends State<RecorderScreen>{
 
             ElevatedButton(
               child: Icon(
-                  audioService.recorder.isRecording ? Icons.stop : Icons.mic,
+                  audioService.recorderController.isRecording ? Icons.stop : Icons.mic,
                   size: 80
               ),
               onPressed: () async {

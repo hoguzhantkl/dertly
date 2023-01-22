@@ -11,7 +11,7 @@ class FeedsService{
   AuthService authService = locator<AuthService>();
 
   static const int trendEntriesPaginateLimit = 10;
-  DocumentSnapshot? lastTrendEntryDocSnapshot;
+  DocumentSnapshot? lastTrendEntryDocSnapshot; // TODO: we can change this to index based pagination instead of doc based pagination?
 
   // Recents
   Future<dynamic> fetchRecentEntriesData() async{

@@ -138,28 +138,6 @@ class FeedsViewModel extends ChangeNotifier{
     await entryService.createEntry(entryModel);
   }
 
-  Future<void> createAnswerToEntry(String entryID, AnswerType answerType, String? recordedAnswerVoiceLocalUrl) async {
-    var userID = authService.getCurrentUserUID();
-
-    final audioWaveformData = await audioService.getPlayingWaveformData(recordedAnswerVoiceLocalUrl!, noOfSamples: WaveNoOfSamples.answer);
-
-    AnswerModel answerModel = AnswerModel(
-        entryID: entryID, userID: userID,
-        answerID: "", mentionedAnswerID: "", mentionedUserID: "",
-        answerAudioUrl: recordedAnswerVoiceLocalUrl, audioWaveData: audioWaveformData, answerType: answerType,
-        date: Timestamp.now(), upVote: 3, downVote: 0);
-
-    await entryService.createAnswer(answerModel);
-  }
-
-  Future onEntryCreateAnswerButtonClicked(String entryID, AnswerType answerType) async{
-    if (audioService.recorder.isRecording) {
-      var recordedAudioFile = await audioService.stopRecord();
-      await createAnswerToEntry(entryID, answerType, recordedAudioFile);
-    } else {
-      await audioService.startRecord();
-    }
-  }
 
   EntryModel? getCurrentListeningEntryModel(){
     switch(model.currentListeningEntryCategory){
