@@ -1,3 +1,4 @@
+import 'package:dertly/models/feeds_model.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/views/widgets/feeds/entrieslistitem.dart';
 import 'package:flutter/material.dart';
@@ -30,16 +31,14 @@ class EntriesListState extends State<EntriesList>{
             builder: (context, feedsViewModel, child){
               return RefreshIndicator(
                 onRefresh: () async {
-                    debugPrint("Refreshing list");
-                    onRefreshList();
+                  onRefreshList();
                 },
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: feedsViewModel.model.recentEntriesMap.length,
                   itemBuilder: (context, index){
                     final entryID = feedsViewModel.model.recentEntriesMap.keys.elementAt(index);
-                    final entryData = feedsViewModel.model.recentEntriesMap[entryID];
-                    return EntriesListItem(entryModel: entryData!);},
+                    return EntriesListItem(entryID: entryID, displayedEntryCategory: EntryCategory.recents);},
                 )
               );
             },

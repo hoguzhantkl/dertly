@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dertly/core/themes/custom_colors.dart';
+import 'package:dertly/models/feeds_model.dart';
 import 'package:dertly/services/audio_service.dart';
 import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/views/widgets/audiowave.dart';
@@ -15,9 +16,10 @@ import '../../../view_models/feeds_viewmodel.dart';
 import '../answer/userimage.dart';
 
 class EntriesListItem extends StatefulWidget{
-  const EntriesListItem({super.key, required this.entryModel});
+  const EntriesListItem({super.key, required this.entryID, required this.displayedEntryCategory});
 
-  final EntryModel entryModel;
+  final String entryID;
+  final EntryCategory displayedEntryCategory;
 
   @override
   State<EntriesListItem> createState() => EntriesListItemState();
@@ -41,10 +43,14 @@ class EntriesListItemState extends State<EntriesListItem>{
 
   @override
   Widget build(BuildContext context) {
-    final model = widget.entryModel;
-
     final feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
-    final entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
+    final EntryModel? model = feedsViewModel.getEntryModel(widget.entryID, widget.displayedEntryCategory);
+
+    if (model == null)
+    {
+      debugPrint("EntryModel could not be get from feedsViewModel.getEntryModel for entryID: ${widget.entryID}, model is null");
+      return const SizedBox(width: 0, height: 0);
+    }
 
     return Flex(
       direction: Axis.vertical,

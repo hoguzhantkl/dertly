@@ -138,16 +138,6 @@ class FeedsViewModel extends ChangeNotifier{
     await entryService.createEntry(entryModel);
   }
 
-
-  EntryModel? getCurrentListeningEntryModel(){
-    switch(model.currentListeningEntryCategory){
-      case EntryCategory.recents:
-        return model.recentEntriesMap[model.currentListeningEntryID]!;
-      default:
-        return null;
-    }
-  }
-
   Future listenEntry(String? entryID, String? contentUrl, PlayerController playerController) async{
     await entryService.listenEntryContentAudio(contentUrl, playerController)
         .then((audioStorageUrl) {
@@ -160,10 +150,22 @@ class FeedsViewModel extends ChangeNotifier{
     });
   }
 
-  // Interactions with Model
   void setEntryBottomSheetVisibility(bool isVisible){
     model.isEntryBottomSheetVisible = isVisible;
     notifyListeners();
+  }
+
+  EntryModel? getEntryModel(String? entryID, EntryCategory displayedEntryCategory){
+    switch(displayedEntryCategory){
+      case EntryCategory.recents:
+        return model.recentEntriesMap[entryID]!;
+      default:
+        return null;
+    }
+  }
+
+  EntryModel? getCurrentListeningEntryModel(){
+    return getEntryModel(model.currentListeningEntryID, model.currentListeningEntryCategory);
   }
 
   void setCurrentListeningEntryID(String? entryID) async{
