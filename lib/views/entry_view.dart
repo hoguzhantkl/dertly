@@ -28,6 +28,12 @@ class EntryScreenState extends State<EntryScreen>{
     @override
     Widget build(BuildContext context){
       EntryViewModel entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
+      EntryModel? model = entryViewModel.model;
+
+      if (model == null){
+        debugPrint("EntryModel for entry_view could not be get from entryViewModel.model, model is null");
+        return const SizedBox(width: 0, height: 0);
+      }
 
       return Scaffold(
         body: Container(
@@ -70,14 +76,14 @@ class EntryScreenState extends State<EntryScreen>{
 
                                   const SizedBox(height: 12),
 
-                                  // TODO: Edit this Waveform
                                   AudioWave(
-                                      playerController: PlayerController()
+                                      playerController: PlayerController(),
+                                      audioWaveData: model.audioWaveData!,
                                   ),
 
                                   const SizedBox(height: 8),
 
-                                  Text("${entryViewModel.model?.date.toDate()}", style: const TextStyle(fontSize: 12)),
+                                  Text("${model.date.toDate()}", style: const TextStyle(fontSize: 12)),
 
                                   const SizedBox(height: 8),
 

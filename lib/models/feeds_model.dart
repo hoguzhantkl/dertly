@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 import 'answer_model.dart';
 import 'entry_model.dart';
@@ -18,7 +19,8 @@ class FeedsModel{
   List<String> recentEntriesIDList = [];
   LinkedHashMap<String, EntryModel> recentEntriesMap = LinkedHashMap.of({});
 
-  bool isEntryBottomSheetVisible = false;
+  bool isBottomSheetVisible = false;
+  ValueNotifier<bool> onBottomSheetUpdate = ValueNotifier<bool>(false);
 
   String? currentListeningEntryID; // TODO: specify in which map(trends, recents, etc.) should we use this id.
   EntryCategory currentListeningEntryCategory = EntryCategory.recents;

@@ -48,6 +48,8 @@ class HomeScreenState extends State<HomeScreen> {
 
     userViewModel = Provider.of<UserViewModel>(context);
 
+    FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -86,16 +88,11 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      // TODO: change this wih ValueListenableBuilder
-      bottomSheet: Consumer<FeedsViewModel>(
-        builder: (context, feedsViewModel, child) {
-          if (feedsViewModel.model.isEntryBottomSheetVisible) {
-            return const BottomSheetWidget();
-          }
-          else {
-            return Container(height: 0); //?
-          }
-        },
+      bottomSheet: ValueListenableBuilder(
+        valueListenable: feedsViewModel.model.onBottomSheetUpdate,
+        builder: (context, value, child){
+          return feedsViewModel.model.isBottomSheetVisible ? const BottomSheetWidget() : Container(height: 0);
+        }
       ),
     );
   }

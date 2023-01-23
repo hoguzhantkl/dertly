@@ -26,10 +26,10 @@ class EntryService{
       DocumentSnapshot entryDocumentSnapshot = await entryDocumentRef.get();
       entryModel.entryID = entryDocumentSnapshot.reference.id;
 
-      debugPrint("uploading the audio in local path contentUrl: ${entryModel.contentAudioUrl}");
-      var contentStorageUrl = await storageService.uploadEntryContentAudio(entryModel.entryID, entryModel.contentAudioUrl);
+      debugPrint("uploading the audio in local path contentUrl: ${entryModel.audioUrl}");
+      var contentStorageUrl = await storageService.uploadEntryContentAudio(entryModel.entryID, entryModel.audioUrl);
       debugPrint("uploaded audioFile contentStorageUrl: $contentStorageUrl");
-      entryModel.contentAudioUrl = contentStorageUrl;
+      entryModel.audioUrl = contentStorageUrl;
 
       await entryDocumentSnapshot.reference.set(entryModel.toJson());
       return entryModel;
@@ -51,7 +51,7 @@ class EntryService{
     }
   }
 
-  Future<dynamic> listenEntryAudio(String? audioStorageUrl, PlayerController playerController, {noOfSamples = 100}) async{
+  Future<dynamic> listenAudio(String? audioStorageUrl, PlayerController playerController, {noOfSamples = 100}) async{
     bool validateStorageUrl(){
       if (audioStorageUrl == null || audioStorageUrl.isEmpty) {
         return false;
@@ -77,7 +77,6 @@ class EntryService{
               volume: 1.0
           );
 
-          //await audioService.playerController.startPlayer(finishMode: FinishMode.stop);
           await playerController.startPlayer(finishMode: FinishMode.stop);
 
           return downloadedAudioFileLocalPath;
@@ -90,11 +89,10 @@ class EntryService{
   }
 
   Future listenEntryContentAudio(String? audioStorageUrl, PlayerController playerController) async {
-    return await listenEntryAudio(audioStorageUrl, playerController, noOfSamples: WaveNoOfSamples.entry);
+    return await listenAudio(audioStorageUrl, playerController, noOfSamples: WaveNoOfSamples.entry);
   }
 
-  // TODO: use this function when user tries to listen to an answer in entry.
   Future listenEntryAnswerAudio(String? audioStorageUrl, PlayerController playerController) async {
-    return await listenEntryAudio(audioStorageUrl, playerController);
+    return await listenAudio(audioStorageUrl, playerController, noOfSamples: WaveNoOfSamples.answer);
   }
 }

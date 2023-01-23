@@ -44,11 +44,12 @@ class EntriesListItemState extends State<EntriesListItem>{
   @override
   Widget build(BuildContext context) {
     final feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+    final entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
     final EntryModel? model = feedsViewModel.getEntryModel(widget.entryID, widget.displayedEntryCategory);
 
     if (model == null)
     {
-      debugPrint("EntryModel could not be get from feedsViewModel.getEntryModel for entryID: ${widget.entryID}, model is null");
+      debugPrint("EntryModel for entrieslistitem could not be get from feedsViewModel.getEntryModel for entryID: ${widget.entryID}, model is null");
       return const SizedBox(width: 0, height: 0);
     }
 
@@ -78,7 +79,12 @@ class EntriesListItemState extends State<EntriesListItem>{
                                       playerController.startPlayer();
                                     }
                                     else {
-                                      await feedsViewModel.listenEntry(model.entryID, model.contentAudioUrl, playerController);
+                                      await feedsViewModel.listenEntry(model.entryID, model.audioUrl, playerController)
+                                          .then((listening) {
+                                            if (listening){
+                                              entryViewModel.setCurrentListeningAnswerID("");
+                                            }
+                                          });
                                     }
                                     setState(() {});
                                   },
@@ -93,7 +99,7 @@ class EntriesListItemState extends State<EntriesListItem>{
                               padding: const EdgeInsets.only(top: 10),
                               child: AudioWave(
                                 playerController: playerController,
-                                audioWaveData: model.contentAudioWaveData!,
+                                audioWaveData: model.audioWaveData!,
                               )
                           ),
                         )

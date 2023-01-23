@@ -5,7 +5,6 @@ import 'package:dertly/repositories/feeds_repository.dart';
 import 'package:dertly/repositories/user_repository.dart';
 import 'package:dertly/services/emulator_service.dart';
 import 'package:dertly/view_models/auth_viewmodel.dart';
-import 'package:dertly/view_models/createEntry_viewmodel.dart';
 import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';

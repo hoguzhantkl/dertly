@@ -134,25 +134,29 @@ class FeedsViewModel extends ChangeNotifier{
 
     final audioWaveformData = await audioService.getPlayingWaveformData(recordedContentVoiceLocalUrl!, noOfSamples: WaveNoOfSamples.entry);
     debugPrint(audioWaveformData.toString());
-    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", contentAudioUrl: recordedContentVoiceLocalUrl, contentAudioWaveData: audioWaveformData, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
+    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", audioUrl: recordedContentVoiceLocalUrl, audioWaveData: audioWaveformData, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
     await entryService.createEntry(entryModel);
   }
 
   Future listenEntry(String? entryID, String? contentUrl, PlayerController playerController) async{
-    await entryService.listenEntryContentAudio(contentUrl, playerController)
+    return await entryService.listenEntryContentAudio(contentUrl, playerController)
         .then((audioStorageUrl) {
-      if (audioStorageUrl != null){
-        setCurrentListeningEntryID(entryID);
-      }
-    })
+            if (audioStorageUrl != null){
+              setCurrentListeningEntryID(entryID);
+              return true;
+            }
+          })
         .catchError((onError){
-      debugPrint(onError.toString());
-    });
+          debugPrint(onError.toString());
+        });
   }
 
-  void setEntryBottomSheetVisibility(bool isVisible){
-    model.isEntryBottomSheetVisible = isVisible;
-    notifyListeners();
+  void updateBottomSheetView(){
+    model.onBottomSheetUpdate.value = !model.onBottomSheetUpdate.value;
+  }
+
+  void setBottomSheetVisibility(bool isVisible){
+    model.isBottomSheetVisible = isVisible;
   }
 
   EntryModel? getEntryModel(String? entryID, EntryCategory displayedEntryCategory){
@@ -170,16 +174,17 @@ class FeedsViewModel extends ChangeNotifier{
 
   void setCurrentListeningEntryID(String? entryID) async{
     model.currentListeningEntryID = entryID;
-    notifyListeners();
 
     var currentEntryModel = getCurrentListeningEntryModel();
     if (currentEntryModel != null){
-      if (!model.isEntryBottomSheetVisible){
-        setEntryBottomSheetVisibility(true);
+      if (!model.isBottomSheetVisible){
+        setBottomSheetVisibility(true);
       }
     }
     else{
-      setEntryBottomSheetVisibility(false);
+      setBottomSheetVisibility(false);
     }
+
+    updateBottomSheetView();
   }
 }

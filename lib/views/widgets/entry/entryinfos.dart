@@ -15,7 +15,12 @@ class EntryInfosState extends State<EntryInfos> {
   @override
   Widget build(BuildContext context) {
     FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
-    EntryModel listeningEntryModel = feedsViewModel.getCurrentListeningEntryModel()!;
+    EntryModel? listeningEntryModel = feedsViewModel.getCurrentListeningEntryModel();
+
+    if (listeningEntryModel == null) {
+      debugPrint("EntryModel for EntryInfos could not be get from feedsViewModel.getCurrentListeningEntryModel, model is null");
+      return const SizedBox(width: 0, height: 0);
+    }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

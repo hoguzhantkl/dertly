@@ -27,6 +27,8 @@ class EntryViewModel extends ChangeNotifier{
   List<AnswerModel> answers = List.of([]); // <answerID, answerModel>
   LinkedHashMap<String, List<AnswerModel>> subAnswersMap = LinkedHashMap.of({}); // <mentionedAnswerID, List<AnswerModel>>
 
+  String? currentListeningAnswerID;
+
   // Services
   EntryService entryService = locator<EntryService>();
   AnswersService answersService = locator<AnswersService>();
@@ -70,7 +72,7 @@ class EntryViewModel extends ChangeNotifier{
             AnswerModel answerModel = AnswerModel(
                 entryID: entryID, userID: userID,
                 answerID: "", mentionedAnswerID: "", mentionedUserID: "",
-                answerAudioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, answerType: answerType,
+                audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, answerType: answerType,
                 date: Timestamp.now(), upVote: 3, downVote: 0);
 
             await answersService.createAnswer(answerModel);
@@ -78,6 +80,8 @@ class EntryViewModel extends ChangeNotifier{
           .onError((error, stackTrace) {
             debugPrint("Error while creating answer: $error");
           });
+    }else{
+      startRecordingAnswer();
     }
   }
 
@@ -120,5 +124,25 @@ class EntryViewModel extends ChangeNotifier{
     }catch(e){
       return Future.error(Exception(e));
     }
+  }
+
+  Future listenAnswer(String? answerID, String? audioUrl, PlayerController playerController) async{
+    // TODO: create a .then() where we call listenAnswer() in view and call updateBottomSheetView() in feeds_viewmodel
+    return await entryService.listenEntryAnswerAudio(audioUrl, playerController)
+        .then((audioStorageUrl) {
+          if (audioStorageUrl != null){
+            setCurrentListeningAnswerID(answerID);
+            return true;
+          }
+
+          return false;
+        })
+        .catchError((onError){
+          debugPrint(onError.toString());
+        });
+  }
+
+  void setCurrentListeningAnswerID(String? answerID) async{
+    currentListeningAnswerID = answerID;
   }
 }
