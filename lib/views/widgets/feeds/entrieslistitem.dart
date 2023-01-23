@@ -81,18 +81,6 @@ class EntriesListItemState extends State<EntriesListItem>{
                             }
                         ),
 
-                        /*
-                        Container(
-                          margin: const EdgeInsets.only(top: 10.0),
-                          child: IconButton(
-                              onPressed: () async {
-                                  await feedsViewModel.onEntryCreateAnswerButtonClicked(model.entryID, AnswerType.neutral);
-                                  setState(() {});
-                                },
-                              icon: Icon(audioService.recorder.isRecording ? Icons.stop : Icons.mic, size: 34)
-                          ),
-                        ),*/
-
                         SizedBox(
                           width: 270,
                           child: Padding(

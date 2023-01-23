@@ -21,13 +21,12 @@ class EntryScreen extends StatefulWidget{
 
 class EntryScreenState extends State<EntryScreen>{
     @override
-    void initState() {
+    void initState() async{
       super.initState();
     }
 
     @override
     Widget build(BuildContext context){
-      FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
       EntryViewModel entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
 
       return Scaffold(
@@ -106,23 +105,9 @@ class EntryScreenState extends State<EntryScreen>{
                   const SizedBox(height: 8),
 
                   // TODO: Add a ListView for Answers
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.only(left: 8, right: 8),
-                    child: AnswerList(
-                      testAnswerListItems: [
-                        AnswerListItem(
-                          testAnswerListItems: [
-                            AnswerListItem(),
-                            AnswerListItem(mentionedAnswer: true),
-                            AnswerListItem(),
-                            AnswerListItem(),
-                            AnswerListItem(),
-                            AnswerListItem(),
-                          ],
-                        ),
-                        AnswerListItem(),
-                      ],
-                    )
+                    child: AnswerList(answers: entryViewModel.answers),
                   )
 
                 ],

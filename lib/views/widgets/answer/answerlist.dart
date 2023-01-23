@@ -1,16 +1,19 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:collection';
 
+import 'package:dertly/view_models/entry_viewmodel.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+
+import '../../../models/answer_model.dart';
 import 'answerlistitem.dart';
 
 class AnswerList extends StatefulWidget{
-  const AnswerList({super.key, this.testAnswerListItems = const []});
+  const AnswerList({super.key, this.answers = const []});
 
-
-  final List<AnswerListItem> testAnswerListItems;
+  final List<AnswerModel> answers;
 
   @override
   State<AnswerList> createState() => AnswerListState();
-
 }
 
 class AnswerListState extends State<AnswerList> {
@@ -18,11 +21,12 @@ class AnswerListState extends State<AnswerList> {
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.all(0),
-        shrinkWrap: true,
+      shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
-      itemCount: widget.testAnswerListItems.length,
+      itemCount: widget.answers.length,
       itemBuilder: (context, index) {
-        return widget.testAnswerListItems[index];
+        AnswerModel answerModel = widget.answers[index]; // widget.answersMap[widget.answersMap.keys.elementAt(index)]!;
+        return AnswerListItem(answerID: answerModel.answerID, mentionedAnswerID: answerModel.mentionedAnswerID);
       }
     );
   }

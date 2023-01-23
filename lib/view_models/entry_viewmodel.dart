@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dertly/repositories/entry_repository.dart';
@@ -11,6 +13,7 @@ import '../locator.dart';
 import '../models/answer_model.dart';
 import '../models/entry_model.dart';
 import '../models/feeds_model.dart';
+import '../repositories/answers_repository.dart';
 import '../services/audio_service.dart';
 import '../services/auth_service.dart';
 
@@ -18,8 +21,11 @@ class EntryViewModel extends ChangeNotifier{
   EntryViewModel({required this.entryRepository});
 
   final EntryRepository entryRepository;
+  final AnswersRepository answersRepository = locator<AnswersRepository>();
 
   EntryModel? model; // currentListeningEntryModel
+  List<AnswerModel> answers = List.of([]); // <answerID, answerModel>
+  LinkedHashMap<String, List<AnswerModel>> subAnswersMap = LinkedHashMap.of({}); // <mentionedAnswerID, List<AnswerModel>>
 
   // Services
   EntryService entryService = locator<EntryService>();
@@ -27,7 +33,13 @@ class EntryViewModel extends ChangeNotifier{
   AuthService authService = locator<AuthService>();
   AudioService audioService = locator<AudioService>();
 
+  void init(){
+    answers = List.of([]);
+    subAnswersMap = LinkedHashMap.of({});
+  }
+
   void setEntryModel(EntryModel? entryModel){
+    init();
     model = entryModel;
   }
 
@@ -66,6 +78,47 @@ class EntryViewModel extends ChangeNotifier{
           .onError((error, stackTrace) {
             debugPrint("Error while creating answer: $error");
           });
+    }
+  }
+
+  Future<void> fetchAllEntryAnswers() async{
+    try{
+      if (model == null){
+        debugPrint("Could not fetched main answers, model is null");
+        return;
+      }
+
+      final answersList = await answersRepository.fetchAllMainAnswers(model!.entryID);
+      if (answersList == null) {
+        debugPrint("Could not fetch answers list, answersList is null");
+        return;
+      }
+
+      answers = answersList;
+
+    }catch(e){
+      return Future.error(Exception(e));
+    }
+  }
+
+  // This method fetches sub-answers only for the mentionedAnswerID
+  Future<void> fetchAllSubAnswers(String mentionedAnswerID) async{
+    try{
+      if (model == null){
+        debugPrint("Could not fetched sub answers, model is null");
+        return;
+      }
+
+      final subAnswersList = await answersRepository.fetchAllSubAnswers(model!.entryID, mentionedAnswerID);
+      if (subAnswersList == null) {
+        debugPrint("Could not fetch sub answers list, answersList is null");
+        return;
+      }
+
+      subAnswersMap[mentionedAnswerID] = subAnswersList;
+
+    }catch(e){
+      return Future.error(Exception(e));
     }
   }
 }

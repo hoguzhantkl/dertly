@@ -1,9 +1,13 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:dertly/models/answer_model.dart';
+import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/views/widgets/answer/answerinfos.dart';
 import 'package:dertly/views/widgets/answer/userimage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/themes/custom_colors.dart';
 import '../audiowave.dart';
@@ -11,12 +15,12 @@ import 'answerlist.dart';
 
 class AnswerListItem extends StatefulWidget
 {
-  const AnswerListItem({super.key, this.testAnswerListItems = const [], this.mentionedAnswer = false});
+  const AnswerListItem({super.key, required this.answerID, required this.mentionedAnswerID});
 
-  final hasAnswer = true;
-  final mentionedAnswer;
+  final String answerID;
+  final String mentionedAnswerID;
 
-  final List<AnswerListItem> testAnswerListItems;
+  final int paging = 2; // The number of sub answers to be displayed when user tries loading more sub-answers
 
   @override
   State<StatefulWidget> createState() => AnswerListItemState();
@@ -24,8 +28,47 @@ class AnswerListItem extends StatefulWidget
 }
 
 class AnswerListItemState extends State<AnswerListItem>{
-  int paging = 2;
   final ValueNotifier<int> listedAnswerItemCount = ValueNotifier<int>(0);
+
+  late EntryViewModel entryViewModel;
+  late AnswerModel answerModel;
+  List<AnswerModel> subAnswers = List.of([]);
+
+  bool isMainAnswer(){
+    return widget.mentionedAnswerID == "";
+  }
+
+  bool isMentionedSubAnswer(){
+    return answerModel.mentionedUserID != "";
+  }
+
+  void getSubAnswerModel(){
+    var subAnswerModelsList = entryViewModel.subAnswersMap[widget.mentionedAnswerID]!;
+    for (var subAnswerModel in subAnswerModelsList)
+    {
+      if (subAnswerModel.answerID == widget.answerID)
+      {
+        answerModel = subAnswerModel;
+        break;
+      }
+    }
+  }
+
+  @override
+  void initState() async{
+    entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
+    if (isMainAnswer())
+    {
+      answerModel = entryViewModel.answers.firstWhere((answer) => answer.answerID == widget.answerID);
+      await entryViewModel.fetchAllSubAnswers(widget.answerID);
+      subAnswers = entryViewModel.subAnswersMap[widget.answerID]!;
+    }
+    else{
+      getSubAnswerModel();
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +97,7 @@ class AnswerListItemState extends State<AnswerListItem>{
 
                             // Mentioned Answer
                             Visibility(
-                              visible: widget.mentionedAnswer,
+                              visible: isMentionedSubAnswer(),
                               child: Row(
                                   children: [
                                     Icon(Icons.arrow_forward_ios_rounded, size: 18, color: Colors.white),
@@ -69,6 +112,7 @@ class AnswerListItemState extends State<AnswerListItem>{
                             Expanded(
                               child: AudioWave(
                                 playerController: PlayerController(),
+                                audioWaveData: answerModel.audioWaveData!,
                               )
                             )
                           ],
@@ -84,19 +128,19 @@ class AnswerListItemState extends State<AnswerListItem>{
                             builder: (BuildContext context, int value, Widget? child) {
                               return Visibility
                               (
-                                visible: widget.testAnswerListItems.isNotEmpty && listedAnswerItemCount.value > 0,
-                                child: AnswerList(testAnswerListItems: widget.testAnswerListItems.sublist(0, listedAnswerItemCount.value)),
+                                visible: subAnswers.isNotEmpty && listedAnswerItemCount.value > 0,
+                                child: AnswerList(answers: subAnswers.sublist(0, listedAnswerItemCount.value)),
                               );
                             }
                         ),
 
                         // Answers to this answer
                         Visibility(
-                            visible: widget.testAnswerListItems.isNotEmpty && listedAnswerItemCount.value < widget.testAnswerListItems.length,
+                            visible: subAnswers.isNotEmpty && listedAnswerItemCount.value < subAnswers.length,
                             child: InkWell(
                                 onTap: (){
                                   setState(() {
-                                    listedAnswerItemCount.value = min(listedAnswerItemCount.value+paging, widget.testAnswerListItems.length);
+                                    listedAnswerItemCount.value = min(listedAnswerItemCount.value+widget.paging, subAnswers.length);
                                   });
                                 },
                                 child: Column(
@@ -119,7 +163,7 @@ class AnswerListItemState extends State<AnswerListItem>{
 
                                             Icon(Icons.mic, size: 14, color: Colors.white),
 
-                                            Text("${widget.testAnswerListItems.length - listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
+                                            Text("${subAnswers.length - listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
                                           ],
                                         )
                                     ),

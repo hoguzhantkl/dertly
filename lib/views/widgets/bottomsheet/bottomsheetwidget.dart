@@ -27,11 +27,12 @@ class BottomSheetWidgetState extends State<BottomSheetWidget>{
   }
 
   void _onBottomSheetClicked(){
-    setState(() {
+    setState(() async{
       var feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
       var entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
 
       entryViewModel.setEntryModel(feedsViewModel.getCurrentListeningEntryModel());
+      await entryViewModel.fetchAllEntryAnswers();
 
       // TODO: Navigate to entry view by scrolling to top from bottom
       locator<rtr.Router>().navigateEntryScreen();
