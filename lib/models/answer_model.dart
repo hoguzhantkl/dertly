@@ -78,4 +78,16 @@ class AnswerModel{
       'downVote': downVote,
     };
   }
+
+  bool isMainAnswer(){
+    return mentionedAnswerID == '';
+  }
+
+  bool isSubAnswer(){
+    return mentionedAnswerID != '' && mentionedUserID == '';
+  }
+
+  bool isMentionedSubAnswer(){
+    return mentionedUserID != "";
+  }
 }

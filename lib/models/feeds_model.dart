@@ -23,7 +23,7 @@ class FeedsModel{
   bool isBottomSheetVisible = false;
   ValueNotifier<bool> onBottomSheetUpdate = ValueNotifier<bool>(false);
 
-  Map<String, PlayerController> entryPlayerControllerMap = {};
+  Map<String, PlayerController> entryPlayerControllerMap = {}; // <entryID, ...>
 
   String currentListeningEntryID = "";
   EntryCategory currentListeningEntryCategory = EntryCategory.recents; // TODO: Change this to category where user is currently listening to an entry

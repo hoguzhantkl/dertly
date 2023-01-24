@@ -34,17 +34,13 @@ class EntriesListItemState extends State<EntriesListItem>{
     super.initState();
   }
 
-  @override
-  void dispose(){
-    Provider.of<FeedsViewModel>(context, listen: false).disposeEntryPlayerController(widget.entryID);
-    super.dispose();
+  EntryModel? getModel(){
+    return Provider.of<FeedsViewModel>(context, listen: false).getEntryModel(widget.entryID, widget.displayedEntryCategory);
   }
 
   @override
   Widget build(BuildContext context) {
-    final feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
-    final entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
-    final EntryModel? model = feedsViewModel.getEntryModel(widget.entryID, widget.displayedEntryCategory);
+    final EntryModel? model = getModel();
 
     if (model == null)
     {
@@ -72,23 +68,7 @@ class EntriesListItemState extends State<EntriesListItem>{
 
                               return IconButton(
                                   onPressed: () async{
-                                    if (playerState.isPlaying){
-                                      await playerController.pausePlayer();
-                                    }
-                                    else if (playerState.isPaused){
-                                      await feedsViewModel.setCurrentListeningEntryID(model.entryID);
-                                      await playerController.startPlayer(finishMode: FinishMode.pause).then((value) async{
-                                          entryViewModel.setCurrentListeningAnswerID("");
-                                      });
-                                    }
-                                    else {
-                                      await feedsViewModel.listenEntry(model.entryID, model.audioUrl, playerController)
-                                          .then((listening) {
-                                            if (listening){
-                                              entryViewModel.setCurrentListeningAnswerID("");
-                                            }
-                                          });
-                                    }
+                                    await onListenButtonClicked(playerState);
                                     setState(() {});
                                   },
                                   icon: Icon(playerState.isPlaying ? Icons.pause : Icons.play_arrow, size: 42)
@@ -140,5 +120,34 @@ class EntriesListItemState extends State<EntriesListItem>{
         ),
       ],
     );
+  }
+
+  Future onListenButtonClicked(PlayerState playerState) async{
+    final feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+    final entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
+
+    final model = getModel();
+
+    if (model == null){
+      return;
+    }
+
+    if (playerState.isPlaying){
+      await playerController.pausePlayer();
+    }
+    else if (playerState.isPaused){
+      await feedsViewModel.setCurrentListeningEntryID(model.entryID);
+      await playerController.startPlayer(finishMode: FinishMode.pause).then((value) async{
+        entryViewModel.clearCurrentListeningAnswerModel();
+      });
+    }
+    else {
+      await feedsViewModel.listenEntry(model.entryID, model.audioUrl, playerController)
+          .then((listening) {
+        if (listening){
+          entryViewModel.clearCurrentListeningAnswerModel();
+        }
+      });
+    }
   }
 }

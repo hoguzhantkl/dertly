@@ -28,6 +28,12 @@ class FeedsViewModel extends ChangeNotifier{
   EntryService entryService = locator<EntryService>();
   AudioService audioService = locator<AudioService>();
 
+  @override
+  void dispose() {
+    disposeAllEntryPlayerControllers();
+    super.dispose();
+  }
+
   void clearModelData(){
     model.clear();
   }
@@ -129,27 +135,6 @@ class FeedsViewModel extends ChangeNotifier{
   }
 
   // General Feed Methods
-  Future<void> startRecordingEntry() async{
-    await audioService.startWaveRecord();
-  }
-
-  Future<void> cancelRecordingEntry() async{
-    await audioService.stopWaveRecord();
-  }
-
-  PlayerController createEntryPlayerController(String entryID){
-    var playerController = PlayerController();
-    model.entryPlayerControllerMap[entryID] = playerController;
-    return playerController;
-  }
-
-  void disposeEntryPlayerController(String entryID){
-    if (model.entryPlayerControllerMap.containsKey(entryID)){
-      model.entryPlayerControllerMap[entryID]?.dispose();
-      model.entryPlayerControllerMap.remove(entryID);
-    }
-  }
-
   Future<void> createEntry() async {
     if (audioService.recorderController.isRecording){
       await audioService.stopWaveRecord()
@@ -164,6 +149,28 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
+  // Methods for listening to entry
+  PlayerController createEntryPlayerController(String entryID){
+    var playerController = PlayerController();
+    model.entryPlayerControllerMap[entryID] = playerController;
+    return playerController;
+  }
+
+  void disposeAllEntryPlayerControllers(){
+    model.entryPlayerControllerMap.forEach((key, value) {
+      value.dispose();
+    });
+
+    model.entryPlayerControllerMap.clear();
+  }
+
+  void disposeEntryPlayerController(String entryID){
+    if (model.entryPlayerControllerMap.containsKey(entryID)){
+      model.entryPlayerControllerMap[entryID]?.dispose();
+      model.entryPlayerControllerMap.remove(entryID);
+    }
+  }
+
   Future listenEntry(String? entryID, String? contentUrl, PlayerController playerController) async{
     return await entryService.listenEntryContentAudio(contentUrl, playerController)
         .then((audioStorageUrl) async {
@@ -175,14 +182,6 @@ class FeedsViewModel extends ChangeNotifier{
         .catchError((onError){
           debugPrint(onError.toString());
         });
-  }
-
-  void updateBottomSheetView(){
-    model.onBottomSheetUpdate.value = !model.onBottomSheetUpdate.value;
-  }
-
-  void setBottomSheetVisibility(bool isVisible){
-    model.isBottomSheetVisible = isVisible;
   }
 
   EntryModel? getEntryModel(String? entryID, EntryCategory displayedEntryCategory){
@@ -203,24 +202,26 @@ class FeedsViewModel extends ChangeNotifier{
       return;
     }
 
-    await pauseListeningEntryAudio();
+    await pauseCurrentListeningEntryAudio();
 
     model.currentListeningEntryID = (entryID != null) ? entryID : "";
 
     var currentEntryModel = getCurrentListeningEntryModel();
     if (currentEntryModel != null){
-      if (!model.isBottomSheetVisible){
-        setBottomSheetVisibility(true);
-      }
+      showBottomSheet();
     }
-    else{
-      setBottomSheetVisibility(false);
+    else {
+      hideBottomSheet();
     }
-
-    updateBottomSheetView();
   }
 
-  Future<void> pauseListeningEntryAudio() async{
+  Future<void> clearCurrentListeningEntryID() async{
+    await pauseCurrentListeningEntryAudio();
+
+    model.currentListeningEntryID = "";
+  }
+
+  Future<void> pauseCurrentListeningEntryAudio() async{
     var currentListeningEntryModel = getCurrentListeningEntryModel();
     if (currentListeningEntryModel != null){
       var currentEntryPlayerController = model.entryPlayerControllerMap[currentListeningEntryModel.entryID];
@@ -228,5 +229,24 @@ class FeedsViewModel extends ChangeNotifier{
         await currentEntryPlayerController.pausePlayer();
       }
     }
+  }
+
+  // Methods for Bottom Sheet
+  void setBottomSheetVisibility(bool isVisible){
+    model.isBottomSheetVisible = isVisible;
+  }
+
+  void updateBottomSheetView(){
+    model.onBottomSheetUpdate.value = !model.onBottomSheetUpdate.value;
+  }
+
+  void showBottomSheet(){
+    setBottomSheetVisibility(true);
+    updateBottomSheetView();
+  }
+
+  void hideBottomSheet(){
+    setBottomSheetVisibility(false);
+    updateBottomSheetView();
   }
 }

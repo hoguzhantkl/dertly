@@ -1,5 +1,6 @@
 import 'package:dertly/core/routes/routing_constants.dart';
 import 'package:dertly/services/audio_service.dart';
+import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/recorder_view.dart';
@@ -37,16 +38,13 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose(){
-    debugPrint("HomeScreen Dispose");
-    // TODO: find a way of dispose audioService to close Recorder
-    //locator<AudioService>().dispose();
+    debugPrint("home_view has been disposed");
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    AuthViewModel authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-
     userViewModel = Provider.of<UserViewModel>(context);
 
     FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);

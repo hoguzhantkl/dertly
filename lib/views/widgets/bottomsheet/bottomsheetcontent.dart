@@ -24,17 +24,25 @@ class BottomSheetContentState extends State<BottomSheetContent>{
         valueListenable: feedsViewModel.model.onBottomSheetUpdate,
         builder: (context, value, child){
           String? entryID;
-          String? answerID;
 
           var listeningEntryModel = feedsViewModel.getCurrentListeningEntryModel();
           entryID = listeningEntryModel?.entryID;
 
           var tempText = entryID;
 
-          // User is listening to an answer
-          if (entryViewModel.currentListeningAnswerID != "")
+          AnswerModel? listeningAnswerModel = entryViewModel.currentListeningAnswerModel;
+
+          bool isListeningToEntry(){
+            return listeningAnswerModel == null;
+          }
+
+          bool isListeningToAnswer(){
+            return listeningAnswerModel != null;
+          }
+
+          if (isListeningToAnswer())
           {
-            answerID = entryViewModel.currentListeningAnswerID;
+            var answerID = listeningAnswerModel!.answerID;
             tempText = "$tempText - $answerID";
           }
 
@@ -58,12 +66,24 @@ class BottomSheetContentState extends State<BottomSheetContent>{
                           width: 45,
                           height: 45,
                           onRecordingFinishedCallback: () async {
-                            // TODO: Change AnswerType according to the type of the answer
-                            await Provider.of<EntryViewModel>(context, listen: false).createMainAnswer(entryID!, AnswerType.neutral);
+                            if (isListeningToEntry())
+                            {
+                              await Provider.of<EntryViewModel>(context, listen: false).createMainAnswer(entryID!, AnswerType.neutral);
+                            }
+                            else
+                            {
+                              if (listeningAnswerModel!.isMainAnswer())
+                              {
+                                await Provider.of<EntryViewModel>(context, listen: false).createSubAnswer(entryID!, listeningAnswerModel.answerID);
+                              }
+                              else
+                              {
+                                await Provider.of<EntryViewModel>(context, listen: false).createMentionedSubAnswer(entryID!, listeningAnswerModel.answerID, listeningAnswerModel.userID);
+                              }
+                            }
                           }
                       ),
                     )
-
                   ],
                 )
             ),

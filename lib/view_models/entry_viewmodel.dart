@@ -28,7 +28,9 @@ class EntryViewModel extends ChangeNotifier{
   List<AnswerModel> answers = List.of([]); // <answerID, answerModel>
   LinkedHashMap<String, List<AnswerModel>> subAnswersMap = LinkedHashMap.of({}); // <mentionedAnswerID, List<AnswerModel>>
 
-  String? currentListeningAnswerID;
+  AnswerModel? currentListeningAnswerModel;
+
+  Map<String, PlayerController> answerPlayerControllerMap = {}; // <answerID, PlayerController>: this map holds general answer player controllers (so, not only for the answers of current listening entry)
 
   // Services
   EntryService entryService = locator<EntryService>();
@@ -39,6 +41,12 @@ class EntryViewModel extends ChangeNotifier{
   void init(){
     answers = List.of([]);
     subAnswersMap = LinkedHashMap.of({});
+  }
+
+  @override
+  void dispose() {
+    disposeAllAnswerPlayerControllers();
+    super.dispose();
   }
 
   void setEntryModel(EntryModel? entryModel){
@@ -124,12 +132,33 @@ class EntryViewModel extends ChangeNotifier{
     }
   }
 
-  Future listenAnswer(String? answerID, String? audioUrl, PlayerController playerController) async{
+  // Methods for listening to answer
+  PlayerController createAnswerPlayerController(String answerID){
+    var playerController = PlayerController();
+    answerPlayerControllerMap[answerID] = playerController;
+    return playerController;
+  }
+
+  void disposeAllAnswerPlayerControllers(){
+    answerPlayerControllerMap.forEach((key, value) {
+      value.dispose();
+    });
+    answerPlayerControllerMap.clear();
+  }
+
+  void disposeAnswerPlayerController(String entryID){
+    if (answerPlayerControllerMap.containsKey(entryID)){
+      answerPlayerControllerMap[entryID]?.dispose();
+      answerPlayerControllerMap.remove(entryID);
+    }
+  }
+
+  Future listenAnswer(AnswerModel answerModel, String? audioUrl, PlayerController playerController) async{
     // TODO: create a .then() where we call listenAnswer() in view and call updateBottomSheetView() in feeds_viewmodel
     return await entryService.listenEntryAnswerAudio(audioUrl, playerController)
         .then((audioStorageUrl) {
           if (audioStorageUrl != null){
-            setCurrentListeningAnswerID(answerID);
+            setCurrentListeningAnswerModel(answerModel);
             return true;
           }
 
@@ -140,7 +169,16 @@ class EntryViewModel extends ChangeNotifier{
         });
   }
 
-  void setCurrentListeningAnswerID(String? answerID){
-    currentListeningAnswerID = answerID;
+  void setCurrentListeningAnswerModel(AnswerModel answerModel){
+    currentListeningAnswerModel = answerModel;
+  }
+
+  void clearCurrentListeningAnswerModel() async {
+    await pauseCurrentListeningAnswerAudio();
+    currentListeningAnswerModel = null;
+  }
+
+  Future<void> pauseCurrentListeningAnswerAudio() async{
+    await answerPlayerControllerMap[currentListeningAnswerModel?.answerID]?.pausePlayer();
   }
 }

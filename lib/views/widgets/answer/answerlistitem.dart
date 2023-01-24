@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/themes/custom_colors.dart';
+import '../../../view_models/feeds_viewmodel.dart';
 import '../audiowave.dart';
 import 'answerlist.dart';
 
@@ -62,7 +63,7 @@ class AnswerListItemState extends State<AnswerListItem>{
   void initState(){
     debugPrint("AnswerListItemState.initState() called for answerID: ${widget.answerID}");
     entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
-    playerController = PlayerController();
+    playerController = entryViewModel.createAnswerPlayerController(widget.answerID);
     super.initState();
   }
 
@@ -130,10 +131,9 @@ class AnswerListItemState extends State<AnswerListItem>{
 
                                       // TODO: Edit this AudioWave
                                       AudioWave(
-                                        playerController: PlayerController(),
+                                        playerController: playerController,
                                         audioWaveData: answerModel!.audioWaveData!,
                                       ),
-
 
                                       // Play Button
                                       StreamBuilder(
@@ -142,7 +142,7 @@ class AnswerListItemState extends State<AnswerListItem>{
                                             final PlayerState playerState = (snapshot.hasData) ? snapshot.data! : PlayerState.stopped;
                                             return IconButton(
                                                 onPressed: () async{
-                                                  // TODO: listen answer
+                                                  onListenButtonClicked(playerState);
                                                   //setState(() {});
                                                 },
                                                 padding: const EdgeInsets.all(0),
@@ -228,4 +228,40 @@ class AnswerListItemState extends State<AnswerListItem>{
     );
   }
 
+  Future pauseAllListeningAudios() async{
+    final feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+    await feedsViewModel.pauseCurrentListeningEntryAudio();
+    await entryViewModel.pauseCurrentListeningAnswerAudio();
+  }
+
+  Future onListenButtonClicked(PlayerState playerState) async{
+    if (answerModel == null){
+      return;
+    }
+
+    final feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+
+    if (playerState.isPlaying){
+      await playerController.pausePlayer();
+    }
+    else if (playerState.isPaused){
+      await pauseAllListeningAudios();
+
+      await playerController.startPlayer(finishMode: FinishMode.pause).then((value) async{
+        entryViewModel.setCurrentListeningAnswerModel(answerModel!);
+        feedsViewModel.showBottomSheet();
+      });
+    }
+    else {
+      await pauseAllListeningAudios();
+
+      await entryViewModel.listenAnswer(answerModel!, answerModel!.audioUrl, playerController)
+          .then((listening) {
+        if (listening){
+          entryViewModel.setCurrentListeningAnswerModel(answerModel!);
+          feedsViewModel.showBottomSheet();
+        }
+      });
+    }
+  }
 }
