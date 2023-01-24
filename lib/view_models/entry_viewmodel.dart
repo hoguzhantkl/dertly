@@ -140,7 +140,7 @@ class EntryViewModel extends ChangeNotifier{
         });
   }
 
-  void setCurrentListeningAnswerID(String? answerID) async{
+  void setCurrentListeningAnswerID(String? answerID){
     currentListeningAnswerID = answerID;
   }
 }

@@ -73,18 +73,21 @@ class EntriesListItemState extends State<EntriesListItem>{
                               return IconButton(
                                   onPressed: () async{
                                     if (playerState.isPlaying){
-                                      playerController.pausePlayer();
+                                      await playerController.pausePlayer();
                                     }
                                     else if (playerState.isPaused){
-                                      playerController.startPlayer(finishMode: FinishMode.pause);
+                                      await feedsViewModel.setCurrentListeningEntryID(model.entryID);
+                                      await playerController.startPlayer(finishMode: FinishMode.pause).then((value) async{
+                                          entryViewModel.setCurrentListeningAnswerID("");
+                                      });
                                     }
                                     else {
                                       await feedsViewModel.listenEntry(model.entryID, model.audioUrl, playerController)
                                           .then((listening) {
-                                        if (listening){
-                                          entryViewModel.setCurrentListeningAnswerID("");
-                                        }
-                                      });
+                                            if (listening){
+                                              entryViewModel.setCurrentListeningAnswerID("");
+                                            }
+                                          });
                                     }
                                     setState(() {});
                                   },

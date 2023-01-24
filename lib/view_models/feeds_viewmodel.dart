@@ -166,9 +166,9 @@ class FeedsViewModel extends ChangeNotifier{
 
   Future listenEntry(String? entryID, String? contentUrl, PlayerController playerController) async{
     return await entryService.listenEntryContentAudio(contentUrl, playerController)
-        .then((audioStorageUrl) {
+        .then((audioStorageUrl) async {
             if (audioStorageUrl != null){
-              setCurrentListeningEntryID(entryID);
+              await setCurrentListeningEntryID(entryID);
               return true;
             }
           })
@@ -198,8 +198,12 @@ class FeedsViewModel extends ChangeNotifier{
     return getEntryModel(model.currentListeningEntryID, model.currentListeningEntryCategory);
   }
 
-  void setCurrentListeningEntryID(String? entryID){
-    pausePreviousListeningEntryAudio();
+  Future<void> setCurrentListeningEntryID(String? entryID) async{
+    if (model.currentListeningEntryID == entryID){
+      return;
+    }
+
+    await pauseListeningEntryAudio();
 
     model.currentListeningEntryID = (entryID != null) ? entryID : "";
 
@@ -216,12 +220,12 @@ class FeedsViewModel extends ChangeNotifier{
     updateBottomSheetView();
   }
 
-  void pausePreviousListeningEntryAudio(){
+  Future<void> pauseListeningEntryAudio() async{
     var currentListeningEntryModel = getCurrentListeningEntryModel();
     if (currentListeningEntryModel != null){
       var currentEntryPlayerController = model.entryPlayerControllerMap[currentListeningEntryModel.entryID];
-      if (currentEntryPlayerController != null){
-        currentEntryPlayerController.pausePlayer();
+      if (currentEntryPlayerController != null && currentEntryPlayerController.playerState.isPlaying) {
+        await currentEntryPlayerController.pausePlayer();
       }
     }
   }
