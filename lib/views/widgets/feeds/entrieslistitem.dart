@@ -26,19 +26,18 @@ class EntriesListItem extends StatefulWidget{
 }
 
 class EntriesListItemState extends State<EntriesListItem>{
-  // TODO: Move this to feedsModel with entryID as key to avoid stopping while disposing this widget
   late PlayerController playerController;
 
   @override
   void initState(){
+    playerController = Provider.of<FeedsViewModel>(context, listen: false).createEntryPlayerController(widget.entryID);
     super.initState();
-    playerController = PlayerController();
   }
 
   @override
   void dispose(){
+    Provider.of<FeedsViewModel>(context, listen: false).disposeEntryPlayerController(widget.entryID);
     super.dispose();
-    playerController.dispose();
   }
 
   @override
@@ -70,21 +69,22 @@ class EntriesListItemState extends State<EntriesListItem>{
                             stream: playerController.onPlayerStateChanged,
                             builder: (context, snapshot){
                               final PlayerState playerState = (snapshot.hasData) ? snapshot.data! : PlayerState.stopped;
+
                               return IconButton(
                                   onPressed: () async{
                                     if (playerState.isPlaying){
                                       playerController.pausePlayer();
                                     }
                                     else if (playerState.isPaused){
-                                      playerController.startPlayer();
+                                      playerController.startPlayer(finishMode: FinishMode.pause);
                                     }
                                     else {
                                       await feedsViewModel.listenEntry(model.entryID, model.audioUrl, playerController)
                                           .then((listening) {
-                                            if (listening){
-                                              entryViewModel.setCurrentListeningAnswerID("");
-                                            }
-                                          });
+                                        if (listening){
+                                          entryViewModel.setCurrentListeningAnswerID("");
+                                        }
+                                      });
                                     }
                                     setState(() {});
                                   },

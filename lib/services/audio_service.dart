@@ -18,14 +18,12 @@ class AudioService {
   final recorder = FlutterSoundRecorder();
   final player = AudioPlayer();
 
-  final RecorderController recorderController = RecorderController();
-
-        /*..androidEncoder = AndroidEncoder.aac
-        ..androidOutputFormat = AndroidOutputFormat.aac_adts
+  final RecorderController recorderController = RecorderController()
         ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
-        ..sampleRate = 44100;*/
+        ..sampleRate = 44100;
 
-  final PlayerController playerController = PlayerController();
+  final PlayerController idlingPlayerController = PlayerController();
+  final PlayerController activePlayerController = PlayerController();
 
   bool isRecorderReady = false;
 
@@ -38,14 +36,6 @@ class AudioService {
     if (status != PermissionStatus.granted) {
       throw RecordingPermissionException('Microphone permission not granted');
     }
-
-    /*recorder.openRecorder();
-
-    isRecorderReady = true;
-
-    recorder.setSubscriptionDuration(
-      const Duration(milliseconds: 500),
-    );*/
   }
 
   void dispose() async {
@@ -54,7 +44,8 @@ class AudioService {
     recorderController.refresh();
     recorderController.dispose();
 
-    playerController.dispose();
+    idlingPlayerController.dispose();
+    activePlayerController.dispose();
   }
 
   Future startRecord() async {
@@ -72,7 +63,7 @@ class AudioService {
   }
 
   Future<List<double>> getPlayingWaveformData(String path, {int noOfSamples = 100}) async{
-    final waveformData = await playerController.extractWaveformData(
+    final waveformData = await activePlayerController.extractWaveformData(
         path: path,
         noOfSamples: noOfSamples
     );

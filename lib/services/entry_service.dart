@@ -77,7 +77,7 @@ class EntryService{
               volume: 1.0
           );
 
-          await playerController.startPlayer(finishMode: FinishMode.stop);
+          await playerController.startPlayer(finishMode: FinishMode.pause);
 
           return downloadedAudioFileLocalPath;
         })

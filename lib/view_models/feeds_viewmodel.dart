@@ -129,13 +129,25 @@ class FeedsViewModel extends ChangeNotifier{
   }
 
   // General Feed Methods
-
   Future<void> startRecordingEntry() async{
     await audioService.startWaveRecord();
   }
 
   Future<void> cancelRecordingEntry() async{
     await audioService.stopWaveRecord();
+  }
+
+  PlayerController createEntryPlayerController(String entryID){
+    var playerController = PlayerController();
+    model.entryPlayerControllerMap[entryID] = playerController;
+    return playerController;
+  }
+
+  void disposeEntryPlayerController(String entryID){
+    if (model.entryPlayerControllerMap.containsKey(entryID)){
+      model.entryPlayerControllerMap[entryID]?.dispose();
+      model.entryPlayerControllerMap.remove(entryID);
+    }
   }
 
   Future<void> createEntry() async {
@@ -176,7 +188,7 @@ class FeedsViewModel extends ChangeNotifier{
   EntryModel? getEntryModel(String? entryID, EntryCategory displayedEntryCategory){
     switch(displayedEntryCategory){
       case EntryCategory.recents:
-        return model.recentEntriesMap[entryID]!;
+        return model.recentEntriesMap[entryID];
       default:
         return null;
     }
@@ -186,8 +198,10 @@ class FeedsViewModel extends ChangeNotifier{
     return getEntryModel(model.currentListeningEntryID, model.currentListeningEntryCategory);
   }
 
-  void setCurrentListeningEntryID(String? entryID) async{
-    model.currentListeningEntryID = entryID;
+  void setCurrentListeningEntryID(String? entryID){
+    pausePreviousListeningEntryAudio();
+
+    model.currentListeningEntryID = (entryID != null) ? entryID : "";
 
     var currentEntryModel = getCurrentListeningEntryModel();
     if (currentEntryModel != null){
@@ -200,5 +214,15 @@ class FeedsViewModel extends ChangeNotifier{
     }
 
     updateBottomSheetView();
+  }
+
+  void pausePreviousListeningEntryAudio(){
+    var currentListeningEntryModel = getCurrentListeningEntryModel();
+    if (currentListeningEntryModel != null){
+      var currentEntryPlayerController = model.entryPlayerControllerMap[currentListeningEntryModel.entryID];
+      if (currentEntryPlayerController != null){
+        currentEntryPlayerController.pausePlayer();
+      }
+    }
   }
 }

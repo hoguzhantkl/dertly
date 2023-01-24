@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
@@ -22,7 +23,9 @@ class FeedsModel{
   bool isBottomSheetVisible = false;
   ValueNotifier<bool> onBottomSheetUpdate = ValueNotifier<bool>(false);
 
-  String? currentListeningEntryID;
+  Map<String, PlayerController> entryPlayerControllerMap = {};
+
+  String currentListeningEntryID = "";
   EntryCategory currentListeningEntryCategory = EntryCategory.recents; // TODO: Change this to category where user is currently listening to an entry
 
   void clear(){
