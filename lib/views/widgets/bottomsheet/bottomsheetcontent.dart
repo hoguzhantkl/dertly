@@ -1,9 +1,11 @@
+import 'package:dertly/models/answer_model.dart';
 import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/themes/custom_colors.dart';
+import '../recordaudiobutton.dart';
 
 class BottomSheetContent extends StatefulWidget {
   const BottomSheetContent({super.key});
@@ -43,7 +45,27 @@ class BottomSheetContentState extends State<BottomSheetContent>{
               color: CustomColors.foreground,
             ),
             child: Center(
-                child: Text("$tempText!", style: const TextStyle(fontSize: 16))
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: 0),
+                    Text("$tempText!", style: const TextStyle(fontSize: 16)),
+
+                    Padding(
+                      padding: const EdgeInsets.only(right: 24),
+                      child: RecordAudioButton(
+                          heroTag: "recordAnswerAudio",
+                          width: 45,
+                          height: 45,
+                          onRecordingFinishedCallback: () async {
+                            // TODO: Change AnswerType according to the type of the answer
+                            await Provider.of<EntryViewModel>(context, listen: false).createMainAnswer(entryID!, AnswerType.neutral);
+                          }
+                      ),
+                    )
+
+                  ],
+                )
             ),
           );
         }

@@ -95,8 +95,7 @@ class _RecorderScreenState extends State<RecorderScreen>{
               ),
               onPressed: () async {
                 if (audioService.recorderController.isRecording){
-                  var recordedAudioFilePath = await audioService.stopWaveRecord();
-                  feedsViewModel.createEntry(recordedAudioFilePath);
+                  feedsViewModel.createEntry();
                 }else{
                   await audioService.startWaveRecord();
                 }

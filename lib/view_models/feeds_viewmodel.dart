@@ -129,13 +129,27 @@ class FeedsViewModel extends ChangeNotifier{
   }
 
   // General Feed Methods
-  Future<void> createEntry(String? recordedContentVoiceLocalUrl) async {
-    var userID = authService.getCurrentUserUID();
 
-    final audioWaveformData = await audioService.getPlayingWaveformData(recordedContentVoiceLocalUrl!, noOfSamples: WaveNoOfSamples.entry);
-    debugPrint(audioWaveformData.toString());
-    EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", audioUrl: recordedContentVoiceLocalUrl, audioWaveData: audioWaveformData, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
-    await entryService.createEntry(entryModel);
+  Future<void> startRecordingEntry() async{
+    await audioService.startWaveRecord();
+  }
+
+  Future<void> cancelRecordingEntry() async{
+    await audioService.stopWaveRecord();
+  }
+
+  Future<void> createEntry() async {
+    if (audioService.recorderController.isRecording){
+      await audioService.stopWaveRecord()
+        .then((recordedAudioFileLocalUrl) async{
+          var userID = authService.getCurrentUserUID();
+
+          final audioWaveformData = await audioService.getPlayingWaveformData(recordedAudioFileLocalUrl!, noOfSamples: WaveNoOfSamples.entry);
+          debugPrint(audioWaveformData.toString());
+          EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
+          await entryService.createEntry(entryModel);
+        });
+    }
   }
 
   Future listenEntry(String? entryID, String? contentUrl, PlayerController playerController) async{

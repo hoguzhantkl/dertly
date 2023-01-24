@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,26 +46,25 @@ class EntryViewModel extends ChangeNotifier{
     model = entryModel;
   }
 
-  Future startRecordingAnswer() async{
-    await audioService.startWaveRecord();
-  }
-
   Future createMainAnswer(String entryID, AnswerType answerType) async{
-    createAnswer(entryID, answerType, "", "");
+    await createAnswer(entryID, answerType, "", "");
   }
 
   Future createSubAnswer(String entryID, String mentionedAnswerID) async{
-    createAnswer(entryID, AnswerType.subAnswer, mentionedAnswerID, "");
+    await createAnswer(entryID, AnswerType.subAnswer, mentionedAnswerID, "");
   }
 
   Future createMentionedSubAnswer(String entryID, String mentionedAnswerID, String mentionedUserID) async{
-    createAnswer(entryID, AnswerType.subAnswer, mentionedAnswerID, mentionedUserID);
+    await createAnswer(entryID, AnswerType.subAnswer, mentionedAnswerID, mentionedUserID);
   }
 
   Future<void> createAnswer(String entryID, AnswerType answerType, String mentionedAnswerID, String mentionedUserID) async {
-    if (audioService.recorder.isRecording){
+    if (audioService.recorderController.isRecording){
       await audioService.stopWaveRecord()
           .then((recordedAudioFileLocalUrl) async{
+
+            debugPrint("waveRecord stopped, isWaveRecording: ${audioService.isWaveRecording()}");
+
             var userID = authService.getCurrentUserUID();
 
             final audioWaveformData = await audioService.getPlayingWaveformData(recordedAudioFileLocalUrl!, noOfSamples: WaveNoOfSamples.answer);
@@ -80,8 +80,6 @@ class EntryViewModel extends ChangeNotifier{
           .onError((error, stackTrace) {
             debugPrint("Error while creating answer: $error");
           });
-    }else{
-      startRecordingAnswer();
     }
   }
 

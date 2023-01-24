@@ -82,14 +82,30 @@ class AudioService {
   Future startWaveRecord() async {
     if (recorderController.isRecording){
       debugPrint("Recorder is already active");
-      return;
+      return false;
     }
 
     await recorderController.record();
+    return true;
+  }
+
+  bool isWaveRecording(){
+    return recorderController.isRecording;
   }
 
   Future stopWaveRecord() async {
     final path = await recorderController.stop();
     return path;
+  }
+
+  Future cancelWaveRecord() async{
+    await stopWaveRecord()
+        .then((recordedAudioFileLocalUrl) {
+          File audioFile = File(recordedAudioFileLocalUrl);
+          audioFile.delete();
+        })
+        .catchError((error, stackTrace) {
+          debugPrint("Error in cancelWaveRecord(): $error");
+        });
   }
 }

@@ -21,7 +21,7 @@ class EntryScreen extends StatefulWidget{
 
 class EntryScreenState extends State<EntryScreen>{
     @override
-    void initState() async{
+    void initState(){
       super.initState();
     }
 
@@ -83,7 +83,7 @@ class EntryScreenState extends State<EntryScreen>{
 
                                   const SizedBox(height: 8),
 
-                                  Text("${model.date.toDate()}", style: const TextStyle(fontSize: 12)),
+                                  Text(model.date.toDate().toString(), style: const TextStyle(fontSize: 12)),
 
                                   const SizedBox(height: 8),
 
@@ -110,7 +110,6 @@ class EntryScreenState extends State<EntryScreen>{
 
                   const SizedBox(height: 8),
 
-                  // TODO: Add a ListView for Answers
                   Padding(
                     padding: EdgeInsets.only(left: 8, right: 8),
                     child: AnswerList(answers: entryViewModel.answers),

@@ -5,6 +5,7 @@ import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/recorder_view.dart';
 import 'package:dertly/views/widgets/bottomsheet/bottomsheetwidget.dart';
 import 'package:dertly/views/feeds_view.dart';
+import 'package:dertly/views/widgets/recordaudiobutton.dart';
 
 import 'package:provider/provider.dart';
 
@@ -60,32 +61,23 @@ class HomeScreenState extends State<HomeScreen> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          FloatingActionButton(
-            heroTag: null,
-            onPressed: (){
-              router.navigateTo(createEntryRoute);
-            },
-            tooltip: 'Entry Tests',
-            child: const Icon(Icons.add),
+          RecordAudioButton(
+              heroTag: "recordEntryAudio",
+              onRecordingFinishedCallback: () async{
+                await Provider.of<FeedsViewModel>(context, listen: false).createEntry();
+              }
           ),
-          const SizedBox(height: 10),
-          FloatingActionButton(
-            heroTag: null,
-            onPressed: (){
-              router.navigateTo(recorderRoute);
-            },
-            tooltip: 'Go to Recording Page',
-            child: const Icon(Icons.route),
-          ),
-          const SizedBox(height: 10),
-          FloatingActionButton(
+
+          SizedBox(height: 60),
+
+          /*FloatingActionButton(
             heroTag: null,
             onPressed: () {
               authViewModel.signOut();
             },
             tooltip: 'Sign Out',
             child: const Icon(Icons.logout),
-          ),
+          ),*/
         ],
       ),
       bottomSheet: ValueListenableBuilder(

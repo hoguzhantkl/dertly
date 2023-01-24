@@ -48,6 +48,7 @@ class CustomThemes{
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: CustomColors.green,
       foregroundColor: CustomColors.white,
+      focusColor: Colors.green,
     ),
   );
 

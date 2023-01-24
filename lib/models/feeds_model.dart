@@ -22,8 +22,8 @@ class FeedsModel{
   bool isBottomSheetVisible = false;
   ValueNotifier<bool> onBottomSheetUpdate = ValueNotifier<bool>(false);
 
-  String? currentListeningEntryID; // TODO: specify in which map(trends, recents, etc.) should we use this id.
-  EntryCategory currentListeningEntryCategory = EntryCategory.recents;
+  String? currentListeningEntryID;
+  EntryCategory currentListeningEntryCategory = EntryCategory.recents; // TODO: Change this to category where user is currently listening to an entry
 
   void clear(){
     recentEntriesIDList.clear();
