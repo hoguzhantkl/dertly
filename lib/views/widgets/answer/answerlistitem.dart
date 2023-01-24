@@ -100,7 +100,7 @@ class AnswerListItemState extends State<AnswerListItem>{
                       direction: Axis.horizontal,
                       children: [
                         Container(
-                          decoration: const BoxDecoration(color: Colors.green),
+                          //decoration: const BoxDecoration(color: Colors.green),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

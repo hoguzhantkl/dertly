@@ -11,7 +11,11 @@ class EntriesList extends StatefulWidget{
   State<EntriesList> createState() => EntriesListState();
 }
 
-class EntriesListState extends State<EntriesList>{
+class EntriesListState extends State<EntriesList> with AutomaticKeepAliveClientMixin{
+
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
@@ -23,25 +27,23 @@ class EntriesListState extends State<EntriesList>{
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("Building EntriesList");
+    FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
     return FutureBuilder(
-      future: Provider.of<FeedsViewModel>(context, listen: false).fetchAllRecentEntries(),
+      future: feedsViewModel.fetchAllRecentEntries(),
       builder: (BuildContext context, AsyncSnapshot snapshot){
         if(snapshot.connectionState == ConnectionState.done){
-          return Consumer<FeedsViewModel>(
-            builder: (context, feedsViewModel, child){
-              return RefreshIndicator(
-                onRefresh: () async {
-                  onRefreshList();
-                },
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: feedsViewModel.model.recentEntriesMap.length,
-                  itemBuilder: (context, index){
-                    final entryID = feedsViewModel.model.recentEntriesMap.keys.elementAt(index);
-                    return EntriesListItem(entryID: entryID, displayedEntryCategory: EntryCategory.recents);},
-                )
-              );
+          return RefreshIndicator(
+            onRefresh: () async {
+              onRefreshList();
             },
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: feedsViewModel.model.recentEntriesMap.length,
+              itemBuilder: (context, index){
+                final entryID = feedsViewModel.model.recentEntriesMap.keys.elementAt(index);
+                return EntriesListItem(entryID: entryID, displayedEntryCategory: EntryCategory.recents);},
+            )
           );
         } else {
           return const CircularProgressIndicator();
