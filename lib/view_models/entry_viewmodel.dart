@@ -63,7 +63,7 @@ class EntryViewModel extends ChangeNotifier{
   }
 
   Future createMentionedSubAnswer(String entryID, String mentionedAnswerID, String mentionedUserID) async{
-    await createAnswer(entryID, AnswerType.subAnswer, mentionedAnswerID, mentionedUserID);
+    await createAnswer(entryID, AnswerType.mentionedSubAnswer, mentionedAnswerID, mentionedUserID);
   }
 
   Future<void> createAnswer(String entryID, AnswerType answerType, String mentionedAnswerID, String mentionedUserID) async {
@@ -75,14 +75,15 @@ class EntryViewModel extends ChangeNotifier{
 
             var userID = authService.getCurrentUserUID();
 
-            final audioWaveformData = await audioService.getPlayingWaveformData(recordedAudioFileLocalUrl!, noOfSamples: WaveNoOfSamples.answer);
+            int noOfSamples = WaveNoOfSamples.getNoOfSamplesFromAnswerType(answerType);
+            final audioWaveformData = await audioService.getPlayingWaveformData(recordedAudioFileLocalUrl!, noOfSamples: noOfSamples);
             final audioDuration = await audioService.getAudioDuration(recordedAudioFileLocalUrl);
 
             AnswerModel answerModel = AnswerModel(
                 entryID: entryID, userID: userID,
                 answerID: "", mentionedAnswerID: mentionedAnswerID, mentionedUserID: mentionedUserID,
-                audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, audioDuration: audioDuration,
                 answerType: answerType,
+                audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, audioDuration: audioDuration,
                 date: Timestamp.now(), upVote: 3, downVote: 0);
 
             await answersService.createAnswer(answerModel);
@@ -158,7 +159,8 @@ class EntryViewModel extends ChangeNotifier{
 
   Future listenAnswer(AnswerModel answerModel, String? audioUrl, PlayerController playerController) async{
     // TODO: create a .then() where we call listenAnswer() in view and call updateBottomSheetView() in feeds_viewmodel
-    return await entryService.listenEntryAnswerAudio(audioUrl, playerController)
+    int noOfSamples = WaveNoOfSamples.getNoOfSamplesFromAnswerType(answerModel.answerType);
+    return await entryService.listenEntryAnswerAudio(audioUrl, playerController, noOfSamples: noOfSamples)
         .then((audioStorageUrl) {
           if (audioStorageUrl != null){
             setCurrentListeningAnswerModel(answerModel);

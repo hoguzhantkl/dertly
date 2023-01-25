@@ -13,7 +13,19 @@ class WaveNoOfSamples {
   static const int entry = 45;
   static const int answer = entry; // Answer to Entry
   static const int subAnswer = 45; // Answer to an Answer(which is for an Entry)
-  static const int mentionedAnswer = 45; // Answer to a Sub-Answer
+  static const int mentionedSubAnswer = 45; // Answer to a Sub-Answer
+
+  // No of Samples for answer
+  static int getNoOfSamplesFromAnswerType(AnswerType answerType) {
+    switch (answerType) {
+      case AnswerType.subAnswer:
+        return subAnswer;
+      case AnswerType.mentionedSubAnswer:
+        return mentionedSubAnswer;
+      default:
+        return answer;
+    }
+  }
 }
 
 class FeedsModel{

@@ -92,7 +92,7 @@ class EntryService{
     return await listenAudio(audioStorageUrl, playerController, noOfSamples: WaveNoOfSamples.entry);
   }
 
-  Future listenEntryAnswerAudio(String? audioStorageUrl, PlayerController playerController) async {
-    return await listenAudio(audioStorageUrl, playerController, noOfSamples: WaveNoOfSamples.answer);
+  Future listenEntryAnswerAudio(String? audioStorageUrl, PlayerController playerController, {noOfSamples}) async {
+    return await listenAudio(audioStorageUrl, playerController, noOfSamples: noOfSamples);
   }
 }

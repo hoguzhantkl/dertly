@@ -95,7 +95,7 @@ class AnswerListItemState extends State<AnswerListItem>{
                   Container(
                     //width: 400,
                     padding: const EdgeInsets.only(left: 0, right: 0),
-                    decoration: const BoxDecoration(color: Colors.red),
+                    //decoration: const BoxDecoration(color: Colors.red),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween, // maybe change to start?
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,10 +127,13 @@ class AnswerListItemState extends State<AnswerListItem>{
                                       )
                                   ),
 
-                                  AudioWave(
-                                    playerController: playerController,
-                                    audioWaveData: answerModel!.audioWaveData!,
-                                    audioDuration: answerModel!.audioDuration,
+                                  Expanded(
+                                      child: AudioWave(
+                                        width: answerModel!.isMainAnswer() ? audioWaveWidth : AudioWave.getAudioWaveWidthForAnswer(answerModel!.answerType),
+                                        playerController: playerController,
+                                        audioWaveData: answerModel!.audioWaveData!,
+                                        audioDuration: answerModel!.audioDuration,
+                                      ),
                                   ),
 
                                   // Play Button

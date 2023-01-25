@@ -22,6 +22,7 @@ class EntryScreen extends StatefulWidget{
 class EntryScreenState extends State<EntryScreen>{
     @override
     void initState(){
+      debugPrint("no of sample for the size: ${const PlayerWaveStyle(spacing: 6).getSamplesForWidth(100)}");
       super.initState();
     }
 
