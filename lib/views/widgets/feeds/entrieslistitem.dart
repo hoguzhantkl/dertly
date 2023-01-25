@@ -142,16 +142,19 @@ class EntriesListItemState extends State<EntriesListItem>{
       await playerController.pausePlayer();
     }
     else if (playerState.isPaused){
+      await entryViewModel.clearCurrentListeningAnswerModel();
       await feedsViewModel.setCurrentListeningEntryID(model.entryID);
       await playerController.startPlayer(finishMode: FinishMode.pause).then((value) async{
-        entryViewModel.clearCurrentListeningAnswerModel();
+
       });
     }
     else {
+      await entryViewModel.clearCurrentListeningAnswerModel();
+
       await feedsViewModel.listenEntry(model.entryID, model.audioUrl, playerController)
           .then((listening) {
         if (listening){
-          entryViewModel.clearCurrentListeningAnswerModel();
+
         }
       });
     }

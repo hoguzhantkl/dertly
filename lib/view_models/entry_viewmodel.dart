@@ -80,7 +80,7 @@ class EntryViewModel extends ChangeNotifier{
 
             AnswerModel answerModel = AnswerModel(
                 entryID: entryID, userID: userID,
-                answerID: "", mentionedAnswerID: "", mentionedUserID: "",
+                answerID: "", mentionedAnswerID: mentionedAnswerID, mentionedUserID: mentionedUserID,
                 audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, audioDuration: audioDuration,
                 answerType: answerType,
                 date: Timestamp.now(), upVote: 3, downVote: 0);
@@ -117,16 +117,17 @@ class EntryViewModel extends ChangeNotifier{
   Future<void> fetchAllSubAnswers(String mentionedAnswerID) async{
     try{
       if (model == null){
-        debugPrint("Could not fetched sub answers, model is null");
+        debugPrint("Could not fetched sub answers for mentionedAnswerID: $mentionedAnswerID, model is null");
         return;
       }
 
       final subAnswersList = await answersRepository.fetchAllSubAnswers(model!.entryID, mentionedAnswerID);
       if (subAnswersList == null) {
-        debugPrint("Could not fetch sub answers list, answersList is null");
+        debugPrint("Could not fetch sub answers list for mentionedAnswerID: $mentionedAnswerID, answersList is null");
         return;
       }
 
+      debugPrint("Fetched sub answers for mentionedAnswerID: $mentionedAnswerID, subAnswersList: $subAnswersList");
       subAnswersMap[mentionedAnswerID] = subAnswersList;
 
     }catch(e){
@@ -171,16 +172,27 @@ class EntryViewModel extends ChangeNotifier{
         });
   }
 
-  void setCurrentListeningAnswerModel(AnswerModel answerModel){
+  Future<void> setCurrentListeningAnswerModel(AnswerModel answerModel) async{
+    if (currentListeningAnswerModel?.answerID == answerModel.answerID) {
+      return;
+    }
+
+    await pauseCurrentListeningAnswerAudio();
+
     currentListeningAnswerModel = answerModel;
   }
 
-  void clearCurrentListeningAnswerModel() async {
+  Future clearCurrentListeningAnswerModel() async {
     await pauseCurrentListeningAnswerAudio();
     currentListeningAnswerModel = null;
   }
 
-  Future<void> pauseCurrentListeningAnswerAudio() async{
-    await answerPlayerControllerMap[currentListeningAnswerModel?.answerID]?.pausePlayer();
+  Future pauseCurrentListeningAnswerAudio() async{
+    if (answerPlayerControllerMap.containsKey(currentListeningAnswerModel?.answerID)){
+      var playerController = answerPlayerControllerMap[currentListeningAnswerModel!.answerID];
+      if (playerController != null && playerController.playerState.isPlaying){
+        await playerController.pausePlayer();
+      }
+    }
   }
 }

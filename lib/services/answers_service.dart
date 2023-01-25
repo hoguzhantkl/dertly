@@ -38,7 +38,7 @@ class AnswersService{
   Future fetchAllAnswersDocuments(String entryID) async{
     try {
       var answersCollectionRef = firestore.collection("answers");
-      var answersQuery = answersCollectionRef.where("entryID", isEqualTo: entryID);
+      var answersQuery = answersCollectionRef.where("entryID", isEqualTo: entryID).orderBy("date");
       return fetchAnswersDocuments(answersQuery);
     } catch (e) {
       return Future.error(Exception("Error while fetching all answers, error: $e"));
@@ -48,7 +48,8 @@ class AnswersService{
   Future fetchAllMainAnswersDocuments(String entryID) async{
     try {
       var answerCollectionRef = firestore.collection("answers");
-      var answersQuery = answerCollectionRef.where("entryID", isEqualTo: entryID).where("mentionedAnswerID", isEqualTo: "").where("mentionedUserID", isEqualTo: "");
+      var answersQuery = answerCollectionRef.where("entryID", isEqualTo: entryID).where("mentionedAnswerID", isEqualTo: "").where("mentionedUserID", isEqualTo: "")
+          .orderBy("date");
       return fetchAnswersDocuments(answersQuery);
     } catch(e){
       return Future.error(Exception("Error while fetching all main answers, error: $e"));
@@ -58,7 +59,8 @@ class AnswersService{
   Future fetchAllSubAnswersDocuments(String entryID, String mentionedAnswerID) async{
     try {
       var answerCollectionRef = firestore.collection("answers");
-      var answersQuery = answerCollectionRef.where("entryID", isEqualTo: entryID).where("mentionedAnswerID", isEqualTo: mentionedAnswerID);
+      var answersQuery = answerCollectionRef.where("entryID", isEqualTo: entryID).where("mentionedAnswerID", isEqualTo: mentionedAnswerID)
+          .orderBy("date");
       return fetchAnswersDocuments(answersQuery);
     } catch(e){
       return Future.error(Exception("Error while fetching all main answers, error: $e"));

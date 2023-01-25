@@ -52,7 +52,7 @@ class AnswerListItemState extends State<AnswerListItem>{
     {
       if (subAnswerModel.answerID == widget.answerID)
       {
-        return null;
+        return subAnswerModel;
       }
     }
 
@@ -93,127 +93,129 @@ class AnswerListItemState extends State<AnswerListItem>{
                 direction: Axis.vertical,
                 children: [
                   Container(
-                    //width: 324,
+                    //width: 400,
                     padding: const EdgeInsets.only(left: 0, right: 0),
-                    //decoration: const BoxDecoration(color: Colors.red),
-                    child: Flex(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      direction: Axis.horizontal,
+                    decoration: const BoxDecoration(color: Colors.red),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween, // maybe change to start?
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //direction: Axis.horizontal,
+
                       children: [
-                        Container(
-                          //decoration: const BoxDecoration(color: Colors.green),
-                          child: Row(
+                        UserImage(),
+
+                        const SizedBox(width: 8),
+
+                        Expanded(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              UserImage(),
-
-                              const SizedBox(width: 8),
-
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
 
-                                      // Mentioned Answer Image for mentionedUserID
-                                      Visibility(
-                                          visible: isMentionedSubAnswer(),
-                                          child: Row(
-                                              children: [
-                                                Icon(Icons.arrow_forward_ios_rounded, size: 18, color: Colors.white),
-                                                const SizedBox(width: 4),
-                                                UserImage(),
-                                                const SizedBox(width: 8),
-                                              ]
-                                          )
-                                      ),
-
-                                      AudioWave(
-                                        playerController: playerController,
-                                        audioWaveData: answerModel!.audioWaveData!,
-                                        audioDuration: answerModel!.audioDuration,
-                                      ),
-
-                                      // Play Button
-                                      StreamBuilder(
-                                          stream: playerController.onPlayerStateChanged,
-                                          builder: (context, snapshot){
-                                            final PlayerState playerState = (snapshot.hasData) ? snapshot.data! : PlayerState.stopped;
-                                            return IconButton(
-                                                onPressed: () async{
-                                                  onListenButtonClicked(playerState);
-                                                  //setState(() {});
-                                                },
-                                                padding: const EdgeInsets.all(0),
-                                                alignment: Alignment.center,
-                                                iconSize: 36,
-                                                icon: Icon(playerState.isPlaying ? Icons.pause : Icons.play_arrow, size: 36)
-                                            );
-                                          }
-                                      ),
-                                    ],
+                                  // Mentioned Answer Image for mentionedUserID
+                                  Visibility(
+                                      visible: isMentionedSubAnswer(),
+                                      child: Row(
+                                          children: [
+                                            Icon(Icons.arrow_forward_ios_rounded, size: 18, color: Colors.white),
+                                            const SizedBox(width: 4),
+                                            UserImage(),
+                                            const SizedBox(width: 8),
+                                          ]
+                                      )
                                   ),
-                                  const SizedBox(height: 6),
 
-                                  AnswerInfos(answerModel: answerModel!),
+                                  AudioWave(
+                                    playerController: playerController,
+                                    audioWaveData: answerModel!.audioWaveData!,
+                                    audioDuration: answerModel!.audioDuration,
+                                  ),
 
-                                  const SizedBox(height: 12),
-
-                                  ValueListenableBuilder(
-                                      valueListenable: listedAnswerItemCount,
-                                      builder: (BuildContext context, int value, Widget? child) {
-                                        return Visibility
-                                          (
-                                          visible: subAnswers.isNotEmpty && listedAnswerItemCount.value > 0,
-                                          child: AnswerList(answers: subAnswers.sublist(0, listedAnswerItemCount.value)),
+                                  // Play Button
+                                  StreamBuilder(
+                                      stream: playerController.onPlayerStateChanged,
+                                      builder: (context, snapshot){
+                                        final PlayerState playerState = (snapshot.hasData) ? snapshot.data! : PlayerState.stopped;
+                                        return IconButton(
+                                            onPressed: () async{
+                                              onListenButtonClicked(playerState);
+                                              //setState(() {});
+                                            },
+                                            padding: const EdgeInsets.all(0),
+                                            alignment: Alignment.center,
+                                            iconSize: 36,
+                                            icon: Icon(playerState.isPlaying ? Icons.pause : Icons.play_arrow, size: 36)
                                         );
                                       }
                                   ),
-
-                                  // Answers to this answer
-                                  Visibility(
-                                      visible: subAnswers.isNotEmpty && listedAnswerItemCount.value < subAnswers.length,
-                                      child: InkWell(
-                                          onTap: (){
-                                            setState(() {
-                                              listedAnswerItemCount.value = min(listedAnswerItemCount.value+widget.paging, subAnswers.length);
-                                            });
-                                          },
-                                          child: Column(
-                                            children: [
-                                              SizedBox(
-                                                  width: 100,
-                                                  height: 12,
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        width: 50,
-                                                        height: 1,
-                                                        decoration: BoxDecoration(
-                                                            color: Colors.white,
-                                                            borderRadius: BorderRadius.circular(4)
-                                                        ),
-                                                      ),
-
-                                                      const SizedBox(width: 4),
-
-                                                      Icon(Icons.mic, size: 14, color: Colors.white),
-
-                                                      Text("${subAnswers.length - listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
-                                                    ],
-                                                  )
-                                              ),
-
-                                              SizedBox(height: 8)
-                                            ],
-                                          )
-                                      )
-                                  ),
                                 ],
                               ),
+                              const SizedBox(height: 6),
+
+                              AnswerInfos(answerModel: answerModel!),
+
+                              const SizedBox(height: 12),
+
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ValueListenableBuilder(
+                                        valueListenable: listedAnswerItemCount,
+                                        builder: (BuildContext context, int value, Widget? child) {
+                                          return Visibility
+                                          (
+                                            visible: subAnswers.isNotEmpty && listedAnswerItemCount.value > 0,
+                                            child: AnswerList(answers: subAnswers.sublist(0, listedAnswerItemCount.value)),
+                                          );
+                                        }
+                                    ),
+                                  )
+                                ]
+                              ),
+
+                              // Answers to this answer
+                              Visibility(
+                                visible: subAnswers.isNotEmpty && listedAnswerItemCount.value < subAnswers.length,
+                                child: InkWell(
+                                    onTap: (){
+                                      setState(() {
+                                        listedAnswerItemCount.value = min(listedAnswerItemCount.value+widget.paging, subAnswers.length);
+                                      });
+                                    },
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                            width: 100,
+                                            height: 12,
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 50,
+                                                  height: 1,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(4)
+                                                  ),
+                                                ),
+
+                                                const SizedBox(width: 4),
+
+                                                Icon(Icons.mic, size: 14, color: Colors.white),
+
+                                                Text("${subAnswers.length - listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
+                                              ],
+                                            )
+                                        ),
+
+                                        SizedBox(height: 8)
+                                      ],
+                                    )
+                                )
+                              ),
                             ],
-                          )
+                          ),
                         )
                       ],
                     ),
@@ -228,12 +230,6 @@ class AnswerListItemState extends State<AnswerListItem>{
     );
   }
 
-  Future pauseAllListeningAudios() async{
-    final feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
-    await feedsViewModel.pauseCurrentListeningEntryAudio();
-    await entryViewModel.pauseCurrentListeningAnswerAudio();
-  }
-
   Future onListenButtonClicked(PlayerState playerState) async{
     if (answerModel == null){
       return;
@@ -245,7 +241,7 @@ class AnswerListItemState extends State<AnswerListItem>{
       await playerController.pausePlayer();
     }
     else if (playerState.isPaused){
-      await pauseAllListeningAudios();
+      await feedsViewModel.pauseCurrentListeningEntryAudio();
 
       await playerController.startPlayer(finishMode: FinishMode.pause).then((value) async{
         entryViewModel.setCurrentListeningAnswerModel(answerModel!);
@@ -253,7 +249,7 @@ class AnswerListItemState extends State<AnswerListItem>{
       });
     }
     else {
-      await pauseAllListeningAudios();
+      await feedsViewModel.pauseCurrentListeningEntryAudio();
 
       await entryViewModel.listenAnswer(answerModel!, answerModel!.audioUrl, playerController)
           .then((listening) {

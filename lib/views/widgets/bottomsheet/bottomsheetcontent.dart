@@ -43,7 +43,7 @@ class BottomSheetContentState extends State<BottomSheetContent>{
           if (isListeningToAnswer())
           {
             var answerID = listeningAnswerModel!.answerID;
-            tempText = "$tempText - $answerID";
+            tempText = "A: - $answerID";
           }
 
           return Container(
