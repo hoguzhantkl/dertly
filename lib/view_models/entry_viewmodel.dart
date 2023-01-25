@@ -76,11 +76,13 @@ class EntryViewModel extends ChangeNotifier{
             var userID = authService.getCurrentUserUID();
 
             final audioWaveformData = await audioService.getPlayingWaveformData(recordedAudioFileLocalUrl!, noOfSamples: WaveNoOfSamples.answer);
+            final audioDuration = await audioService.getAudioDuration(recordedAudioFileLocalUrl);
 
             AnswerModel answerModel = AnswerModel(
                 entryID: entryID, userID: userID,
                 answerID: "", mentionedAnswerID: "", mentionedUserID: "",
-                audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, answerType: answerType,
+                audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, audioDuration: audioDuration,
+                answerType: answerType,
                 date: Timestamp.now(), upVote: 3, downVote: 0);
 
             await answersService.createAnswer(answerModel);

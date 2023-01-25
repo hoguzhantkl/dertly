@@ -20,6 +20,8 @@ exports.onEntryRemoved = functions.firestore.document('entries/{entryId}').onDel
 
     functions.logger.log('Entry removed', 'entryID:', entryID, 'userID:', entryData.userID);
 
+    // TODO: use transaction for removing entry from trendings and recents
+
     // Remove the entry from trending if it is in.
     var trendDoc = admin.firestore().collection('feeds').doc('trendings');
     var trendColRef = trendDoc.collection('list');

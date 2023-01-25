@@ -35,6 +35,7 @@ class AnswerModel{
   final String mentionedUserID;
   String audioUrl;
   List<double>? audioWaveData;
+  int audioDuration;
   final AnswerType answerType;
   final Timestamp date;
   final int upVote;
@@ -43,7 +44,8 @@ class AnswerModel{
   AnswerModel({
     required this.entryID, required this.answerID, required this.userID,
     this.mentionedAnswerID = '', this.mentionedUserID = '',
-    required this.audioUrl, required this.audioWaveData, required this.answerType,
+    required this.audioUrl, required this.audioWaveData, required this.audioDuration,
+    required this.answerType,
     required this.date, required this.upVote, required this.downVote
   });
 
@@ -56,6 +58,7 @@ class AnswerModel{
       mentionedUserID: data['mentionedUserID'],
       audioUrl: data['audioUrl'],
       audioWaveData: data['audioWaveData'].cast<double>(),
+      audioDuration: data['audioDuration'],
       answerType: AnswerType.values.byName(data['answerType']),
       date: data['date'],
       upVote: data['upVote'],
@@ -72,6 +75,7 @@ class AnswerModel{
       'mentionedUserID': mentionedUserID,
       'audioUrl': audioUrl,
       'audioWaveData': audioWaveData,
+      'audioDuration': audioDuration,
       'answerType': answerType.name,
       'date': date,
       'upVote': upVote,

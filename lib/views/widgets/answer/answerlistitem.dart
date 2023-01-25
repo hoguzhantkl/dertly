@@ -129,10 +129,10 @@ class AnswerListItemState extends State<AnswerListItem>{
                                           )
                                       ),
 
-                                      // TODO: Edit this AudioWave
                                       AudioWave(
                                         playerController: playerController,
                                         audioWaveData: answerModel!.audioWaveData!,
+                                        audioDuration: answerModel!.audioDuration,
                                       ),
 
                                       // Play Button

@@ -79,6 +79,7 @@ class EntryScreenState extends State<EntryScreen>{
                                   AudioWave(
                                       playerController: PlayerController(),
                                       audioWaveData: model.audioWaveData!,
+                                      audioDuration: model.audioDuration,
                                   ),
 
                                   const SizedBox(height: 8),

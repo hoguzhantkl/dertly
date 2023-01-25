@@ -22,8 +22,7 @@ class AudioService {
         ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
         ..sampleRate = 44100;
 
-  final PlayerController idlingPlayerController = PlayerController();
-  final PlayerController activePlayerController = PlayerController();
+  final PlayerController playerController = PlayerController();
 
   bool isRecorderReady = false;
 
@@ -40,34 +39,28 @@ class AudioService {
 
   void dispose() async {
     await recorder.closeRecorder();
+    await player.dispose();
 
     recorderController.refresh();
     recorderController.dispose();
 
-    idlingPlayerController.dispose();
-    activePlayerController.dispose();
-  }
-
-  Future startRecord() async {
-    if (!isRecorderReady) return;
-    await recorder.startRecorder(toFile: 'audio.aac');
-  }
-
-  Future stopRecord() async {
-    if (!isRecorderReady) return;
-
-    final path = await recorder.stopRecorder();
-    debugPrint('Recorded audio: $path');
-
-    return path;
+    playerController.dispose();
   }
 
   Future<List<double>> getPlayingWaveformData(String path, {int noOfSamples = 100}) async{
-    final waveformData = await activePlayerController.extractWaveformData(
+    final waveformData = await playerController.extractWaveformData(
         path: path,
         noOfSamples: noOfSamples
     );
     return waveformData;
+  }
+
+  Future<int> getAudioDuration(String? path) async {
+    await player.setSourceDeviceFile(path!);
+    final duration = await player.getDuration();
+    if (duration == null) return 0;
+    await player.release();
+    return duration.inMilliseconds;
   }
 
   Future startWaveRecord() async {

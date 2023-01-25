@@ -52,14 +52,16 @@ class EntriesListItemState extends State<EntriesListItem>{
       direction: Axis.vertical,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0),
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 0.0),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const UserImage(width: 56, height: 56, borderRadius: 6),
               Expanded(
                 child: Column(
                   children: <Widget>[
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         StreamBuilder(
                             stream: playerController.onPlayerStateChanged,
@@ -83,12 +85,16 @@ class EntriesListItemState extends State<EntriesListItem>{
                               child: AudioWave(
                                 playerController: playerController,
                                 audioWaveData: model.audioWaveData!,
+                                audioDuration: model.audioDuration,
                               )
                           ),
                         )
 
                       ],
                     ),
+
+                    const SizedBox(height: 4),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[

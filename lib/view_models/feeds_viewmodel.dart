@@ -137,13 +137,20 @@ class FeedsViewModel extends ChangeNotifier{
   // General Feed Methods
   Future<void> createEntry() async {
     if (audioService.recorderController.isRecording){
+
       await audioService.stopWaveRecord()
         .then((recordedAudioFileLocalUrl) async{
           var userID = authService.getCurrentUserUID();
 
           final audioWaveformData = await audioService.getPlayingWaveformData(recordedAudioFileLocalUrl!, noOfSamples: WaveNoOfSamples.entry);
+          final audioDuration = await audioService.getAudioDuration(recordedAudioFileLocalUrl);
+
+          debugPrint("creating entry with audioDuration: $audioDuration");
+
           debugPrint(audioWaveformData.toString());
-          EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title", audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
+          EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title",
+              audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, audioDuration: audioDuration,
+              date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
           await entryService.createEntry(entryModel);
         });
     }
