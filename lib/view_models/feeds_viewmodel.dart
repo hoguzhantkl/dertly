@@ -28,6 +28,10 @@ class FeedsViewModel extends ChangeNotifier{
   EntryService entryService = locator<EntryService>();
   AudioService audioService = locator<AudioService>();
 
+  void init(){
+    clearModelData();
+  }
+
   @override
   void dispose() {
     disposeAllEntryPlayerControllers();

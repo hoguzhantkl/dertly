@@ -10,7 +10,9 @@ import '../../../core/themes/custom_colors.dart';
 import '../../../view_models/entry_viewmodel.dart';
 
 class BottomSheetWidget extends StatefulWidget {
-  const BottomSheetWidget({super.key});
+  const BottomSheetWidget({super.key, this.onTapDisabled = false});
+
+  final bool onTapDisabled;
 
   @override
   State<BottomSheetWidget> createState() => BottomSheetWidgetState();
@@ -27,6 +29,8 @@ class BottomSheetWidgetState extends State<BottomSheetWidget>{
   }
 
   void _onBottomSheetClicked() async{
+    if (widget.onTapDisabled) return;
+
     var feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
     var entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
 

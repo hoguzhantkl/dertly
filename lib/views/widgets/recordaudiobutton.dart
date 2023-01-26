@@ -48,8 +48,8 @@ class RecordAudioButtonState extends State<RecordAudioButton>{
               }
             },
             backgroundColor: (audioService.isWaveRecording())
-                ? Theme.of(context).floatingActionButtonTheme.focusColor
-                : ((lockHold) ? Colors.amberAccent : Theme.of(context).floatingActionButtonTheme.backgroundColor),
+                ? ((lockHold) ? Colors.amberAccent : Theme.of(context).floatingActionButtonTheme.focusColor)
+                : Theme.of(context).floatingActionButtonTheme.backgroundColor,
 
             child: const Icon(Icons.mic),
 

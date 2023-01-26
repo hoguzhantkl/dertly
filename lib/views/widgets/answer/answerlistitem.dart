@@ -147,7 +147,6 @@ class AnswerListItemState extends State<AnswerListItem>{
                                               //setState(() {});
                                             },
                                             padding: const EdgeInsets.all(0),
-                                            alignment: Alignment.center,
                                             iconSize: 36,
                                             icon: Icon(playerState.isPlaying ? Icons.pause : Icons.play_arrow, size: 36)
                                         );
@@ -179,44 +178,48 @@ class AnswerListItemState extends State<AnswerListItem>{
                               ),
 
                               // Answers to this answer
-                              Visibility(
-                                visible: subAnswers.isNotEmpty && listedAnswerItemCount.value < subAnswers.length,
-                                child: InkWell(
-                                    onTap: (){
-                                      setState(() {
-                                        listedAnswerItemCount.value = min(listedAnswerItemCount.value+widget.paging, subAnswers.length);
-                                      });
-                                    },
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                            width: 100,
-                                            height: 12,
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  width: 50,
-                                                  height: 1,
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius: BorderRadius.circular(4)
-                                                  ),
-                                                ),
+                              ValueListenableBuilder(
+                                valueListenable: listedAnswerItemCount,
+                                builder: (BuildContext context, int value, Widget? child){
+                                  return Visibility(
+                                      visible: subAnswers.isNotEmpty && listedAnswerItemCount.value < subAnswers.length,
+                                      child: InkWell(
+                                          onTap: (){
+                                            listedAnswerItemCount.value = min(listedAnswerItemCount.value+widget.paging, subAnswers.length);
+                                          },
+                                          child: Column(
+                                            children: [
+                                              SizedBox(
+                                                  width: 100,
+                                                  height: 12,
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        width: 50,
+                                                        height: 1,
+                                                        decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius: BorderRadius.circular(4)
+                                                        ),
+                                                      ),
 
-                                                const SizedBox(width: 4),
+                                                      const SizedBox(width: 4),
 
-                                                Icon(Icons.mic, size: 14, color: Colors.white),
+                                                      Icon(Icons.mic, size: 14, color: Colors.white),
 
-                                                Text("${subAnswers.length - listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
-                                              ],
-                                            )
-                                        ),
+                                                      Text("${subAnswers.length - listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
+                                                    ],
+                                                  )
+                                              ),
 
-                                        SizedBox(height: 8)
-                                      ],
-                                    )
-                                )
-                              ),
+                                              SizedBox(height: 8)
+                                            ],
+                                          )
+                                      )
+                                  );
+                                }
+                              )
+
                             ],
                           ),
                         )

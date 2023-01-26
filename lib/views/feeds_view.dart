@@ -1,7 +1,9 @@
 import 'package:dertly/main.dart';
+import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/views/widgets/feeds/entrieslist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 
 class FeedsScreen extends StatefulWidget {
   const FeedsScreen({super.key});
@@ -15,6 +17,7 @@ class FeedsScreenState extends State<FeedsScreen> with SingleTickerProviderState
 
   @override
   void initState() {
+    Provider.of<FeedsViewModel>(context, listen: false).init();
     super.initState();
     tabController = TabController(vsync: this, length: 4);//..addListener(() {});
   }

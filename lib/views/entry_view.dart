@@ -23,7 +23,7 @@ class EntryScreen extends StatefulWidget{
 class EntryScreenState extends State<EntryScreen>{
     @override
     void initState(){
-      debugPrint("no of sample for the size: ${const PlayerWaveStyle(spacing: 6).getSamplesForWidth(100)}");
+      debugPrint("no of sample for the size: ${const PlayerWaveStyle(spacing: 6).getSamplesForWidth(180)}");
       super.initState();
     }
 
@@ -148,7 +148,7 @@ class EntryScreenState extends State<EntryScreen>{
         bottomSheet: ValueListenableBuilder(
           valueListenable: feedsViewModel.model.onBottomSheetUpdate,
           builder: (context, value, child){
-            return feedsViewModel.model.isBottomSheetVisible ? const BottomSheetWidget() : Container(height: 0);
+            return feedsViewModel.model.isBottomSheetVisible ? const BottomSheetWidget(onTapDisabled: true) : Container(height: 0);
           }
         )
       );
