@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/answer_model.dart';
+import '../../../view_models/answer_viewmodel.dart';
 import 'answerlistitem.dart';
 
 class AnswerList extends StatefulWidget{
@@ -29,7 +30,7 @@ class AnswerListState extends State<AnswerList> {
         debugPrint("AnswerListState, index: $index");
         AnswerModel answerModel = widget.answers.elementAt(index); // widget.answersMap[widget.answersMap.keys.elementAt(index)]!;
         debugPrint("AnswerListState, answerModel.answerID: ${answerModel.answerID}, mentionedAnswerID: ${answerModel.mentionedAnswerID}");
-        return AnswerListItem(answerID: answerModel.answerID, mentionedAnswerID: answerModel.mentionedAnswerID);
+        return AnswerListItem(answerViewModel: AnswerViewModel(model: answerModel));
       }
     );
   }

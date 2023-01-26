@@ -10,82 +10,42 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/themes/custom_colors.dart';
+import '../../../view_models/answer_viewmodel.dart';
 import '../../../view_models/feeds_viewmodel.dart';
 import '../audiowave.dart';
 import 'answerlist.dart';
 
 class AnswerListItem extends StatefulWidget
 {
-  const AnswerListItem({super.key, required this.answerID, required this.mentionedAnswerID});
+  const AnswerListItem({super.key, required this.answerViewModel});
 
-  final String answerID;
-  final String mentionedAnswerID;
-
-  final int paging = 2; // The number of sub answers to be displayed when user tries loading more sub-answers
+  final AnswerViewModel answerViewModel;
 
   @override
   State<StatefulWidget> createState() => AnswerListItemState();
-
 }
 
 class AnswerListItemState extends State<AnswerListItem>{
   final ValueNotifier<int> listedAnswerItemCount = ValueNotifier<int>(0);
 
   late EntryViewModel entryViewModel;
-  AnswerModel? answerModel;
-  List<AnswerModel> subAnswers = List.of([]);
-
   late PlayerController playerController;
-
-  bool isMainAnswer(){
-    return widget.mentionedAnswerID == "";
-  }
-
-  bool isMentionedSubAnswer(){
-    return answerModel?.mentionedUserID != "";
-  }
-
-  // If the answer is a sub answer, then answerModel will be looked up from the subAnswersMap[mentionedAnswerID]
-  AnswerModel? getAnswerModel(){
-    var subAnswerModelsList = entryViewModel.subAnswersMap[widget.mentionedAnswerID]!;
-    for (var subAnswerModel in subAnswerModelsList)
-    {
-      if (subAnswerModel.answerID == widget.answerID)
-      {
-        return subAnswerModel;
-      }
-    }
-
-    return null;
-  }
 
   @override
   void initState(){
-    debugPrint("AnswerListItemState.initState() called for answerID: ${widget.answerID}");
+    debugPrint("AnswerListItemState.initState() called for answerID: ${widget.answerViewModel.model.answerID}");
     entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
-    playerController = entryViewModel.createAnswerPlayerController(widget.answerID);
+    playerController = entryViewModel.createAnswerPlayerController(widget.answerViewModel.model.answerID);
     super.initState();
-  }
-
-  Future fetchData() async {
-    if (isMainAnswer())
-    {
-      debugPrint("Fetching main answer for answerID: ${widget.answerID}");
-      answerModel = entryViewModel.answers.firstWhere((answer) => answer.answerID == widget.answerID);
-      await entryViewModel.fetchAllSubAnswers(widget.answerID);
-      subAnswers = entryViewModel.subAnswersMap[widget.answerID]!;
-    }
-    else{
-      answerModel = getAnswerModel();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final model = widget.answerViewModel.model;
     return FutureBuilder(
-      future: fetchData(),
+      future: widget.answerViewModel.fetchData(entryViewModel),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done && answerModel != null){
+        if (snapshot.connectionState == ConnectionState.done && model != null){
           return Padding(
               padding: const EdgeInsets.only(bottom: 0),
               child: Flex(
@@ -116,7 +76,7 @@ class AnswerListItemState extends State<AnswerListItem>{
 
                                   // Mentioned Answer Image for mentionedUserID
                                   Visibility(
-                                      visible: isMentionedSubAnswer(),
+                                      visible: model.isMentionedSubAnswer(),
                                       child: Row(
                                           children: [
                                             Icon(Icons.arrow_forward_ios_rounded, size: 18, color: Colors.white),
@@ -129,10 +89,10 @@ class AnswerListItemState extends State<AnswerListItem>{
 
                                   Expanded(
                                       child: AudioWave(
-                                        width: answerModel!.isMainAnswer() ? audioWaveWidth : AudioWave.getAudioWaveWidthForAnswer(answerModel!.answerType),
+                                        width: model.isMainAnswer() ? audioWaveWidth : AudioWave.getAudioWaveWidthForAnswer(model.answerType),
                                         playerController: playerController,
-                                        audioWaveData: answerModel!.audioWaveData!,
-                                        audioDuration: answerModel!.audioDuration,
+                                        audioWaveData: model.audioWaveData!,
+                                        audioDuration: model.audioDuration,
                                       ),
                                   ),
 
@@ -156,7 +116,7 @@ class AnswerListItemState extends State<AnswerListItem>{
                               ),
                               const SizedBox(height: 6),
 
-                              AnswerInfos(answerModel: answerModel!),
+                              AnswerInfos(answerModel: model),
 
                               const SizedBox(height: 12),
 
@@ -168,8 +128,8 @@ class AnswerListItemState extends State<AnswerListItem>{
                                         builder: (BuildContext context, int value, Widget? child) {
                                           return Visibility
                                           (
-                                            visible: subAnswers.isNotEmpty && listedAnswerItemCount.value > 0,
-                                            child: AnswerList(answers: subAnswers.sublist(0, listedAnswerItemCount.value)),
+                                            visible: widget.answerViewModel.subAnswers.isNotEmpty && listedAnswerItemCount.value > 0,
+                                            child: AnswerList(answers: widget.answerViewModel.subAnswers.sublist(0, listedAnswerItemCount.value)),
                                           );
                                         }
                                     ),
@@ -182,10 +142,10 @@ class AnswerListItemState extends State<AnswerListItem>{
                                 valueListenable: listedAnswerItemCount,
                                 builder: (BuildContext context, int value, Widget? child){
                                   return Visibility(
-                                      visible: subAnswers.isNotEmpty && listedAnswerItemCount.value < subAnswers.length,
+                                      visible: widget.answerViewModel.subAnswers.isNotEmpty && listedAnswerItemCount.value < widget.answerViewModel.subAnswers.length,
                                       child: InkWell(
                                           onTap: (){
-                                            listedAnswerItemCount.value = min(listedAnswerItemCount.value+widget.paging, subAnswers.length);
+                                            listedAnswerItemCount.value = min(listedAnswerItemCount.value+widget.answerViewModel.paging, widget.answerViewModel.subAnswers.length);
                                           },
                                           child: Column(
                                             children: [
@@ -207,7 +167,7 @@ class AnswerListItemState extends State<AnswerListItem>{
 
                                                       Icon(Icons.mic, size: 14, color: Colors.white),
 
-                                                      Text("${subAnswers.length - listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
+                                                      Text("${widget.answerViewModel.subAnswers.length - listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
                                                     ],
                                                   )
                                               ),
@@ -219,7 +179,6 @@ class AnswerListItemState extends State<AnswerListItem>{
                                   );
                                 }
                               )
-
                             ],
                           ),
                         )
@@ -237,9 +196,7 @@ class AnswerListItemState extends State<AnswerListItem>{
   }
 
   Future onListenButtonClicked(PlayerState playerState) async{
-    if (answerModel == null){
-      return;
-    }
+    final model = widget.answerViewModel.model;
 
     final feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
 
@@ -250,17 +207,17 @@ class AnswerListItemState extends State<AnswerListItem>{
       await feedsViewModel.pauseCurrentListeningEntryAudio();
 
       await playerController.startPlayer(finishMode: FinishMode.pause).then((value) async{
-        entryViewModel.setCurrentListeningAnswerModel(answerModel!);
+        entryViewModel.setCurrentListeningAnswerModel(model!);
         feedsViewModel.showBottomSheet();
       });
     }
     else {
       await feedsViewModel.pauseCurrentListeningEntryAudio();
 
-      await entryViewModel.listenAnswer(answerModel!, answerModel!.audioUrl, playerController)
+      await entryViewModel.listenAnswer(model, model.audioUrl, playerController)
           .then((listening) {
         if (listening){
-          entryViewModel.setCurrentListeningAnswerModel(answerModel!);
+          entryViewModel.setCurrentListeningAnswerModel(model);
           feedsViewModel.showBottomSheet();
         }
       });
