@@ -26,8 +26,6 @@ class AnswerListItem extends StatefulWidget
 }
 
 class AnswerListItemState extends State<AnswerListItem>{
-  final ValueNotifier<int> listedAnswerItemCount = ValueNotifier<int>(0);
-
   late EntryViewModel entryViewModel;
   late PlayerController playerController;
 
@@ -124,12 +122,12 @@ class AnswerListItemState extends State<AnswerListItem>{
                                 children: [
                                   Expanded(
                                     child: ValueListenableBuilder(
-                                        valueListenable: listedAnswerItemCount,
+                                        valueListenable: widget.answerViewModel.listedAnswerItemCount,
                                         builder: (BuildContext context, int value, Widget? child) {
                                           return Visibility
                                           (
-                                            visible: widget.answerViewModel.subAnswers.isNotEmpty && listedAnswerItemCount.value > 0,
-                                            child: AnswerList(answers: widget.answerViewModel.subAnswers.sublist(0, listedAnswerItemCount.value)),
+                                            visible: widget.answerViewModel.subAnswers.isNotEmpty && widget.answerViewModel.listedAnswerItemCount.value > 0,
+                                            child: AnswerList(answers: widget.answerViewModel.subAnswers.sublist(0, widget.answerViewModel.listedAnswerItemCount.value)),
                                           );
                                         }
                                     ),
@@ -139,13 +137,13 @@ class AnswerListItemState extends State<AnswerListItem>{
 
                               // Answers to this answer
                               ValueListenableBuilder(
-                                valueListenable: listedAnswerItemCount,
+                                valueListenable: widget.answerViewModel.listedAnswerItemCount,
                                 builder: (BuildContext context, int value, Widget? child){
                                   return Visibility(
-                                      visible: widget.answerViewModel.subAnswers.isNotEmpty && listedAnswerItemCount.value < widget.answerViewModel.subAnswers.length,
+                                      visible: widget.answerViewModel.subAnswers.isNotEmpty && widget.answerViewModel.listedAnswerItemCount.value < widget.answerViewModel.subAnswers.length,
                                       child: InkWell(
                                           onTap: (){
-                                            listedAnswerItemCount.value = min(listedAnswerItemCount.value+widget.answerViewModel.paging, widget.answerViewModel.subAnswers.length);
+                                            widget.answerViewModel.listedAnswerItemCount.value = min(widget.answerViewModel.listedAnswerItemCount.value+widget.answerViewModel.paging, widget.answerViewModel.subAnswers.length);
                                           },
                                           child: Column(
                                             children: [
@@ -167,7 +165,7 @@ class AnswerListItemState extends State<AnswerListItem>{
 
                                                       Icon(Icons.mic, size: 14, color: Colors.white),
 
-                                                      Text("${widget.answerViewModel.subAnswers.length - listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
+                                                      Text("${widget.answerViewModel.subAnswers.length - widget.answerViewModel.listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
                                                     ],
                                                   )
                                               ),

@@ -18,6 +18,8 @@ class AuthService extends ChangeNotifier{
         debugPrint('No user found for that email.');
       } else if (e.code == 'wrong-password') {
         debugPrint('Wrong password provided for that user.');
+      }else{
+        debugPrint("Error: ${e.code}, ${e.message}");
       }
     }
   }

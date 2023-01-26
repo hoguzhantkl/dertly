@@ -165,6 +165,8 @@ class EntryViewModel extends ChangeNotifier{
 
   // Methods for listening to answer
   PlayerController createAnswerPlayerController(String answerID){
+    disposeAnswerPlayerController(answerID);
+
     var playerController = PlayerController();
     answerPlayerControllerMap[answerID] = playerController;
     return playerController;
@@ -177,10 +179,10 @@ class EntryViewModel extends ChangeNotifier{
     answerPlayerControllerMap.clear();
   }
 
-  void disposeAnswerPlayerController(String entryID){
-    if (answerPlayerControllerMap.containsKey(entryID)){
-      answerPlayerControllerMap[entryID]?.dispose();
-      answerPlayerControllerMap.remove(entryID);
+  void disposeAnswerPlayerController(String answerID){
+    if (answerPlayerControllerMap.containsKey(answerID)){
+      answerPlayerControllerMap[answerID]?.dispose();
+      answerPlayerControllerMap.remove(answerID);
     }
   }
 

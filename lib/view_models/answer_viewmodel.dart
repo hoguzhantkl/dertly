@@ -10,6 +10,7 @@ class AnswerViewModel {
 
   List<AnswerModel> subAnswers = List.of([]);
   final int paging = 2; // The number of sub answers to be displayed when user tries loading more sub-answers
+  final ValueNotifier<int> listedAnswerItemCount = ValueNotifier<int>(0);
 
   Future fetchData(EntryViewModel entryViewModel) async {
     if (model.isMainAnswer())

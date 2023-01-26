@@ -162,6 +162,8 @@ class FeedsViewModel extends ChangeNotifier{
 
   // Methods for listening to entry
   PlayerController createEntryPlayerController(String entryID){
+    disposeEntryPlayerController(entryID);
+
     var playerController = PlayerController();
     model.entryPlayerControllerMap[entryID] = playerController;
     return playerController;
