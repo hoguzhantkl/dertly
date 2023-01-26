@@ -78,6 +78,7 @@ class HomeScreenState extends State<HomeScreen> {
           ),*/
         ],
       ),
+
       bottomSheet: ValueListenableBuilder(
         valueListenable: feedsViewModel.model.onBottomSheetUpdate,
         builder: (context, value, child){

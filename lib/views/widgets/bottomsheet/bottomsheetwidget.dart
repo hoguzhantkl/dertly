@@ -30,6 +30,7 @@ class BottomSheetWidgetState extends State<BottomSheetWidget>{
     var feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
     var entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
 
+    // TODO: Move these to entry_view as FutureBuilder or find a better way to do this
     entryViewModel.setEntryModel(feedsViewModel.getCurrentListeningEntryModel());
     await entryViewModel.fetchAllEntryAnswers();
 
@@ -41,6 +42,7 @@ class BottomSheetWidgetState extends State<BottomSheetWidget>{
   Widget build(BuildContext context){
     return DraggableScrollableSheet(
       expand: false,
+
       builder: (BuildContext context, ScrollController scrollController) {
         return InkWell(
           onTap: _onBottomSheetClicked,

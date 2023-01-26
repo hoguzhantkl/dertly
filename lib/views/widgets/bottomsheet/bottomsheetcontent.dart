@@ -78,7 +78,7 @@ class BottomSheetContentState extends State<BottomSheetContent>{
                               }
                               else
                               {
-                                await Provider.of<EntryViewModel>(context, listen: false).createMentionedSubAnswer(entryID!, listeningAnswerModel.answerID, listeningAnswerModel.userID);
+                                await Provider.of<EntryViewModel>(context, listen: false).createMentionedSubAnswer(entryID!, listeningAnswerModel.mentionedAnswerID, listeningAnswerModel.userID);
                               }
                             }
                           }

@@ -163,6 +163,10 @@ class FeedsViewModel extends ChangeNotifier{
     return playerController;
   }
 
+  PlayerController? getEntryPlayerController(String entryID){
+    return model.entryPlayerControllerMap[entryID];
+  }
+
   void disposeAllEntryPlayerControllers(){
     model.entryPlayerControllerMap.forEach((key, value) {
       value.dispose();
@@ -205,11 +209,9 @@ class FeedsViewModel extends ChangeNotifier{
   }
 
   Future<void> setCurrentListeningEntryID(String? entryID) async{
-    if (model.currentListeningEntryID == entryID){
-      return;
+    if (model.currentListeningEntryID != entryID){
+      await pauseCurrentListeningEntryAudio();
     }
-
-    await pauseCurrentListeningEntryAudio();
 
     model.currentListeningEntryID = (entryID != null) ? entryID : "";
 

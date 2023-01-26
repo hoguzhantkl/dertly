@@ -20,7 +20,6 @@ class AnswerListState extends State<AnswerList> {
   @override
   Widget build(BuildContext context) {
     debugPrint("AnswerListState, answers.length: ${widget.answers.length}");
-    debugPrint("AnswerListState, widget.answers[0].answerID: ${widget.answers.first.answerID}");
     return ListView.builder(
       padding: const EdgeInsets.all(0),
       shrinkWrap: true,

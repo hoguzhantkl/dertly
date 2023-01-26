@@ -54,6 +54,31 @@ class EntryViewModel extends ChangeNotifier{
     model = entryModel;
   }
 
+  // Methods for listening to entry
+  Future listenEntry(EntryModel? entryModel, FeedsViewModel feedsViewModel, PlayerController playerController) async{
+    if (entryModel == null){
+      debugPrint("Entry cannot be listened, entryModel is null");
+      return;
+    }
+
+    final playerState = playerController.playerState;
+
+    if (playerState.isPlaying){
+      await playerController.pausePlayer();
+    }
+    else if (playerState.isPaused){
+      await clearCurrentListeningAnswerModel();
+      await feedsViewModel.setCurrentListeningEntryID(entryModel.entryID);
+      await playerController.startPlayer(finishMode: FinishMode.pause);
+    }
+    else {
+      await clearCurrentListeningAnswerModel();
+
+      await feedsViewModel.listenEntry(entryModel.entryID, entryModel.audioUrl, playerController);
+    }
+  }
+
+  // Methods for creating answer
   Future createMainAnswer(String entryID, AnswerType answerType) async{
     await createAnswer(entryID, answerType, "", "");
   }
@@ -62,6 +87,7 @@ class EntryViewModel extends ChangeNotifier{
     await createAnswer(entryID, AnswerType.subAnswer, mentionedAnswerID, "");
   }
 
+    // mentionedAnswerID is actually the answerID of the main answer(root answer).
   Future createMentionedSubAnswer(String entryID, String mentionedAnswerID, String mentionedUserID) async{
     await createAnswer(entryID, AnswerType.mentionedSubAnswer, mentionedAnswerID, mentionedUserID);
   }
@@ -94,6 +120,7 @@ class EntryViewModel extends ChangeNotifier{
     }
   }
 
+  // Methods for fetching answers
   Future<void> fetchAllEntryAnswers() async{
     try{
       if (model == null){
@@ -114,7 +141,7 @@ class EntryViewModel extends ChangeNotifier{
     }
   }
 
-  // This method fetches sub-answers only for the mentionedAnswerID
+    // This method fetches sub-answers only for the mentionedAnswerID
   Future<void> fetchAllSubAnswers(String mentionedAnswerID) async{
     try{
       if (model == null){

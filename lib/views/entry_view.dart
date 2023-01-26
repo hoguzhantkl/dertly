@@ -4,6 +4,7 @@ import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/views/widgets/answer/answerlist.dart';
 import 'package:dertly/views/widgets/answer/answerlistitem.dart';
 import 'package:dertly/views/widgets/audiowave.dart';
+import 'package:dertly/views/widgets/bottomsheet/bottomsheetwidget.dart';
 import 'package:dertly/views/widgets/entry/entryinfos.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,12 +30,15 @@ class EntryScreenState extends State<EntryScreen>{
     @override
     Widget build(BuildContext context){
       EntryViewModel entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
+      FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
       EntryModel? model = entryViewModel.model;
 
       if (model == null){
         debugPrint("EntryModel for entry_view could not be get from entryViewModel.model, model is null");
         return const SizedBox(width: 0, height: 0);
       }
+
+      PlayerController? playerController = feedsViewModel.getEntryPlayerController(model.entryID);
 
       return Scaffold(
         body: Container(
@@ -77,10 +81,13 @@ class EntryScreenState extends State<EntryScreen>{
 
                                   const SizedBox(height: 12),
 
-                                  AudioWave(
-                                      playerController: PlayerController(),
+                                  Visibility(
+                                    visible: playerController != null,
+                                    child: AudioWave(
+                                      playerController: playerController!,
                                       audioWaveData: model.audioWaveData!,
                                       audioDuration: model.audioDuration,
+                                    )
                                   ),
 
                                   const SizedBox(height: 8),
@@ -97,7 +104,23 @@ class EntryScreenState extends State<EntryScreen>{
                                         children: [
                                           IconButton(onPressed: (){}, icon: const Icon(Icons.skip_previous_rounded, size: 36)),
                                           SizedBox(width: 12),
-                                          IconButton(onPressed: (){}, padding: const EdgeInsets.all(0), icon: const Icon(Icons.play_circle_rounded, size: 48)),
+
+                                          StreamBuilder(
+                                              stream: playerController.onPlayerStateChanged,
+                                              initialData: playerController.playerState,
+                                              builder: (context, snapshot){
+                                                final PlayerState playerState = (snapshot.hasData) ? snapshot.data! : PlayerState.stopped;
+
+                                                return IconButton(
+                                                    onPressed: () async{
+                                                      await Provider.of<EntryViewModel>(context, listen: false).listenEntry(model, feedsViewModel, playerController);
+                                                    },
+                                                    padding: const EdgeInsets.all(0),
+                                                    icon: Icon(playerState.isPlaying ? Icons.pause : Icons.play_arrow, size: 48)
+                                                );
+                                              }
+                                          ),
+
                                           SizedBox(width: 12),
                                           IconButton(onPressed: (){}, icon: const Icon(Icons.skip_next_rounded, size: 36)),
                                         ],
@@ -121,6 +144,12 @@ class EntryScreenState extends State<EntryScreen>{
               ),
             ),
           )
+        ),
+        bottomSheet: ValueListenableBuilder(
+          valueListenable: feedsViewModel.model.onBottomSheetUpdate,
+          builder: (context, value, child){
+            return feedsViewModel.model.isBottomSheetVisible ? const BottomSheetWidget() : Container(height: 0);
+          }
         )
       );
     }

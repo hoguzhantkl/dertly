@@ -69,9 +69,9 @@ class EntriesListItemState extends State<EntriesListItem>{
                               final PlayerState playerState = (snapshot.hasData) ? snapshot.data! : PlayerState.stopped;
 
                               return IconButton(
-                                  onPressed: () async{
-                                    await onListenButtonClicked(playerState);
-                                    setState(() {});
+                                  onPressed: () async
+                                  {
+                                    await Provider.of<EntryViewModel>(context, listen: false).listenEntry(model, Provider.of<FeedsViewModel>(context, listen: false), playerController);
                                   },
                                   icon: Icon(playerState.isPlaying ? Icons.pause : Icons.play_arrow, size: 42)
                               );
@@ -126,37 +126,5 @@ class EntriesListItemState extends State<EntriesListItem>{
         ),
       ],
     );
-  }
-
-  Future onListenButtonClicked(PlayerState playerState) async{
-    final feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
-    final entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
-
-    final model = getModel();
-
-    if (model == null){
-      return;
-    }
-
-    if (playerState.isPlaying){
-      await playerController.pausePlayer();
-    }
-    else if (playerState.isPaused){
-      await entryViewModel.clearCurrentListeningAnswerModel();
-      await feedsViewModel.setCurrentListeningEntryID(model.entryID);
-      await playerController.startPlayer(finishMode: FinishMode.pause).then((value) async{
-
-      });
-    }
-    else {
-      await entryViewModel.clearCurrentListeningAnswerModel();
-
-      await feedsViewModel.listenEntry(model.entryID, model.audioUrl, playerController)
-          .then((listening) {
-        if (listening){
-
-        }
-      });
-    }
   }
 }
