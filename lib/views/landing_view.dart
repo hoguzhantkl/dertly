@@ -19,12 +19,10 @@ class LandingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthViewModel authViewModel = Provider.of<AuthViewModel>(context);
-    UserViewModel userViewModel = Provider.of<UserViewModel>(context);
+    final authService = locator<AuthService>();
+    final router = locator<rtr.Router>();
 
-    AuthService authService = locator<AuthService>();
-
-    rtr.Router router = locator<rtr.Router>();
+    UserViewModel userViewModel = Provider.of<UserViewModel>(context, listen: false);
 
     authService.auth.authStateChanges().listen((User? user) async{
       if (user == null) {
@@ -36,21 +34,47 @@ class LandingScreen extends StatelessWidget {
       }
       else {
         await locator<AudioService>().initialize();
-        await userViewModel.fetchUserData()
-            .then((userData){
+        await onUserFound(userViewModel);
+      }
+    });
+
+    return const CircularProgressIndicator();
+  }
+
+  Future onUserFound(UserViewModel userViewModel) async{
+    final router = locator<rtr.Router>();
+
+    var counter = 0;
+    await Future.doWhile(() async{
+      counter++;
+      bool success = await userViewModel.fetchUserData()
+          .then((userData){
               if (userData == null) {
                 router.navigateCreateProfileScreen();
               }
               else {
                 router.navigateHomeScreen();
               }
+              return true;
             })
-            .catchError((error) {
-              print("Error while fetching userData in landing screen: $error");
-            });
-      }
-    });
+          .catchError((error) {
+            debugPrint("Error while fetching userData in landing screen: $error");
+            return false;
+          });
 
-    return const CircularProgressIndicator();
+      if (success){
+        return false;
+      }
+
+      if (counter == 3){
+        debugPrint("Failed to fetch user data 3 times");
+        router.navigateSignInScreen();
+        return false;
+      }
+
+      await Future.delayed(const Duration(seconds: 1));
+
+      return true;
+    });
   }
 }
