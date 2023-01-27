@@ -55,28 +55,27 @@ class EntryInfosState extends State<EntryInfos> {
         ),
         const SizedBox(width: 10),
         Column(
-          children: const [
+          children: [
             Icon(Icons.add, size: 24, color: Colors.green),
-            // TODO: create supporterAnswerCount in entryModel
-            Text("8", style: TextStyle(fontSize: 12)),
+            Text("${listeningEntryModel.getTotalSupporterAnswersCount()}", style: TextStyle(fontSize: 12)),
           ],
         ),
         const SizedBox(width: 10),
         Column(
-          children: const [
+          children: [
             Icon(Icons.support_rounded, size: 24, color: Colors.grey),
             // TODO: create neutralAnswerCount in entryModel
-            Text("8", style: TextStyle(fontSize: 12)),
+            Text("${listeningEntryModel.getTotalNeutralAnswersCount()}", style: TextStyle(fontSize: 12)),
           ],
         ),
         const SizedBox(width: 10),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
 
-          children: const [
+          children: [
             Icon(Icons.dangerous_outlined, size: 24, color: Colors.red),
             // TODO: create opponentAnswerCount in entryModel
-            Text("8", style: TextStyle(fontSize: 12)),
+            Text("${listeningEntryModel.getTotalOpponentAnswersCount()}", style: TextStyle(fontSize: 12)),
           ],
         ),
       ],

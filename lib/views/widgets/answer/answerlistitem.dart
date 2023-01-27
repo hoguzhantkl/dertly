@@ -86,6 +86,7 @@ class AnswerListItemState extends State<AnswerListItem>{
                                   ),
 
                                   Expanded(
+                                      // TODO: rebuild this when playerController has changed
                                       child: AudioWave(
                                         width: model.isMainAnswer() ? audioWaveWidth : AudioWave.getAudioWaveWidthForAnswer(model.answerType),
                                         playerController: playerController,

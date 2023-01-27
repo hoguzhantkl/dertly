@@ -110,7 +110,7 @@ class EntryViewModel extends ChangeNotifier{
                 answerID: "", mentionedAnswerID: mentionedAnswerID, mentionedUserID: mentionedUserID,
                 answerType: answerType,
                 audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, audioDuration: audioDuration,
-                date: Timestamp.now(), upVote: 3, downVote: 0);
+                date: Timestamp.now(), upVote: 0, downVote: 0);
 
             await answersService.createAnswer(answerModel);
           })
@@ -172,7 +172,19 @@ class EntryViewModel extends ChangeNotifier{
     return playerController;
   }
 
+  PlayerController? getAnswerPlayerController(String answerID){
+    final playerController = answerPlayerControllerMap[answerID];
+
+    if (playerController == null){
+      debugPrint("player controller is disposed for answerID: $answerID");
+      debugPrint("now creating new player controller for answerID: $answerID");
+      return createAnswerPlayerController(answerID);
+    }
+    return playerController;
+  }
+
   void disposeAllAnswerPlayerControllers(){
+    debugPrint("Disposing all answer player controllers");
     answerPlayerControllerMap.forEach((key, value) {
       value.dispose();
     });

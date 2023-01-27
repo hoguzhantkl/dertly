@@ -173,10 +173,17 @@ class FeedsViewModel extends ChangeNotifier{
   }
 
   PlayerController? getEntryPlayerController(String entryID){
-    return model.entryPlayerControllerMap[entryID];
+    final playerController = model.entryPlayerControllerMap[entryID];
+    if (playerController == null){
+      debugPrint("player controller is disposed for entryID: $entryID");
+      debugPrint("now creating new player controller for entryID: $entryID");
+      return createEntryPlayerController(entryID);
+    }
+    return playerController;
   }
 
   void disposeAllEntryPlayerControllers(){
+    debugPrint("Disposing all entry player controllers");
     model.entryPlayerControllerMap.forEach((key, value) {
       value.dispose();
     });

@@ -29,6 +29,7 @@ class EntryScreenState extends State<EntryScreen>{
 
     @override
     Widget build(BuildContext context){
+      debugPrint("Building entry_view");
       EntryViewModel entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
       FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
       EntryModel? model = entryViewModel.model;
