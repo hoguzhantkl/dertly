@@ -42,7 +42,7 @@ class EntryInfosState extends State<EntryInfos> {
         Column(
           children: [
             Icon(Icons.mic, size: 24),
-            Text("${listeningEntryModel.totalAnswers}", style: TextStyle(fontSize: 12)),
+            Text("${listeningEntryModel.getTotalAnswersCount()}", style: TextStyle(fontSize: 12)),
           ],
         ),
         const SizedBox(width: 10),

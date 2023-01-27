@@ -5,4 +5,5 @@ admin.initializeApp(functions.config().firebase);
 
 require('dotenv').config()
 
-exports.entries = require("./entries.js");
+exports.feeds = require("./feeds.js");
+exports.entry = require("./entry.js");

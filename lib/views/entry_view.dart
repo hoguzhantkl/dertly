@@ -103,7 +103,7 @@ class EntryScreenState extends State<EntryScreen>{
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           IconButton(onPressed: (){}, icon: const Icon(Icons.skip_previous_rounded, size: 36)),
-                                          SizedBox(width: 12),
+                                          const SizedBox(width: 12),
 
                                           StreamBuilder(
                                               stream: playerController.onPlayerStateChanged,
@@ -121,7 +121,7 @@ class EntryScreenState extends State<EntryScreen>{
                                               }
                                           ),
 
-                                          SizedBox(width: 12),
+                                          const SizedBox(width: 12),
                                           IconButton(onPressed: (){}, icon: const Icon(Icons.skip_next_rounded, size: 36)),
                                         ],
                                       )
@@ -136,7 +136,7 @@ class EntryScreenState extends State<EntryScreen>{
                   const SizedBox(height: 8),
 
                   Padding(
-                    padding: EdgeInsets.only(left: 8, right: 8),
+                    padding: const EdgeInsets.only(left: 8, right: 8),
                     child: AnswerList(answers: entryViewModel.answers),
                   )
 

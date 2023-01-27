@@ -24,11 +24,13 @@ exports.onEntryRemoved = functions.firestore.document('entries/{entryId}').onDel
 
     // Remove the entry from trending if it is in.
     var trendDoc = admin.firestore().collection('feeds').doc('trendings');
-    var trendColRef = trendDoc.collection('list');
-    var entryDocInTrendings = await trendColRef.doc(entryID).get();
-    if (entryDocInTrendings.exists) {
-        await trendColRef.doc(entryID).delete();
-        await trendDoc.update({ totalTrendEntries: admin.firestore.FieldValue.increment(-1) });
+    if (trendDoc != undefined){
+        var trendColRef = trendDoc.collection('list');
+        var entryDocInTrendings = await trendColRef.doc(entryID).get();
+        if (entryDocInTrendings.exists) {
+            await trendColRef.doc(entryID).delete();
+            await trendDoc.update({ totalTrendEntries: admin.firestore.FieldValue.increment(-1) });
+        }
     }
 
     // Remove the entry from recents if it is in.

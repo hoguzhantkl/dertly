@@ -113,7 +113,7 @@ class EntriesListItemState extends State<EntriesListItem>{
                         Row(
                           children: <Widget>[
                             const Icon(Icons.mic, size: 20),
-                            Text(model.totalAnswers.toString())
+                            Text(model.getTotalAnswersCount().toString())
                           ],
                         ),
                       ],

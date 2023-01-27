@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 /*
    if AnswerType is one of the following: support, neutral or suppose, then the answer called "main-answer" to an entry.
@@ -10,6 +11,11 @@ enum AnswerType{
   opponent,
   subAnswer,
   mentionedSubAnswer
+}
+
+Map<String, int> totalAnswersMap() {
+  List<String> answerTypeList = AnswerType.values.map((e) => e.name).toList();
+  return Map.fromIterable(answerTypeList, value: (item) => 0);
 }
 
 /*

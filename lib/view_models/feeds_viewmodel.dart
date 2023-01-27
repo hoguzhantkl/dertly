@@ -152,9 +152,12 @@ class FeedsViewModel extends ChangeNotifier{
           debugPrint("creating entry with audioDuration: $audioDuration");
 
           debugPrint(audioWaveformData.toString());
+          var totalAnswers = totalAnswersMap();
+          debugPrint("totalAnswersMap: $totalAnswers");
+
           EntryModel entryModel = EntryModel(entryID: "", userID: userID, title: "Test Title",
               audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, audioDuration: audioDuration,
-              date: Timestamp.now(), upVote: 3, downVote: 0, totalAnswers: 0);
+              date: Timestamp.now(), upVote: 0, downVote: 0, totalAnswers: totalAnswers);
           await entryService.createEntry(entryModel);
         });
     }

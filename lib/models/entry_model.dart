@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'answer_model.dart';
+
 class EntryModel{
   String entryID;
   final String userID;
@@ -10,7 +12,7 @@ class EntryModel{
   final Timestamp date;
   final int upVote;
   final int downVote;
-  final int totalAnswers;
+  final Map<String, int> totalAnswers;
 
   EntryModel({
       required this.entryID, required this.userID, required this.title,
@@ -29,7 +31,7 @@ class EntryModel{
       date: data['date'],
       upVote: data['upVote'],
       downVote: data['downVote'],
-      totalAnswers: data['totalAnswers']
+      totalAnswers: data['totalAnswers'].cast<String, int>(),
     );
   }
 
@@ -46,5 +48,9 @@ class EntryModel{
       'downVote': downVote,
       'totalAnswers': totalAnswers
     };
+  }
+
+  int getTotalAnswersCount(){
+    return totalAnswers.values.reduce((value, element) => value + element);
   }
 }

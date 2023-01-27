@@ -10,7 +10,9 @@ class AuthService extends ChangeNotifier{
 
   Future<void> signIn({required String email, required String password}) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      await _auth.signInWithEmailAndPassword(email: email, password: password)
+          .then((value) {debugPrint("Signed in with email: $email");})
+          .catchError((onError) {debugPrint("Error while signing in with email: $email, error: $onError");});
     } on FirebaseAuthException catch (e) {
       if (e.code == "invalid-email") {
         debugPrint("invalid email");
