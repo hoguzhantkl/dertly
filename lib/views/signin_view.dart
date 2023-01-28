@@ -16,7 +16,8 @@ class SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AuthViewModel authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    AuthViewModel authViewModel =
+        Provider.of<AuthViewModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign In'),
@@ -40,7 +41,7 @@ class SignInScreenState extends State<SignInScreen> {
               ),
             ),
             ElevatedButton(
-              onPressed: (){
+              onPressed: () {
                 authViewModel.signIn(
                   _emailController.text.trim(),
                   _passwordController.text.trim(),
