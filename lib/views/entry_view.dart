@@ -1,15 +1,12 @@
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:dertly/core/themes/custom_colors.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/views/widgets/answer/answerlist.dart';
-import 'package:dertly/views/widgets/answer/answerlistitem.dart';
 import 'package:dertly/views/widgets/audiowave.dart';
 import 'package:dertly/views/widgets/bottomsheet/bottomsheetwidget.dart';
 import 'package:dertly/views/widgets/entry/entryinfos.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../locator.dart';
 import '../models/entry_model.dart';
 import '../view_models/entry_viewmodel.dart';
 

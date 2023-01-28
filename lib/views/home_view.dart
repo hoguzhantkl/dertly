@@ -1,9 +1,5 @@
-import 'package:dertly/core/routes/routing_constants.dart';
-import 'package:dertly/services/audio_service.dart';
-import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
-import 'package:dertly/views/recorder_view.dart';
 import 'package:dertly/views/widgets/bottomsheet/bottomsheetwidget.dart';
 import 'package:dertly/views/feeds_view.dart';
 import 'package:dertly/views/widgets/recordaudiobutton.dart';
@@ -68,14 +64,14 @@ class HomeScreenState extends State<HomeScreen> {
 
           SizedBox(height: 60),
 
-          /*FloatingActionButton(
+          FloatingActionButton(
             heroTag: null,
             onPressed: () {
-              authViewModel.signOut();
+              Provider.of<AuthViewModel>(context, listen: false).signOut();
             },
             tooltip: 'Sign Out',
             child: const Icon(Icons.logout),
-          ),*/
+          ),
         ],
       ),
 

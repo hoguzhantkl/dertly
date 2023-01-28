@@ -2,7 +2,6 @@ import 'package:dertly/core/routes/routing_constants.dart';
 import 'package:dertly/core/routes/undefined_route.dart';
 import 'package:dertly/views/entry_view.dart';
 import 'package:dertly/views/landing_view.dart';
-import 'package:dertly/views/recorder_view.dart';
 import 'package:dertly/views/signin_view.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -24,8 +23,6 @@ class Router{
         return MaterialPageRoute(builder: (_) => const CreateProfileScreen());
       case homeRoute:
         return MaterialPageRoute(builder: (_) => const HomeScreen(title: 'Dertly'));
-      case recorderRoute:
-        return MaterialPageRoute(builder: (_) => const RecorderScreen());
       case entryRoute:
         return MaterialPageRoute(builder: (_) => const EntryScreen());
       default:
@@ -39,6 +36,10 @@ class Router{
 
   Future<dynamic>? replaceWith(String routeName){
     return navigator.replaceWith(routeName);
+  }
+
+  Future<dynamic>? navigateLandingScreen(){
+    return navigator.navigateTo(landingRoute);
   }
 
   Future<dynamic>? navigateSignInScreen(){

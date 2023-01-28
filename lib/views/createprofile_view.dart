@@ -1,6 +1,5 @@
 import 'package:dertly/view_models/createprofile_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
-import 'package:dertly/views/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

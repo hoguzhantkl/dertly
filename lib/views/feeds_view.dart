@@ -1,4 +1,3 @@
-import 'package:dertly/main.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/views/widgets/feeds/entrieslist.dart';
 import 'package:flutter/material.dart';
