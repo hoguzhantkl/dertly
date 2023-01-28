@@ -55,9 +55,14 @@ class EntryViewModel extends ChangeNotifier{
   }
 
   // Methods for listening to entry
-  Future listenEntry(EntryModel? entryModel, FeedsViewModel feedsViewModel, PlayerController playerController) async{
+  Future listenEntry(EntryModel? entryModel, FeedsViewModel feedsViewModel, PlayerController? playerController) async{
     if (entryModel == null){
       debugPrint("Entry cannot be listened, entryModel is null");
+      return;
+    }
+
+    if (playerController == null){
+      debugPrint("Entry cannot be listened, playerController is null");
       return;
     }
 

@@ -33,17 +33,19 @@ class AnswerListItemState extends State<AnswerListItem>{
   void initState(){
     debugPrint("AnswerListItemState.initState() called for answerID: ${widget.answerViewModel.model.answerID}");
     entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
-    playerController = entryViewModel.createAnswerPlayerController(widget.answerViewModel.model.answerID);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final model = widget.answerViewModel.model;
+
+    playerController = entryViewModel.createAnswerPlayerController(widget.answerViewModel.model.answerID);
+
     return FutureBuilder(
       future: widget.answerViewModel.fetchData(entryViewModel),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done && model != null){
+        if (snapshot.connectionState == ConnectionState.done){
           return Padding(
               padding: const EdgeInsets.only(bottom: 0),
               child: Flex(

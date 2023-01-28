@@ -38,7 +38,6 @@ class EntriesListState extends State<EntriesList> with AutomaticKeepAliveClientM
               onRefreshList();
             },
             child: ListView.builder(
-
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: feedsViewModel.model.recentEntriesMap.length,
               itemBuilder: (context, index){

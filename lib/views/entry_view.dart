@@ -21,25 +21,54 @@ class EntryScreen extends StatefulWidget{
 }
 
 class EntryScreenState extends State<EntryScreen>{
-    @override
+
+  late PlayerController playerController;
+  late EntryViewModel entryViewModel;
+  late FeedsViewModel feedsViewModel;
+
+  ValueNotifier<bool> playerControllerChanged = ValueNotifier<bool>(false);
+
+  @override
     void initState(){
+      entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
+      feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+
+      EntryModel? model = entryViewModel.model;
+
+      if (model == null){
+        debugPrint("EntryModel initState() for entry_view could not be get from entryViewModel.model, model is null");
+        return;
+      }
+
+      playerController = feedsViewModel.getEntryPlayerController(model.entryID);
+
+      // TODO: should we remove the listener when the widget is disposed?
+      /*playerController.addListener(() {
+        if (mounted){
+          playerController = Provider.of<FeedsViewModel>(context, listen: false).getEntryPlayerController(model.entryID);
+        }
+      });*/
+
       debugPrint("no of sample for the size: ${const PlayerWaveStyle(spacing: 6).getSamplesForWidth(180)}");
       super.initState();
     }
 
     @override
+    void dispose(){
+      playerController.removeListener(() { });
+      super.dispose();
+    }
+
+    @override
     Widget build(BuildContext context){
       debugPrint("Building entry_view");
-      EntryViewModel entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
-      FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+
       EntryModel? model = entryViewModel.model;
 
       if (model == null){
         debugPrint("EntryModel for entry_view could not be get from entryViewModel.model, model is null");
         return const SizedBox(width: 0, height: 0);
       }
-
-      PlayerController? playerController = feedsViewModel.getEntryPlayerController(model.entryID);
 
       return Scaffold(
         body: Container(
@@ -82,13 +111,16 @@ class EntryScreenState extends State<EntryScreen>{
 
                                   const SizedBox(height: 12),
 
-                                  Visibility(
-                                    visible: playerController != null,
-                                    child: AudioWave(
-                                      playerController: playerController!,
-                                      audioWaveData: model.audioWaveData!,
-                                      audioDuration: model.audioDuration,
-                                    )
+                                  ValueListenableBuilder(
+                                      valueListenable: playerControllerChanged,
+                                      builder: (BuildContext context, value, child){
+                                        debugPrint("playerControllerChanged");
+                                        return AudioWave(
+                                          playerController: feedsViewModel.getEntryPlayerController(model.entryID),
+                                          audioWaveData: model.audioWaveData!,
+                                          audioDuration: model.audioDuration,
+                                        );
+                                      }
                                   ),
 
                                   const SizedBox(height: 8),
@@ -114,7 +146,10 @@ class EntryScreenState extends State<EntryScreen>{
 
                                                 return IconButton(
                                                     onPressed: () async{
-                                                      await Provider.of<EntryViewModel>(context, listen: false).listenEntry(model, feedsViewModel, playerController);
+                                                      await Provider.of<EntryViewModel>(context, listen: false).listenEntry(model, feedsViewModel, feedsViewModel.getEntryPlayerController(model.entryID))
+                                                        .then((value) {
+                                                          playerControllerChanged.value = !playerControllerChanged.value;
+                                                        });
                                                     },
                                                     padding: const EdgeInsets.all(0),
                                                     icon: Icon(playerState.isPlaying ? Icons.pause : Icons.play_arrow, size: 48)

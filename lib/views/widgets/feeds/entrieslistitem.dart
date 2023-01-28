@@ -26,7 +26,7 @@ class EntriesListItem extends StatefulWidget{
 }
 
 class EntriesListItemState extends State<EntriesListItem>{
-  late PlayerController playerController;
+  late PlayerController? playerController;
 
   @override
   void initState(){
@@ -64,7 +64,7 @@ class EntriesListItemState extends State<EntriesListItem>{
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         StreamBuilder(
-                            stream: playerController.onPlayerStateChanged,
+                            stream: playerController?.onPlayerStateChanged,
                             builder: (context, snapshot){
                               final PlayerState playerState = (snapshot.hasData) ? snapshot.data! : PlayerState.stopped;
 
@@ -82,10 +82,13 @@ class EntriesListItemState extends State<EntriesListItem>{
                           width: 270,
                           child: Padding(
                               padding: const EdgeInsets.only(top: 10),
-                              child: AudioWave(
-                                playerController: playerController,
-                                audioWaveData: model.audioWaveData!,
-                                audioDuration: model.audioDuration,
+                              child: Visibility(
+                                visible: playerController != null,
+                                child: AudioWave(
+                                  playerController: playerController!,
+                                  audioWaveData: model.audioWaveData!,
+                                  audioDuration: model.audioDuration,
+                                )
                               )
                           ),
                         )

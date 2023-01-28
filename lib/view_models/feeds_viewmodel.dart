@@ -167,27 +167,26 @@ class FeedsViewModel extends ChangeNotifier{
   PlayerController createEntryPlayerController(String entryID){
     disposeEntryPlayerController(entryID);
 
-    var playerController = PlayerController();
-    model.entryPlayerControllerMap[entryID] = playerController;
-    return playerController;
+    model.entryPlayerControllerMap[entryID] = PlayerController();
+
+    return model.entryPlayerControllerMap[entryID]!;
   }
 
-  PlayerController? getEntryPlayerController(String entryID){
+  PlayerController getEntryPlayerController(String entryID){
     final playerController = model.entryPlayerControllerMap[entryID];
     if (playerController == null){
-      debugPrint("player controller is disposed for entryID: $entryID");
-      debugPrint("now creating new player controller for entryID: $entryID");
+      debugPrint("player controller notifier is null for entryID: $entryID");
+      debugPrint("now creating new player controller notifier for entryID: $entryID");
       return createEntryPlayerController(entryID);
     }
     return playerController;
   }
 
-  void disposeAllEntryPlayerControllers(){
+  void disposeAllEntryPlayerControllers(){ 
     debugPrint("Disposing all entry player controllers");
-    model.entryPlayerControllerMap.forEach((key, value) {
-      value.dispose();
+    model.entryPlayerControllerMap.forEach((key, notifier) {
+      notifier.dispose();
     });
-
     model.entryPlayerControllerMap.clear();
   }
 
