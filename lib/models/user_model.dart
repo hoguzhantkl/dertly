@@ -1,20 +1,23 @@
 class UserModel {
-  final String userID;
-  final String userName; // TODO: change this later to a Sound
+  UserModel({required this.userID, this.imageUrl = "", this.audioUrl = ""});
 
-  UserModel({required this.userID, required this.userName});
+  final String userID;
+  String imageUrl;
+  String audioUrl; // TODO: change this later to a Sound
 
   factory UserModel.fromMap(Map<String, dynamic> data) {
     return UserModel(
       userID: data['userID'],
-      userName: data['userName'],
+      imageUrl: data['imageUrl'],
+      audioUrl: data['audioUrl'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'userID': userID,
-      'userName': userName,
+      'imageUrl': imageUrl,
+      'audioUrl': audioUrl,
     };
   }
 }

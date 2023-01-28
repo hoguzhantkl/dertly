@@ -62,16 +62,18 @@ class HomeScreenState extends State<HomeScreen> {
               }
           ),
 
-          SizedBox(height: 60),
+          const SizedBox(height: 10),
 
           FloatingActionButton(
-            heroTag: null,
+            heroTag: "signOut",
             onPressed: () {
               Provider.of<AuthViewModel>(context, listen: false).signOut();
             },
             tooltip: 'Sign Out',
             child: const Icon(Icons.logout),
           ),
+
+          const SizedBox(height: 60),
         ],
       ),
 

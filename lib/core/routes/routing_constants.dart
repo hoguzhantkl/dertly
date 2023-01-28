@@ -1,4 +1,5 @@
-const String landingRoute = "/";
+const String starterRoute = '/';
+const String landingRoute = "/landing";
 const String signInRoute = "/login";
 const String createProfileRoute = "/createProfile";
 const String homeRoute = "/home";

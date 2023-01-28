@@ -20,6 +20,7 @@ class AuthService extends ChangeNotifier{
 
     auth.authStateChanges().listen((User? user) async{
       if (user == null) {
+        debugPrint("No authenticated user found");
         router.navigateLandingScreen();
       }
       else {

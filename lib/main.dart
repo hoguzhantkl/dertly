@@ -1,3 +1,4 @@
+import 'package:dertly/core/routes/routing_constants.dart';
 import 'package:dertly/core/themes/custom_themes.dart';
 import 'package:dertly/repositories/entry_repository.dart';
 import 'package:dertly/repositories/feeds_repository.dart';
@@ -49,16 +50,12 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => EntryViewModel(entryRepository: locator<EntryRepository>())),
         ChangeNotifierProvider(create: (context) => FeedsViewModel(feedsRepository: locator<FeedsRepository>())),
       ],
-      child: Builder(
-        builder: (BuildContext context){
-          locator<AuthService>().listenAuth(context);
-          return MaterialApp(
-            title: 'Dertly',
-            theme: CustomThemes.defaultTheme,
-            navigatorKey: StackedService.navigatorKey,
-            onGenerateRoute: locator<router.Router>().onGenerateRoute,
-          );
-        }
+      child: MaterialApp(
+        title: 'Dertly',
+        theme: CustomThemes.defaultTheme,
+        initialRoute: starterRoute,
+        navigatorKey: StackedService.navigatorKey,
+        onGenerateRoute: locator<router.Router>().onGenerateRoute,
       )
     );
   }

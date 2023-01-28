@@ -21,10 +21,8 @@ class UserViewModel extends ChangeNotifier{
       if (userData == null){
         return null;
       }
-      else{
-        userModel = userData;
-        return userModel;
-      }
+      userModel = userData;
+      return userModel;
     }catch(e){
       return Future.error(Exception(e));
     }

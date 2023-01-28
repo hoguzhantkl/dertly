@@ -9,9 +9,8 @@ class CreateProfileViewModel{
   UserService userService = locator<UserService>();
 
   Future<void> createUserProfile() async{
-    var userID = await authService.getCurrentUserUID();
-    var testUserName = "User Name";
-    UserModel userModel = UserModel(userID: userID, userName: testUserName);
+    var userID = authService.getCurrentUserUID();
+    UserModel userModel = UserModel(userID: userID);
     await userService.createUserData(userModel);
   }
 }

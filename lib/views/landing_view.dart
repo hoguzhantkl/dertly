@@ -1,3 +1,4 @@
+import 'package:dertly/core/routes/routing_constants.dart';
 import 'package:dertly/locator.dart';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:dertly/view_models/feeds_viewmodel.dart';
 
 import '../core/routes/router.dart' as rtr;
 import '../core/themes/custom_colors.dart';
+import '../services/auth_service.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -25,10 +27,6 @@ class LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     final router = locator<rtr.Router>();
 
-    //TODO: write a more proper way to clear all model data (for auth and userViewModels too)
-    Provider.of<FeedsViewModel>(context, listen: false).clearModelData();
-
-    //TODO: add a landing view
     return Scaffold(
       backgroundColor: CustomColors.black,
       body: Padding(
@@ -68,7 +66,7 @@ class LandingScreenState extends State<LandingScreen> {
                 height: 60,
                 child: ElevatedButton(
                   onPressed: () {
-                    router.navigateSignInScreen();
+                    router.navigateTo(signInRoute);
                     // Perform some action here
                   },
                   style: ButtonStyle(
@@ -141,7 +139,11 @@ class LandingScreenState extends State<LandingScreen> {
                       onPressed: () {
                         //make google auth here!
                       },
-                      icon: Image.asset("assets/images/google_icon.png"),
+                      icon: const Image(
+                        image: AssetImage('assets/images/google_icon.png'),
+                        width: 50,
+                        height: 50,
+                      ),
                     ),
                     /*const VerticalDivider(
                       color: Colors.white,

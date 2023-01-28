@@ -9,12 +9,15 @@ import 'package:stacked_services/stacked_services.dart';
 import '../../locator.dart';
 import '../../views/createprofile_view.dart';
 import '../../views/home_view.dart';
+import '../../views/starter_view.dart';
 
 class Router{
   final navigator = locator<NavigationService>();
 
   Route<dynamic> onGenerateRoute(RouteSettings settings){
     switch(settings.name){
+      case starterRoute:
+        return MaterialPageRoute(builder: (_) => const StarterScreen());
       case landingRoute:
         return MaterialPageRoute(builder: (_) => const LandingScreen());
       case signInRoute:
@@ -39,7 +42,7 @@ class Router{
   }
 
   Future<dynamic>? navigateLandingScreen(){
-    return navigator.navigateTo(landingRoute);
+    return navigator.replaceWith(landingRoute);
   }
 
   Future<dynamic>? navigateSignInScreen(){
