@@ -42,6 +42,7 @@ class CreateProfileViewModel{
       recordedUsernameAudioWaveData = await audioService.getPlayingWaveformData(recordedUsernameAudioFilePath!, noOfSamples: 46);
       recordedUsernameAudioDuration = await audioService.getAudioDuration(recordedUsernameAudioFilePath!);
     }
+    await stopUsernameAudio();
   }
 
   Future<void> listenUsernameAudio() async{
@@ -73,6 +74,12 @@ class CreateProfileViewModel{
 
   Future<void> pauseUsernameAudio() async{
     await audioService.playerController.pausePlayer();
+  }
+
+  Future<void> stopUsernameAudio() async{
+    if (!audioService.playerController.playerState.isStopped){
+      await audioService.playerController.stopPlayer();
+    }
   }
 
   void deleteRecordedUsernameAudioFile(){
