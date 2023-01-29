@@ -3,6 +3,7 @@ import 'package:dertly/core/routes/undefined_route.dart';
 import 'package:dertly/views/entry_view.dart';
 import 'package:dertly/views/landing_view.dart';
 import 'package:dertly/views/signin_view.dart';
+import 'package:dertly/views/signup_view.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -11,11 +12,11 @@ import '../../views/createprofile_view.dart';
 import '../../views/home_view.dart';
 import '../../views/starter_view.dart';
 
-class Router{
+class Router {
   final navigator = locator<NavigationService>();
 
-  Route<dynamic> onGenerateRoute(RouteSettings settings){
-    switch(settings.name){
+  Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
       case starterRoute:
         return MaterialPageRoute(builder: (_) => const StarterScreen());
       case landingRoute:
@@ -24,8 +25,11 @@ class Router{
         return MaterialPageRoute(builder: (_) => const SignInScreen());
       case createProfileRoute:
         return MaterialPageRoute(builder: (_) => const CreateProfileScreen());
+      case signUpRoute:
+        return MaterialPageRoute(builder: (_) => const SignUpScreen());
       case homeRoute:
-        return MaterialPageRoute(builder: (_) => const HomeScreen(title: 'Dertly'));
+        return MaterialPageRoute(
+            builder: (_) => const HomeScreen(title: 'Dertly'));
       case entryRoute:
         return MaterialPageRoute(builder: (_) => const EntryScreen());
       default:
@@ -33,32 +37,35 @@ class Router{
     }
   }
 
-  Future navigateTo(String routeName) async{
+  Future navigateTo(String routeName) async {
     navigator.navigateTo(routeName);
   }
 
-  Future replaceWith(String routeName) async{
+  Future replaceWith(String routeName) async {
     navigator.replaceWith(routeName);
   }
 
-  Future navigateLandingScreen() async{
+  Future navigateLandingScreen() async {
     navigator.clearStackAndShow(landingRoute);
   }
 
-  Future navigateSignInScreen() async{
+  Future navigateSignInScreen() async {
     navigator.navigateTo(signInRoute);
   }
 
-  Future navigateHomeScreen() async{
+  Future navigateSignUpScreen() async {
+    navigator.navigateTo(signUpRoute);
+  }
+
+  Future navigateHomeScreen() async {
     navigator.clearStackAndShow(homeRoute);
   }
 
-  Future navigateCreateProfileScreen() async{
+  Future navigateCreateProfileScreen() async {
     navigator.replaceWith(createProfileRoute);
   }
 
-  Future navigateEntryScreen() async{
+  Future navigateEntryScreen() async {
     navigator.navigateTo(entryRoute);
   }
 }
-

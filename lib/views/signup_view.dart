@@ -7,14 +7,14 @@ import '../view_models/auth_viewmodel.dart';
 
 import '../core/routes/router.dart' as rtr;
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => SignInScreenState();
+  State<SignUpScreen> createState() => SignUpScreenState();
 }
 
-class SignInScreenState extends State<SignInScreen> {
+class SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -38,7 +38,7 @@ class SignInScreenState extends State<SignInScreen> {
                   icon: const Icon(Icons.arrow_back_rounded),
                 ),
                 const Text(
-                  "Welcome Back!",
+                  "Hey!",
                   style: TextStyle(fontSize: 24),
                 )
               ],
@@ -54,7 +54,7 @@ class SignInScreenState extends State<SignInScreen> {
                     width: 320,
                     height: 60,
                     child: TextField(
-                      controller: _emailController,
+                      //controller: _emailController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25.0),
@@ -72,7 +72,7 @@ class SignInScreenState extends State<SignInScreen> {
                     width: 320,
                     height: 60,
                     child: TextField(
-                      controller: _passwordController,
+                      //controller: _passwordController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25.0),
@@ -91,10 +91,10 @@ class SignInScreenState extends State<SignInScreen> {
                     height: 60,
                     child: ElevatedButton(
                       onPressed: () {
-                        authViewModel.signIn(
+                        /*authViewModel.signIn(
                           _emailController.text.trim(),
                           _passwordController.text.trim(),
-                        );
+                        ); */
                       },
                       style: ButtonStyle(
                         backgroundColor:
@@ -105,7 +105,7 @@ class SignInScreenState extends State<SignInScreen> {
                             const EdgeInsets.only(left: 20, right: 20)),
                       ),
                       child: const Text(
-                        'Log me in',
+                        'Create my Account!',
                         style:
                             TextStyle(color: CustomColors.beige, fontSize: 20),
                       ),

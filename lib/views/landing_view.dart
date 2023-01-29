@@ -99,6 +99,7 @@ class LandingScreenState extends State<LandingScreen> {
                 height: 60,
                 child: ElevatedButton(
                   onPressed: () {
+                    router.navigateSignUpScreen();
                     // Perform some action here
                   },
                   style: ButtonStyle(
