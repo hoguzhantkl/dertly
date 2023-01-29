@@ -16,6 +16,7 @@ class FeedsScreenState extends State<FeedsScreen> with SingleTickerProviderState
 
   @override
   void initState() {
+    debugPrint("feeds_view has been initialized");
     Provider.of<FeedsViewModel>(context, listen: false).init();
     super.initState();
     tabController = TabController(vsync: this, length: 4);//..addListener(() {});

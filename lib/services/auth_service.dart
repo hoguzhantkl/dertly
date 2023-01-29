@@ -57,7 +57,7 @@ class AuthService extends ChangeNotifier{
 
       if (counter == 3){
         debugPrint("Failed to fetch user data 3 times");
-        router.navigateSignInScreen();
+        router.navigateLandingScreen();
         return false;
       }
 

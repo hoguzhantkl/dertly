@@ -34,8 +34,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose(){
-    debugPrint("home_view has been disposed");
-
     super.dispose();
   }
 

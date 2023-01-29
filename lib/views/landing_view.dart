@@ -66,7 +66,7 @@ class LandingScreenState extends State<LandingScreen> {
                 height: 60,
                 child: ElevatedButton(
                   onPressed: () {
-                    router.navigateTo(signInRoute);
+                    router.navigateSignInScreen();
                     // Perform some action here
                   },
                   style: ButtonStyle(
@@ -129,30 +129,28 @@ class LandingScreenState extends State<LandingScreen> {
               style: TextStyle(fontSize: 14, color: CustomColors.beige),
               textAlign: TextAlign.center,
             ),
-            IntrinsicHeight(
-              child: Padding(
-                padding: const EdgeInsets.all(50.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        //make google auth here!
-                      },
-                      icon: const Image(
-                        image: AssetImage('assets/images/google_icon.png'),
-                        width: 50,
-                        height: 50,
-                      ),
+            Padding(
+              padding: const EdgeInsets.all(50.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      //make google auth here!
+                    },
+                    icon: const Image(
+                      image: AssetImage('assets/images/google_icon.png'),
+                      width: 50,
+                      height: 50,
                     ),
-                    /*const VerticalDivider(
+                  ),
+                  /*const VerticalDivider(
                       color: Colors.white,
                       thickness: 1,
                     ), */ //Vertical Line between signin variants
-                  ],
-                ),
+                ],
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -33,32 +33,32 @@ class Router{
     }
   }
 
-  Future<dynamic>? navigateTo(String routeName){
-    return navigator.navigateTo(routeName);
+  Future navigateTo(String routeName) async{
+    navigator.navigateTo(routeName);
   }
 
-  Future<dynamic>? replaceWith(String routeName){
-    return navigator.replaceWith(routeName);
+  Future replaceWith(String routeName) async{
+    navigator.replaceWith(routeName);
   }
 
-  Future<dynamic>? navigateLandingScreen(){
-    return navigator.replaceWith(landingRoute);
+  Future navigateLandingScreen() async{
+    navigator.clearStackAndShow(landingRoute);
   }
 
-  Future<dynamic>? navigateSignInScreen(){
-    return navigator.replaceWith(signInRoute);
+  Future navigateSignInScreen() async{
+    navigator.navigateTo(signInRoute);
   }
 
-  Future<dynamic>? navigateHomeScreen(){
-    return navigator.replaceWith(homeRoute);
+  Future navigateHomeScreen() async{
+    navigator.clearStackAndShow(homeRoute);
   }
 
-  Future<dynamic>? navigateCreateProfileScreen(){
-    return navigator.replaceWith(createProfileRoute);
+  Future navigateCreateProfileScreen() async{
+    navigator.replaceWith(createProfileRoute);
   }
 
-  Future<dynamic>? navigateEntryScreen(){
-    return navigator.navigateTo(entryRoute);
+  Future navigateEntryScreen() async{
+    navigator.navigateTo(entryRoute);
   }
 }
 
