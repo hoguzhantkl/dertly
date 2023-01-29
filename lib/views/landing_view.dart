@@ -110,7 +110,7 @@ class LandingScreenState extends State<LandingScreen> {
                         const EdgeInsets.only(left: 20, right: 20)),
                   ),
                   child: const Text(
-                    'Sign Un',
+                    'Sign Up',
                     style: TextStyle(color: CustomColors.beige, fontSize: 20),
                   ),
                 ),
