@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:dertly/core/routes/router.dart';
 import 'package:dertly/repositories/answers_repository.dart';
 import 'package:dertly/repositories/entry_repository.dart';
@@ -9,6 +11,7 @@ import 'package:dertly/services/auth_service.dart';
 import 'package:dertly/services/emulator_service.dart';
 import 'package:dertly/services/entry_service.dart';
 import 'package:dertly/services/feeds_service.dart';
+import 'package:dertly/services/image_service.dart';
 import 'package:dertly/services/storage_service.dart';
 import 'package:dertly/services/user_service.dart';
 
@@ -28,6 +31,7 @@ Future<void> setupLocator() async{
   locator.registerLazySingleton<AuthService>(() => AuthService());
   locator.registerLazySingleton<StorageService>(() => StorageService());
   locator.registerLazySingleton<AudioService>(() => AudioService());
+  locator.registerLazySingleton<ImageService>(() => ImageService());
 
   locator.registerLazySingleton<UserService>(() => UserService());
   locator.registerLazySingleton<EntryService>(() => EntryService());

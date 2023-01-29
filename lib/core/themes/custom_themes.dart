@@ -50,6 +50,12 @@ class CustomThemes{
       foregroundColor: CustomColors.white,
       focusColor: Colors.green,
     ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(CustomColors.green),
+        foregroundColor: MaterialStateProperty.all(CustomColors.white),
+      ),
+    ),
   );
 
   static ThemeData get lightTheme => ThemeData(

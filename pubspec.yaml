@@ -51,6 +51,7 @@ dependencies:
   tuple: ^2.0.1
   audio_waveforms: ^1.0.1
   image_picker: ^0.8.6+1
+  image_cropper: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +79,7 @@ flutter:
   assets:
     - assets/
     - assets/images/placeholder.png
+    - assets/images/placeholder_pp.png
     - assets/images/google_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
