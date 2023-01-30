@@ -1,6 +1,7 @@
 import 'package:dertly/core/themes/custom_colors.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
+import 'package:dertly/views/profile_view.dart';
 import 'package:dertly/views/widgets/bottomsheet/bottomsheetwidget.dart';
 import 'package:dertly/views/feeds_view.dart';
 import 'package:dertly/views/widgets/recordaudiobutton.dart';
@@ -19,6 +20,15 @@ class HomeScreen extends StatefulWidget {
 
   final String title;
 
+  final List<Widget> _widgetOptions = const <Widget>[
+    FeedsScreen(),
+    // TODO: Add Community, Shuffle and Message Screen
+    Center(child: Text("Community Screen")),
+    Center(child: Text("Shuffle Screen")),
+    Center(child: Text("Message Screen")),
+    ProfileScreen()
+  ];
+
   @override
   State<HomeScreen> createState() => HomeScreenState();
 }
@@ -28,7 +38,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   rtr.Router router = locator<rtr.Router>();
 
-  int currentPage = 0;
+  int currentPageIndex = 0;
 
   @override
   void initState() {
@@ -53,7 +63,10 @@ class HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         shadowColor: Colors.transparent,
       ),
-      body: currentPage == 0 ? const FeedsScreen() : Scaffold(),
+      body: IndexedStack(
+        index: currentPageIndex,
+        children: widget._widgetOptions,
+      ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -84,10 +97,10 @@ class HomeScreenState extends State<HomeScreen> {
           }),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        currentIndex: currentPage,
+        currentIndex: currentPageIndex,
         onTap: (int index) {
           setState(() {
-            currentPage = index;
+            currentPageIndex = index;
           });
         },
         items: const [

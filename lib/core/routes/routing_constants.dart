@@ -6,3 +6,4 @@ const String signUpRoute = "/signup";
 const String homeRoute = "/home";
 const String createEntryRoute = "/createEntry";
 const String entryRoute = "/entry";
+const String profileRoute = "/profile";

@@ -10,6 +10,7 @@ import 'package:stacked_services/stacked_services.dart';
 import '../../locator.dart';
 import '../../views/createprofile_view.dart';
 import '../../views/home_view.dart';
+import '../../views/profile_view.dart';
 import '../../views/starter_view.dart';
 
 class Router {
@@ -32,6 +33,8 @@ class Router {
             builder: (_) => const HomeScreen(title: 'Dertly'));
       case entryRoute:
         return MaterialPageRoute(builder: (_) => const EntryScreen());
+      case profileRoute:
+        return MaterialPageRoute(builder: (_) => const ProfileScreen());
       default:
         return MaterialPageRoute(builder: (_) => const UndefinedRouteView());
     }
@@ -67,5 +70,9 @@ class Router {
 
   Future navigateEntryScreen() async {
     navigator.navigateTo(entryRoute);
+  }
+
+  Future navigateProfileScreen() async {
+    navigator.navigateTo(profileRoute);
   }
 }
