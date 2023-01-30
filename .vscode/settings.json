@@ -1,4 +1,5 @@
 {
     "cmake.sourceDirectory": "${workspaceFolder}/windows/flutter",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "workbench.colorTheme": "Monokai"
 }

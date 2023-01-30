@@ -1,3 +1,4 @@
+import 'package:dertly/core/themes/custom_colors.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/widgets/bottomsheet/bottomsheetwidget.dart';
@@ -27,13 +28,15 @@ class HomeScreenState extends State<HomeScreen> {
 
   rtr.Router router = locator<rtr.Router>();
 
+  int currentPage = 0;
+
   @override
   void initState() {
     super.initState();
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
   }
 
@@ -41,7 +44,8 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     userViewModel = Provider.of<UserViewModel>(context);
 
-    FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+    FeedsViewModel feedsViewModel =
+        Provider.of<FeedsViewModel>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,19 +53,17 @@ class HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         shadowColor: Colors.transparent,
       ),
-      body: const FeedsScreen(),
+      body: currentPage == 0 ? const FeedsScreen() : Scaffold(),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           RecordAudioButton(
               heroTag: "recordEntryAudio",
-              onRecordingFinishedCallback: () async{
-                await Provider.of<FeedsViewModel>(context, listen: false).createEntry();
-              }
-          ),
-
+              onRecordingFinishedCallback: () async {
+                await Provider.of<FeedsViewModel>(context, listen: false)
+                    .createEntry();
+              }),
           const SizedBox(height: 10),
-
           FloatingActionButton(
             heroTag: "signOut",
             onPressed: () {
@@ -70,16 +72,57 @@ class HomeScreenState extends State<HomeScreen> {
             tooltip: 'Sign Out',
             child: const Icon(Icons.logout),
           ),
-
           const SizedBox(height: 60),
         ],
       ),
-
       bottomSheet: ValueListenableBuilder(
-        valueListenable: feedsViewModel.model.onBottomSheetUpdate,
-        builder: (context, value, child){
-          return feedsViewModel.model.isBottomSheetVisible ? const BottomSheetWidget() : Container(height: 0);
-        }
+          valueListenable: feedsViewModel.model.onBottomSheetUpdate,
+          builder: (context, value, child) {
+            return feedsViewModel.model.isBottomSheetVisible
+                ? const BottomSheetWidget()
+                : Container(height: 0);
+          }),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: currentPage,
+        onTap: (int index) {
+          setState(() {
+            currentPage = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+            //backgroundColor: Colors.green,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people_alt_sharp),
+            label: "Community",
+            //backgroundColor: Colors.green,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shuffle_sharp),
+            label: "Shuffle",
+            //backgroundColor: Colors.green,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: "Messages / DM",
+            //backgroundColor: Colors.green,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Profile",
+            //backgroundColor: Colors.red,
+          ),
+        ],
+        backgroundColor: Colors.black,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        selectedItemColor: CustomColors.green,
+        unselectedItemColor: CustomColors.beige,
+        iconSize: 32,
       ),
     );
   }
