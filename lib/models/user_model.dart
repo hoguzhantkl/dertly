@@ -3,7 +3,7 @@ class UserModel {
 
   final String userID;
   String imageUrl;
-  String audioUrl; // TODO: change this later to a Sound
+  String audioUrl;
 
   factory UserModel.fromMap(Map<String, dynamic> data) {
     return UserModel(

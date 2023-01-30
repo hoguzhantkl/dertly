@@ -25,7 +25,6 @@ class CreateProfileViewModel{
       var croppedImageFile = await imageService.cropImage(pickedImageFile.path);
       if (croppedImageFile != null){
         this.pickedImageFile = croppedImageFile;
-        // TODO: upload image to firebase storage
       }
     }
 
@@ -90,7 +89,17 @@ class CreateProfileViewModel{
 
   Future<void> createUserProfile() async{
     var userID = authService.getCurrentUserUID();
-    UserModel userModel = UserModel(userID: userID);
+
+    var imageStorageUrl = "";
+    var audioStorageUrl = "";
+    if (pickedImageFile != null){
+      imageStorageUrl = await userService.uploadUserImage(userID, pickedImageFile!.path);
+    }
+    if (recordedUsernameAudioFilePath != null){
+      audioStorageUrl = await userService.uploadUserAudio(userID, recordedUsernameAudioFilePath!);
+    }
+
+    UserModel userModel = UserModel(userID: userID, imageUrl: imageStorageUrl, audioUrl: audioStorageUrl);
     await userService.createUserData(userModel);
   }
 }

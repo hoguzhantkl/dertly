@@ -8,6 +8,18 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 class StorageService{
   final storageRef = FirebaseStorage.instance.ref();
 
+  Future<String> uploadFile(String location, File file) async{
+    if (!file.existsSync()){
+      debugPrint("File does not exist");
+      return "";
+    }
+
+    var storageFileLocationRef = storageRef.child(location);
+    var uploadTask = await storageFileLocationRef.putFile(file);
+    return uploadTask.ref.fullPath;
+  }
+
+  // TODO: Move these into classes related to entry and use uploadFile function in storage_service instead.
   Future<String> uploadEntryAudio(String location, File audioFile) async{
     if (!audioFile.existsSync())
     {
@@ -38,6 +50,7 @@ class StorageService{
 
   Future<dynamic> downloadFile(String storageUrl) async{
     var audioFileRef = storageRef.child(storageUrl);
+
     var tempDir = await path_provider.getApplicationDocumentsDirectory(); // await path_provider.getTemporaryDirectory();
     var tempFile = File("${tempDir.path}/$storageUrl");
 
@@ -53,5 +66,7 @@ class StorageService{
         return Future.error(Exception("downloadFile failed"));
     }
   }
+
+
 
 }

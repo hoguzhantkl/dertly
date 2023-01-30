@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dertly/view_models/feeds_viewmodel.dart';
+import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/widgets/feeds/entrieslist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -60,8 +63,8 @@ class FeedsScreenState extends State<FeedsScreen> with SingleTickerProviderState
         Expanded(
           child: TabBarView(
             controller: tabController,
-            children: const <Widget>[
-              Center(child: Text('TRENDS')),
+            children: <Widget>[
+              Center(child: Text("TRENDS")),
               EntriesList(),
               Center(child: Text('YOURTURN')),
               Center(child: Text('FOLLOWERS')),
