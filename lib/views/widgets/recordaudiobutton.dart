@@ -5,8 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:avatar_glow/avatar_glow.dart';
-
 import '../../locator.dart';
 import '../../services/audio_service.dart';
 

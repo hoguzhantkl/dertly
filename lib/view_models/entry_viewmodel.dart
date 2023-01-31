@@ -243,4 +243,7 @@ class EntryViewModel extends ChangeNotifier{
       }
     }
   }
+
+  // Methods for giving up/down votes
+  // TODO: create giveUpVote and giveDownVote functions which use vote_service
 }
