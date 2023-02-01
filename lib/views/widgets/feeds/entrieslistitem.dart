@@ -104,13 +104,13 @@ class EntriesListItemState extends State<EntriesListItem>{
                         Row(
                           children: <Widget>[
                             const Icon(Icons.arrow_upward, size: 20),
-                            Text(model.upVote.toString())
+                            Text(model.getTotalUpVotesCount().toString())
                           ],
                         ),
                         Row(
                           children: <Widget>[
                             const Icon(Icons.arrow_downward, size: 20),
-                            Text(model.downVote.toString())
+                            Text(model.getTotalDownVotesCount().toString())
                           ],
                         ),
                         Row(

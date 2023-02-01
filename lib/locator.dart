@@ -14,6 +14,7 @@ import 'package:dertly/services/feeds_service.dart';
 import 'package:dertly/services/image_service.dart';
 import 'package:dertly/services/storage_service.dart';
 import 'package:dertly/services/user_service.dart';
+import 'package:dertly/services/vote_service.dart';
 
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +38,7 @@ Future<void> setupLocator() async{
   locator.registerLazySingleton<EntryService>(() => EntryService());
   locator.registerLazySingleton<FeedsService>(() => FeedsService());
   locator.registerLazySingleton<AnswersService>(() => AnswersService());
+  locator.registerLazySingleton<VoteService>(() => VoteService());
 
   // repositories
   locator.registerLazySingleton<UserRepository>(() => UserRepository());

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dertly/models/vote_model.dart';
 import 'package:dertly/repositories/entry_repository.dart';
 import 'package:dertly/services/answers_service.dart';
 import 'package:dertly/services/entry_service.dart';
@@ -17,6 +18,7 @@ import '../models/feeds_model.dart';
 import '../repositories/answers_repository.dart';
 import '../services/audio_service.dart';
 import '../services/auth_service.dart';
+import '../services/vote_service.dart';
 
 class EntryViewModel extends ChangeNotifier{
   EntryViewModel({required this.entryRepository});
@@ -35,6 +37,7 @@ class EntryViewModel extends ChangeNotifier{
   // Services
   EntryService entryService = locator<EntryService>();
   AnswersService answersService = locator<AnswersService>();
+  VoteService voteService = locator<VoteService>();
   AuthService authService = locator<AuthService>();
   AudioService audioService = locator<AudioService>();
 
@@ -115,7 +118,7 @@ class EntryViewModel extends ChangeNotifier{
                 answerID: "", mentionedAnswerID: mentionedAnswerID, mentionedUserID: mentionedUserID,
                 answerType: answerType,
                 audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, audioDuration: audioDuration,
-                date: Timestamp.now(), upVote: 0, downVote: 0);
+                date: Timestamp.now(), totalVotes: totalVotesMap());
 
             await answersService.createAnswer(answerModel);
           })
@@ -245,5 +248,20 @@ class EntryViewModel extends ChangeNotifier{
   }
 
   // Methods for giving up/down votes
-  // TODO: create giveUpVote and giveDownVote functions which use vote_service
+  Future giveVote(String entryID, VoteType voteType) async{
+    var userID = authService.getCurrentUserUID();
+
+    VoteModel voteModel = VoteModel(voteID: "", voteType: voteType, userID: userID,
+        referenceID: entryID, referenceType: ReferenceType.entries, date: Timestamp.now());
+
+    await voteService.giveVote(voteModel);
+  }
+
+  Future giveUpVote(String entryID) async{
+    await giveVote(entryID, VoteType.upVote);
+  }
+
+  Future giveDownVote(String entryID) async{
+    await giveVote(entryID, VoteType.downVote);
+  }
 }

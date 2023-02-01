@@ -7,3 +7,4 @@ require('dotenv').config()
 
 exports.feeds = require("./feeds.js");
 exports.entry = require("./entry.js");
+exports.vote = require("./vote.js");

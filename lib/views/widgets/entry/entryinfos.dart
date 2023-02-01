@@ -1,3 +1,4 @@
+import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +16,7 @@ class EntryInfosState extends State<EntryInfos> {
   @override
   Widget build(BuildContext context) {
     FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+    EntryViewModel entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
     EntryModel? listeningEntryModel = feedsViewModel.getCurrentListeningEntryModel();
 
     if (listeningEntryModel == null) {
@@ -27,15 +29,25 @@ class EntryInfosState extends State<EntryInfos> {
       children: [
         Column(
           children: [
-            Icon(Icons.arrow_upward_rounded, size: 24),
-            Text("${listeningEntryModel.upVote}", style: TextStyle(fontSize: 12)),
+            InkWell(
+              onTap: () async{
+                await entryViewModel.giveUpVote(listeningEntryModel.entryID);
+              },
+              child: Icon(Icons.arrow_upward_rounded, size: 24),
+            ),
+            Text("${listeningEntryModel.getTotalUpVotesCount()}", style: TextStyle(fontSize: 12)),
           ],
         ),
         const SizedBox(width: 10),
         Column(
           children: [
-            Icon(Icons.arrow_downward_rounded, size: 24),
-            Text("${listeningEntryModel.downVote}", style: TextStyle(fontSize: 12)),
+            InkWell(
+              onTap: () async{
+                await entryViewModel.giveDownVote(listeningEntryModel.entryID);
+              },
+              child: Icon(Icons.arrow_downward_rounded, size: 24),
+            ),
+            Text("${listeningEntryModel.getTotalDownVotesCount()}", style: TextStyle(fontSize: 12)),
           ],
         ),
         const SizedBox(width: 10),

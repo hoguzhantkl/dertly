@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dertly/models/vote_model.dart';
 import 'package:flutter/cupertino.dart';
 
 /*
@@ -44,15 +45,14 @@ class AnswerModel{
   int audioDuration;
   final AnswerType answerType;
   final Timestamp date;
-  final int upVote;
-  final int downVote;
+  final Map<String, int> totalVotes;
 
   AnswerModel({
     required this.entryID, required this.answerID, required this.userID,
     this.mentionedAnswerID = '', this.mentionedUserID = '',
     required this.audioUrl, required this.audioWaveData, required this.audioDuration,
     required this.answerType,
-    required this.date, required this.upVote, required this.downVote
+    required this.date, required this.totalVotes
   });
 
   factory AnswerModel.fromMap(Map<String, dynamic> data){
@@ -67,8 +67,7 @@ class AnswerModel{
       audioDuration: data['audioDuration'],
       answerType: AnswerType.values.byName(data['answerType']),
       date: data['date'],
-      upVote: data['upVote'],
-      downVote: data['downVote']
+      totalVotes: data['totalVotes'].cast<String, int>(),
     );
   }
 
@@ -84,8 +83,7 @@ class AnswerModel{
       'audioDuration': audioDuration,
       'answerType': answerType.name,
       'date': date,
-      'upVote': upVote,
-      'downVote': downVote,
+      'totalVotes': totalVotes
     };
   }
 
@@ -99,5 +97,17 @@ class AnswerModel{
 
   bool isMentionedSubAnswer(){
     return mentionedUserID != "";
+  }
+
+  int getTotalVotesCount(){
+    return totalVotes.values.reduce((value, element) => value + element);
+  }
+
+  int getTotalUpVotesCount(){
+    return totalVotes[VoteType.upVote.name] ?? 0;
+  }
+
+  int getTotalDownVotesCount(){
+    return totalVotes[VoteType.downVote.name] ?? 0;
   }
 }

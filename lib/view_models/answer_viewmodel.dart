@@ -1,10 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:flutter/material.dart';
 
+import '../locator.dart';
 import '../models/answer_model.dart';
+import '../models/vote_model.dart';
+import '../services/auth_service.dart';
+import '../services/vote_service.dart';
 
 class AnswerViewModel {
   AnswerViewModel({required this.model});
+
+  AuthService authService = locator<AuthService>();
+  VoteService voteService = locator<VoteService>();
 
   final AnswerModel model;
 
@@ -19,5 +27,23 @@ class AnswerViewModel {
       await entryViewModel.fetchAllSubAnswers(model.answerID);
       subAnswers = entryViewModel.subAnswersMap[model.answerID]!;
     }
+  }
+
+  // Methods for giving up/down votes
+  Future giveVote(String answerID, VoteType voteType) async{
+    var userID = authService.getCurrentUserUID();
+
+    VoteModel voteModel = VoteModel(voteID: "", voteType: voteType, userID: userID,
+        referenceID: answerID, referenceType: ReferenceType.answers, date: Timestamp.now());
+
+    await voteService.giveVote(voteModel);
+  }
+
+  Future giveUpVote(String entryID) async{
+    await giveVote(entryID, VoteType.upVote);
+  }
+
+  Future giveDownVote(String entryID) async{
+    await giveVote(entryID, VoteType.downVote);
   }
 }

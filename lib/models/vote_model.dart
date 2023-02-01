@@ -1,13 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum ReferenceType{
-  entry,
-  answer
+  entries,
+  answers
 }
 
 enum VoteType{
   upVote,
   downVote
+}
+
+Map<String, int> totalVotesMap() {
+  List<String> voteTypeList = VoteType.values.map((e) => e.name).toList();
+  return Map.fromIterable(voteTypeList, value: (item) => 0);
 }
 
 class VoteModel{

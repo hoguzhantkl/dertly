@@ -27,6 +27,7 @@ class EntriesListState extends State<EntriesList> with AutomaticKeepAliveClientM
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     debugPrint("Building EntriesList");
     FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
     return FutureBuilder(

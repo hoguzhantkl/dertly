@@ -14,14 +14,14 @@ class AnswerInfos extends StatelessWidget{
           Row(
             children: [
               Icon(Icons.arrow_upward_rounded, size: 14, color: Colors.white),
-              Text("${answerModel.upVote}", style: TextStyle(fontSize:12, color: Colors.white)),
+              Text("${answerModel.getTotalUpVotesCount()}", style: TextStyle(fontSize:12, color: Colors.white)),
             ],
           ),
           SizedBox(width: 20),
           Row(
             children: [
               Icon(Icons.arrow_downward_rounded, size: 14, color: Colors.white),
-              Text("${answerModel.downVote}", style: TextStyle(fontSize:12, color: Colors.white)),
+              Text("${answerModel.getTotalDownVotesCount()}", style: TextStyle(fontSize:12, color: Colors.white)),
             ],
           ),
           SizedBox(width: 20),
