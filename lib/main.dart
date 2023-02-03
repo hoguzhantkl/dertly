@@ -32,6 +32,7 @@ void main() async {
     EmulatorService emulatorService = locator<EmulatorService>();
     await emulatorService.configureFirebaseAuth();
     await emulatorService.configureFirebaseStorage();
+    emulatorService.configureFirebaseFunctions();
     emulatorService.configureFirebaseFirestore();
   }
 

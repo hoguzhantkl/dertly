@@ -46,7 +46,7 @@ class VoteModel{
       'userID': userID,
       'referenceID': referenceID,
       'referenceType': referenceType.name,
-      'date': date
+      'date': ''
     };
   }
 }

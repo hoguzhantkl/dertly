@@ -1,18 +1,16 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dertly/models/vote_model.dart';
+import 'package:flutter/material.dart';
 
 class VoteService{
   Future giveVote(VoteModel voteModel) async{
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final HttpsCallable callable = FirebaseFunctions.instanceFor(region: "europe-west1").httpsCallable('vote-giveVote8');
     try{
-      var votesCollectionRef = firestore.collection("votes");
-      DocumentReference voteDocumentRef = votesCollectionRef.doc();
-      DocumentSnapshot voteDocumentSnapshot = await voteDocumentRef.get();
-      voteModel.voteID = voteDocumentSnapshot.reference.id;
-
-      await voteDocumentSnapshot.reference.set(voteModel.toJson());
-      return voteModel;
-
+      final data = voteModel.toJson();
+      await callable.call(data);
     }catch(e){
       Future.error(Exception(e));
     }
