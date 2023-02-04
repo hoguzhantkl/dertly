@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EntriesList extends StatefulWidget{
-  const EntriesList({Key? key}) : super(key: key);
+  const EntriesList({Key? key, required this.entryCategory}) : super(key: key);
+
+  final EntryCategory entryCategory;
 
   @override
   State<EntriesList> createState() => EntriesListState();
@@ -28,22 +30,24 @@ class EntriesListState extends State<EntriesList> with AutomaticKeepAliveClientM
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    debugPrint("Building EntriesList");
+    debugPrint("Building EntriesList for category: ${widget.entryCategory}");
     FeedsViewModel feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
     return FutureBuilder(
-      future: feedsViewModel.fetchAllRecentEntries(),
+      future: feedsViewModel.fetchEntriesForCategory(widget.entryCategory),
       builder: (BuildContext context, AsyncSnapshot snapshot){
         if(snapshot.connectionState == ConnectionState.done){
+          var entriesMap = feedsViewModel.getEntriesMapForCategory(widget.entryCategory);
+
           return RefreshIndicator(
             onRefresh: () async {
               onRefreshList();
             },
             child: ListView.builder(
               physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: feedsViewModel.model.recentEntriesMap.length,
+              itemCount: entriesMap.length,
               itemBuilder: (context, index){
-                final entryID = feedsViewModel.model.recentEntriesMap.keys.elementAt(index);
-                return EntriesListItem(entryID: entryID, displayedEntryCategory: EntryCategory.recents);},
+                final entryID = entriesMap.keys.elementAt(index);
+                return EntriesListItem(entryID: entryID, displayedEntryCategory: widget.entryCategory);},
             )
           );
         } else {

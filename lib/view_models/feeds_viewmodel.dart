@@ -209,19 +209,6 @@ class FeedsViewModel extends ChangeNotifier{
         });
   }
 
-  EntryModel? getEntryModel(String? entryID, EntryCategory displayedEntryCategory){
-    switch(displayedEntryCategory){
-      case EntryCategory.recents:
-        return model.recentEntriesMap[entryID];
-      default:
-        return null;
-    }
-  }
-
-  EntryModel? getCurrentListeningEntryModel(){
-    return getEntryModel(model.currentListeningEntryID, model.currentListeningEntryCategory);
-  }
-
   Future<void> setCurrentListeningEntryID(String? entryID) async{
     if (model.currentListeningEntryID != entryID){
       await pauseCurrentListeningEntryAudio();
@@ -252,6 +239,39 @@ class FeedsViewModel extends ChangeNotifier{
         await currentEntryPlayerController.pausePlayer();
       }
     }
+  }
+
+  // Methods for Entry Categorizing
+  Future fetchEntriesForCategory(EntryCategory entryCategory) async{
+    switch(entryCategory){
+      case EntryCategory.recents:
+        await fetchAllRecentEntries();
+        break;
+      default:
+        break;
+    }
+  }
+
+  LinkedHashMap<String, EntryModel> getEntriesMapForCategory(EntryCategory entryCategory){
+    switch(entryCategory){
+      case EntryCategory.recents:
+        return model.recentEntriesMap;
+      default:
+        return LinkedHashMap.of({});
+    }
+  }
+
+  EntryModel? getEntryModel(String? entryID, EntryCategory displayedEntryCategory){
+    switch(displayedEntryCategory){
+      case EntryCategory.recents:
+        return model.recentEntriesMap[entryID];
+      default:
+        return null;
+    }
+  }
+
+  EntryModel? getCurrentListeningEntryModel(){
+    return getEntryModel(model.currentListeningEntryID, model.currentListeningEntryCategory);
   }
 
   // Methods for Bottom Sheet

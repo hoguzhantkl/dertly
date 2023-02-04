@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
+import '../models/feeds_model.dart';
+
 class FeedsScreen extends StatefulWidget {
   const FeedsScreen({super.key});
 
@@ -63,9 +65,9 @@ class FeedsScreenState extends State<FeedsScreen> with SingleTickerProviderState
         Expanded(
           child: TabBarView(
             controller: tabController,
-            children: <Widget>[
+            children: const <Widget>[
               Center(child: Text("TRENDS")),
-              EntriesList(),
+              EntriesList(entryCategory: EntryCategory.recents),
               Center(child: Text('YOURTURN')),
               Center(child: Text('FOLLOWERS')),
             ],
