@@ -9,6 +9,7 @@ import 'package:dertly/repositories/entry_repository.dart';
 import 'package:dertly/services/audio_service.dart';
 import 'package:dertly/services/auth_service.dart';
 import 'package:flutter/widgets.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../models/answer_model.dart';
 import '../models/entry_model.dart';
@@ -58,36 +59,15 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
-  Future<void> fetchAllRecentEntries() async{
-    try{
-      await fetchRecentEntryIDs();
-      for (var entryID in model.recentEntriesIDList){
-        var entry = await entryRepository.fetchEntry(entryID);
-
-        if (entry == null){
-
-          debugPrint("Could not fetch entry data for entryID: $entryID");
-        }
-        else{
-
-          model.recentEntriesMap[entryID] = entry;
-          debugPrint("Fetched entry data for entryID: $entryID from data entryID ${model.recentEntriesMap[entryID]?.entryID}");
-        }
-      }
-      notifyListeners();
-    }catch(e){
-      debugPrint("Could not fetch all recent entries, error: $e");
-      return Future.error(Exception(e));
-    }
-  }
-
-  Future<void> fetchSomeRecentEntries(int startIndex, int endIndex) async{
+  Future fetchSomeRecentEntries(int pageKey, PagingController pagingController) async{
     await fetchRecentEntryIDs();
 
-    startIndex = max(0, min(startIndex, model.recentEntriesIDList.length));
-    endIndex = min(model.recentEntriesIDList.length, endIndex);
-
     try{
+      var startIndex = pageKey * model.pageSize;
+      var endIndex = min(startIndex + model.pageSize - 1, model.recentEntriesIDList.length - 1);
+
+      List<EntryModel> newRecentEntries = [];
+
       for (var i = startIndex; i <= endIndex; i++){
         var entryID = model.recentEntriesIDList[i];
         var entry = await entryRepository.fetchEntry(entryID);
@@ -96,21 +76,40 @@ class FeedsViewModel extends ChangeNotifier{
         }
         else{
           model.recentEntriesMap[entryID] = entry;
+          newRecentEntries.add(entry);
           debugPrint("some, Fetched entry data for entryID: $entryID from data entryID ${model.recentEntriesMap[entryID]?.entryID}");
         }
       }
+
+      final previouslyFetchedEntriesCount = pagingController.itemList?.length ?? 0;
+
+      final isLastPage = model.recentEntriesIDList.length <= previouslyFetchedEntriesCount + newRecentEntries.length;
+
+      if (isLastPage) {
+        pagingController.appendLastPage(newRecentEntries);
+      }
+      else {
+        final nextPageKey = pageKey + 1;
+        pagingController.appendPage(newRecentEntries, nextPageKey);
+      }
+
     }catch(e){
+      pagingController.error = e;
       return Future.error(Exception(e));
     }
   }
 
   // Trendings
-  Future<dynamic> fetchAllTrendEntries() async{
-    try{
-      List<EntryModel> trendEntriesData = [];
-      var trendEntriesDocuments = await feedsRepository.fetchAllTrendEntriesDocuments();
-      if (trendEntriesDocuments != null){
 
+  Future fetchSomeTrendEntries(int pageKey, PagingController pagingController) async{
+    try{
+      List<EntryModel> newTrendEntries = [];
+
+      var startIndex = pageKey * model.pageSize;
+      var endIndex = startIndex + model.pageSize - 1;
+
+      var trendEntriesDocuments = await feedsRepository.fetchSomeTrendEntriesDocuments(startIndex, endIndex);
+      if (trendEntriesDocuments != null){
         if (trendEntriesDocuments.isEmpty) {
           debugPrint("No trend entries found");
         }
@@ -119,22 +118,34 @@ class FeedsViewModel extends ChangeNotifier{
           var entryID = trendEntryDoc["entryID"];
           EntryModel? entry = await entryRepository.fetchEntry(entryID);
           if (entry == null){
-            debugPrint("Could not fetch entry data for entryID: $entryID");
+            debugPrint("Could not fetch trend entry data for entryID: $entryID");
           }
           else{
-            trendEntriesData.add(entry);
+            model.trendEntriesMap[entryID] = entry;
+            newTrendEntries.add(entry);
             debugPrint("trend, Fetched entry data for entryID: $entryID from data entryID ${entry.entryID}");
           }
         }
+
+        final previouslyFetchedEntriesCount = pagingController.itemList?.length ?? 0;
+
+        final isLastPage = model.totalTrendEntriesCount <= previouslyFetchedEntriesCount + newTrendEntries.length;
+
+        if (isLastPage) {
+          pagingController.appendLastPage(newTrendEntries);
+        }
+        else {
+          final nextPageKey = pageKey + 1;
+          pagingController.appendPage(newTrendEntries, nextPageKey);
+        }
+
       }else{
         debugPrint("Could not fetch trend entries documents, trendEntriesDocuments is null");
         return null;
       }
-
-      return trendEntriesData;
-
     }catch(e){
-      debugPrint("Could not fetch all trend entries, error: $e");
+      pagingController.error = e;
+      debugPrint("Could not fetch some trend entries, error: $e");
       return Future.error(Exception(e));
     }
   }
@@ -190,6 +201,7 @@ class FeedsViewModel extends ChangeNotifier{
   }
 
   void disposeEntryPlayerController(String entryID){
+    debugPrint("Disposing entry player controller for entryID: $entryID");
     if (model.entryPlayerControllerMap.containsKey(entryID)){
       model.entryPlayerControllerMap[entryID]?.dispose();
       model.entryPlayerControllerMap.remove(entryID);
@@ -242,10 +254,13 @@ class FeedsViewModel extends ChangeNotifier{
   }
 
   // Methods for Entry Categorizing
-  Future fetchEntriesForCategory(EntryCategory entryCategory) async{
+  Future fetchSomeEntriesForCategory(EntryCategory entryCategory, int pageKey, PagingController pagingController) async{
     switch(entryCategory){
+      case EntryCategory.trendings:
+        await fetchSomeTrendEntries(pageKey, pagingController);
+        break;
       case EntryCategory.recents:
-        await fetchAllRecentEntries();
+        await fetchSomeRecentEntries(pageKey, pagingController);
         break;
       default:
         break;

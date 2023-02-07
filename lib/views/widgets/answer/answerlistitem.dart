@@ -5,6 +5,7 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dertly/models/answer_model.dart';
 import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/views/widgets/answer/answerinfos.dart';
+import 'package:dertly/views/widgets/answer/subanswerslist.dart';
 import 'package:dertly/views/widgets/answer/userimage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ import '../../../core/themes/custom_colors.dart';
 import '../../../view_models/answer_viewmodel.dart';
 import '../../../view_models/feeds_viewmodel.dart';
 import '../audiowave.dart';
-import 'answerlist.dart';
+import 'mainanswerslist.dart';
 
 class AnswerListItem extends StatefulWidget
 {
@@ -130,7 +131,8 @@ class AnswerListItemState extends State<AnswerListItem>{
                                           return Visibility
                                           (
                                             visible: widget.answerViewModel.subAnswers.isNotEmpty && widget.answerViewModel.listedAnswerItemCount.value > 0,
-                                            child: AnswerList(answers: widget.answerViewModel.subAnswers.sublist(0, widget.answerViewModel.listedAnswerItemCount.value)),
+                                            // TODO: implement paginated subAnswers
+                                            child: SubAnswersList(answers: widget.answerViewModel.subAnswers.sublist(0, widget.answerViewModel.listedAnswerItemCount.value)),
                                           );
                                         }
                                     ),
@@ -138,7 +140,7 @@ class AnswerListItemState extends State<AnswerListItem>{
                                 ]
                               ),
 
-                              // Answers to this answer
+                              // Load More Answers to this answer
                               ValueListenableBuilder(
                                 valueListenable: widget.answerViewModel.listedAnswerItemCount,
                                 builder: (BuildContext context, int value, Widget? child){

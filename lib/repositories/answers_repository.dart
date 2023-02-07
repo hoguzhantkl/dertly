@@ -26,8 +26,8 @@ class AnswersRepository{
     return getAnswerModelsFromDocuments(answersDocuments);
   }
 
-  Future fetchAllMainAnswers(String entryID) async{
-    var answersDocuments = await answersService.fetchAllMainAnswersDocuments(entryID);
+  Future fetchSomeMainAnswers(String entryID, int startIndex, int endIndex) async {
+    var answersDocuments = await answersService.fetchSomeMainAnswersDocuments(entryID, startIndex, endIndex);
     return getAnswerModelsFromDocuments(answersDocuments);
   }
 

@@ -27,33 +27,16 @@ class FeedsService{
   }
 
   // Trendings
-  Future<dynamic> fetchTrendEntriesDocuments({bool limited = true, bool atCursor = false}) async{
+  Future<dynamic> fetchTrendEntriesDocuments({bool limited = true}) async{
     var trendEntriesColRef = firestore.collection("feeds").doc("trendings").collection("list");
     if (limited){
-      if (!atCursor){
-        return await trendEntriesColRef.orderBy("score", descending: true).limit(trendEntriesPaginateLimit).get()
-            .then((documentSnapshots) {
-              if (documentSnapshots.docs.isNotEmpty) {
-                lastTrendEntryDocSnapshot = documentSnapshots.docs[documentSnapshots.docs.length - 1];
-              }
-              return documentSnapshots.docs;
-            });
-      }
-      else{
-        if (lastTrendEntryDocSnapshot != null) {
-          return await trendEntriesColRef
-              .orderBy("score", descending: true)
-              .startAfterDocument(lastTrendEntryDocSnapshot!)
-              .limit(trendEntriesPaginateLimit)
-              .get()
-              .then((trendEntriesQuerySnapshot) {
-                if (trendEntriesQuerySnapshot.docs.isNotEmpty) {
-                  lastTrendEntryDocSnapshot = trendEntriesQuerySnapshot.docs.last;
-                  return trendEntriesQuerySnapshot.docs;
-                }
-              });
+      return await trendEntriesColRef.orderBy("score", descending: true).limit(trendEntriesPaginateLimit).get()
+          .then((documentSnapshots) {
+        if (documentSnapshots.docs.isNotEmpty) {
+          lastTrendEntryDocSnapshot = documentSnapshots.docs[documentSnapshots.docs.length - 1];
         }
-      }
+        return documentSnapshots.docs;
+      });
     }
     else{
       return await trendEntriesColRef.orderBy("score", descending: true).get()
@@ -61,14 +44,10 @@ class FeedsService{
           return trendEntriesQuerySnapshot.docs;
         });
     }
-
-    return null;
   }
 
-  Future<dynamic> fetchTrendEntriesDocumentsBetweenPages(List<int> betweenPages) async{
+  Future<dynamic> fetchSomeTrendEntriesDocuments(int startIndex, int endIndex) async{
     var trendEntriesColRef = firestore.collection("feeds").doc("trendings").collection("list");
-    final startIndex = betweenPages[0] * trendEntriesPaginateLimit;
-    final endIndex = betweenPages[1] * trendEntriesPaginateLimit;
     return await trendEntriesColRef.orderBy("score", descending: true)
         .startAt([startIndex]).endAt([endIndex]).get()
         .then((documentSnapshots) {

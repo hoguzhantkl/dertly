@@ -45,11 +45,11 @@ class AnswersService{
     }
   }
 
-  Future fetchAllMainAnswersDocuments(String entryID) async{
+  Future fetchSomeMainAnswersDocuments(String entryID, int startIndex, int endIndex) async{
     try {
       var answerCollectionRef = firestore.collection("answers");
       var answersQuery = answerCollectionRef.where("entryID", isEqualTo: entryID).where("mentionedAnswerID", isEqualTo: "").where("mentionedUserID", isEqualTo: "")
-          .orderBy("date");
+          .orderBy("date").startAt([startIndex]).endAt([endIndex]);
       return fetchAnswersDocuments(answersQuery);
     } catch(e){
       return Future.error(Exception("Error while fetching all main answers, error: $e"));

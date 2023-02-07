@@ -36,7 +36,7 @@ class BottomSheetWidgetState extends State<BottomSheetWidget>{
 
     // TODO: Move these to entry_view as FutureBuilder or find a better way to do this
     entryViewModel.setEntryModel(feedsViewModel.getCurrentListeningEntryModel());
-    await entryViewModel.fetchAllEntryAnswers();
+    //await entryViewModel.fetchAllEntryAnswers();
 
     // TODO: Navigate to entry view by scrolling to top from bottom
     locator<rtr.Router>().navigateEntryScreen();

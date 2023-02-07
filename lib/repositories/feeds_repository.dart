@@ -23,18 +23,8 @@ class FeedsRepository{
     return trendEntriesDocuments;
   }
 
-  Future<List<QueryDocumentSnapshot>?> fetchFirstTrendEntriesDocuments() async{
-    var trendEntriesDocuments = await feedsService.fetchTrendEntriesDocuments(limited: true, atCursor: false);
-    return trendEntriesDocuments;
-  }
-
-  Future<List<QueryDocumentSnapshot>?> fetchNextTrendEntriesDocuments() async{
-    var trendEntriesDocuments = await feedsService.fetchTrendEntriesDocuments(limited: true, atCursor: true);
-    return trendEntriesDocuments;
-  }
-
-  Future<List<QueryDocumentSnapshot>?> fetchTrendEntriesDocumentsBetweenPages({List<int> betweenPages = const [0, 1]}) async{
-    var trendEntriesDocuments = await feedsService.fetchTrendEntriesDocumentsBetweenPages(betweenPages);
+  Future<List<QueryDocumentSnapshot>?> fetchSomeTrendEntriesDocuments(int startIndex, int endIndex) async{
+    var trendEntriesDocuments = await feedsService.fetchSomeTrendEntriesDocuments(startIndex, endIndex);
     return trendEntriesDocuments;
   }
 }

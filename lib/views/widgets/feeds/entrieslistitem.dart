@@ -34,6 +34,11 @@ class EntriesListItemState extends State<EntriesListItem>{
     super.initState();
   }
 
+  @override
+  void dispose(){
+    super.dispose();
+  }
+
   EntryModel? getModel(){
     return Provider.of<FeedsViewModel>(context, listen: false).getEntryModel(widget.entryID, widget.displayedEntryCategory);
   }

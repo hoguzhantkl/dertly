@@ -1,6 +1,6 @@
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
-import 'package:dertly/views/widgets/answer/answerlist.dart';
+import 'package:dertly/views/widgets/answer/mainanswerslist.dart';
 import 'package:dertly/views/widgets/audiowave.dart';
 import 'package:dertly/views/widgets/bottomsheet/bottomsheetwidget.dart';
 import 'package:dertly/views/widgets/entry/entryinfos.dart';
@@ -168,9 +168,9 @@ class EntryScreenState extends State<EntryScreen>{
 
                   const SizedBox(height: 8),
 
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8, right: 8),
-                    child: AnswerList(answers: entryViewModel.answers),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 8, right: 8),
+                    child: MainAnswersList()
                   )
 
                 ],

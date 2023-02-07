@@ -9,6 +9,7 @@ import 'package:dertly/services/answers_service.dart';
 import 'package:dertly/services/entry_service.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
 import '../locator.dart';
@@ -33,6 +34,8 @@ class EntryViewModel extends ChangeNotifier{
   AnswerModel? currentListeningAnswerModel;
 
   Map<String, PlayerController> answerPlayerControllerMap = {}; // <answerID, PlayerController>: this map holds general answer player controllers (so, not only for the answers of current listening entry)
+
+  final pageSize = 10;
 
   // Services
   EntryService entryService = locator<EntryService>();
@@ -129,26 +132,42 @@ class EntryViewModel extends ChangeNotifier{
   }
 
   // Methods for fetching answers
-  Future<void> fetchAllEntryAnswers() async{
+  Future<void> fetchSomeEntryAnswers(int pageKey, PagingController pagingController) async{
     try{
       if (model == null){
         debugPrint("Could not fetched main answers, model is null");
         return;
       }
 
-      final answersList = await answersRepository.fetchAllMainAnswers(model!.entryID);
-      if (answersList == null) {
+      var startIndex = pageKey * pageSize;
+      var endIndex = startIndex + pageSize - 1;
+
+      final newEntryAnswers = await answersRepository.fetchSomeMainAnswers(model!.entryID, startIndex, endIndex);
+      if (newEntryAnswers == null) {
         debugPrint("Could not fetch answers list, answersList is null");
         return;
       }
 
-      answers = answersList;
+      answers.addAll(newEntryAnswers);
+
+      final previouslyFetchedEntriesCount = pagingController.itemList?.length ?? 0;
+      final isLastPage = model!.getTotalAnswersCount() <= previouslyFetchedEntriesCount + newEntryAnswers.length;
+
+      if (isLastPage) {
+        pagingController.appendLastPage(newEntryAnswers);
+      }
+      else {
+        final nextPageKey = pageKey + 1;
+        pagingController.appendPage(newEntryAnswers, nextPageKey);
+      }
 
     }catch(e){
+      pagingController.error = e;
       return Future.error(Exception(e));
     }
   }
 
+    // TODO: implement fetchSomeSubAnswers
     // This method fetches sub-answers only for the mentionedAnswerID
   Future<void> fetchAllSubAnswers(String mentionedAnswerID) async{
     try{

@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import 'answer_model.dart';
 import 'entry_model.dart';
@@ -29,6 +30,11 @@ class WaveNoOfSamples {
 }
 
 class FeedsModel{
+  final pageSize = 20;
+
+  LinkedHashMap<String, EntryModel> trendEntriesMap = LinkedHashMap.of({});
+  int totalTrendEntriesCount = 0; // TODO: get this from db
+
   List<String> recentEntriesIDList = [];
   LinkedHashMap<String, EntryModel> recentEntriesMap = LinkedHashMap.of({});
 
