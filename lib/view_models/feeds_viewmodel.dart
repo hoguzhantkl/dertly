@@ -63,8 +63,10 @@ class FeedsViewModel extends ChangeNotifier{
     await fetchRecentEntryIDs();
 
     try{
-      var startIndex = pageKey * model.pageSize;
+      var startIndex = min(pageKey * model.pageSize, model.recentEntriesIDList.length - 1);
       var endIndex = min(startIndex + model.pageSize - 1, model.recentEntriesIDList.length - 1);
+
+      debugPrint("fetchSomeRecentEntries, pageKey: $pageKey, startIndex: $startIndex, endIndex: $endIndex");
 
       List<EntryModel> newRecentEntries = [];
 
@@ -106,9 +108,9 @@ class FeedsViewModel extends ChangeNotifier{
       List<EntryModel> newTrendEntries = [];
 
       var startIndex = pageKey * model.pageSize;
-      var endIndex = startIndex + model.pageSize - 1;
+      var limit = model.pageSize;
 
-      var trendEntriesDocuments = await feedsRepository.fetchSomeTrendEntriesDocuments(startIndex, endIndex);
+      var trendEntriesDocuments = await feedsRepository.fetchSomeTrendEntriesDocuments(startIndex, limit);
       if (trendEntriesDocuments != null){
         if (trendEntriesDocuments.isEmpty) {
           debugPrint("No trend entries found");

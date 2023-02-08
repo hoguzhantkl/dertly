@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dertly/services/answers_service.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../locator.dart';
 import '../models/answer_model.dart';
@@ -26,8 +27,10 @@ class AnswersRepository{
     return getAnswerModelsFromDocuments(answersDocuments);
   }
 
-  Future fetchSomeMainAnswers(String entryID, int startIndex, int endIndex) async {
-    var answersDocuments = await answersService.fetchSomeMainAnswersDocuments(entryID, startIndex, endIndex);
+  Future fetchSomeMainAnswers(String entryID, int startIndex, int limit) async {
+    debugPrint("fetchSomeMainAnswers, entryID: $entryID, startIndex: $startIndex, limit: $limit");
+    var answersDocuments = await answersService.fetchSomeMainAnswersDocuments(entryID, startIndex, limit);
+    debugPrint("answersDocuments, answerRepo: $answersDocuments");
     return getAnswerModelsFromDocuments(answersDocuments);
   }
 

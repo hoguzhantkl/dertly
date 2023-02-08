@@ -114,10 +114,12 @@ async function addRecentEntry(entryID) {
         var recentEntriesIDList = recentDocData.recentEntriesIDList;
 
         if (recentEntriesIDList != undefined && recentEntriesIDList.length >= process.env.MAX_RECENT_ENTRIES) {
-            await transaction.update(recentDocSnapshot.ref, { recentEntriesIDList: admin.firestore.FieldValue.arrayRemove(recentEntriesIDList[0]) });
+            recentEntriesIDList.pop();
         }
 
-        return await transaction.update(recentDocSnapshot.ref, { recentEntriesIDList: admin.firestore.FieldValue.arrayUnion(entryID) });
+        recentEntriesIDList.unshift(entryID);
+
+        return await transaction.update(recentDocSnapshot.ref, { recentEntriesIDList: recentEntriesIDList });
     })
     .then(() => {
         functions.logger.log("AddRecentEntry transaction success!");

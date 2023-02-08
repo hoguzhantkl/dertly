@@ -118,7 +118,10 @@ class AnswerListItemState extends State<AnswerListItem>{
                               ),
                               const SizedBox(height: 6),
 
-                              AnswerInfos(answerModel: model),
+                              ChangeNotifierProvider(
+                                  create: (context) => widget.answerViewModel,
+                                  child: AnswerInfos(answerModel: model)
+                              ),
 
                               const SizedBox(height: 12),
 

@@ -8,7 +8,7 @@ import '../models/vote_model.dart';
 import '../services/auth_service.dart';
 import '../services/vote_service.dart';
 
-class AnswerViewModel {
+class AnswerViewModel extends ChangeNotifier{
   AnswerViewModel({required this.model});
 
   AuthService authService = locator<AuthService>();
@@ -39,11 +39,11 @@ class AnswerViewModel {
     await voteService.giveVote(voteModel);
   }
 
-  Future giveUpVote(String entryID) async{
-    await giveVote(entryID, VoteType.upVote);
+  Future giveUpVote(String answerID) async{
+    await giveVote(answerID, VoteType.upVote);
   }
 
-  Future giveDownVote(String entryID) async{
-    await giveVote(entryID, VoteType.downVote);
+  Future giveDownVote(String answerID) async{
+    await giveVote(answerID, VoteType.downVote);
   }
 }

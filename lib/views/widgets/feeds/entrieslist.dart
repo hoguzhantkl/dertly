@@ -32,11 +32,13 @@ class EntriesListState extends State<EntriesList> with AutomaticKeepAliveClientM
       await feedsViewModel.fetchSomeEntriesForCategory(widget.entryCategory, pageKey, pagingController);
     });
 
-    /*pagingController.addPageRequestListener((pageKey) {
-
-    });*/
-
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    pagingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,36 +62,8 @@ class EntriesListState extends State<EntriesList> with AutomaticKeepAliveClientM
           noItemsFoundIndicatorBuilder: (context) => const Center(
             child: Text("No entries found"),
           ),
-          /*firstPageProgressIndicatorBuilder: (context) => const Center(
-            child: CircularProgressIndicator(),
-          ),
-
-          */
         ),
       )
     );
-
-    /*return FutureBuilder(
-      future: feedsViewModel.fetchEntriesForCategory(widget.entryCategory),
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        if(snapshot.connectionState == ConnectionState.done){
-          var entriesMap = feedsViewModel.getEntriesMapForCategory(widget.entryCategory);
-          return RefreshIndicator(
-            onRefresh: () async {
-
-            },
-            child: ListView.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: entriesMap.length,
-              itemBuilder: (context, index){
-                final entryID = entriesMap.keys.elementAt(index);
-                return EntriesListItem(entryID: entryID, displayedEntryCategory: widget.entryCategory);},
-            )
-          );
-        } else {
-          return const CircularProgressIndicator();
-        }
-      }
-    );*/
   }
 }

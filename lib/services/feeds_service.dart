@@ -46,10 +46,10 @@ class FeedsService{
     }
   }
 
-  Future<dynamic> fetchSomeTrendEntriesDocuments(int startIndex, int endIndex) async{
+  Future<dynamic> fetchSomeTrendEntriesDocuments(int startIndex, int limit) async{
     var trendEntriesColRef = firestore.collection("feeds").doc("trendings").collection("list");
     return await trendEntriesColRef.orderBy("score", descending: true)
-        .startAt([startIndex]).endAt([endIndex]).get()
+        .startAt([startIndex]).limit(limit).get()
         .then((documentSnapshots) {
           return documentSnapshots.docs;
         });

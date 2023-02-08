@@ -45,6 +45,7 @@ class EntriesListItemState extends State<EntriesListItem>{
 
   @override
   Widget build(BuildContext context) {
+    final EntryViewModel entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
     final EntryModel? model = getModel();
 
     if (model == null)
@@ -108,13 +109,23 @@ class EntriesListItemState extends State<EntriesListItem>{
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            const Icon(Icons.arrow_upward, size: 20),
+                            InkWell(
+                              onTap: () async{
+                                await entryViewModel.giveUpVote(model.entryID);
+                              },
+                              child: Icon(Icons.arrow_upward, size: 20),
+                            ),
                             Text(model.getTotalUpVotesCount().toString())
                           ],
                         ),
                         Row(
                           children: <Widget>[
-                            const Icon(Icons.arrow_downward, size: 20),
+                            InkWell(
+                              onTap: () async{
+                                await entryViewModel.giveDownVote(model.entryID);
+                              },
+                              child: Icon(Icons.arrow_downward, size: 20),
+                            ),
                             Text(model.getTotalDownVotesCount().toString())
                           ],
                         ),

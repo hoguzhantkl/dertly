@@ -34,6 +34,12 @@ class MainAnswersListState extends State<MainAnswersList> {
   }
 
   @override
+  void dispose() {
+    pagingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
         onRefresh: () => Future.sync(() => pagingController.refresh()),

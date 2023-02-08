@@ -140,9 +140,9 @@ class EntryViewModel extends ChangeNotifier{
       }
 
       var startIndex = pageKey * pageSize;
-      var endIndex = startIndex + pageSize - 1;
+      var limit = pageSize;
 
-      final newEntryAnswers = await answersRepository.fetchSomeMainAnswers(model!.entryID, startIndex, endIndex);
+      final newEntryAnswers = await answersRepository.fetchSomeMainAnswers(model!.entryID, startIndex, limit);
       if (newEntryAnswers == null) {
         debugPrint("Could not fetch answers list, answersList is null");
         return;

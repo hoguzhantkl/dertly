@@ -1,5 +1,7 @@
 import 'package:dertly/models/answer_model.dart';
+import 'package:dertly/view_models/answer_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AnswerInfos extends StatelessWidget{
   const AnswerInfos({super.key, required this.answerModel});
@@ -8,19 +10,31 @@ class AnswerInfos extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    AnswerViewModel answerViewModel = Provider.of<AnswerViewModel>(context, listen: false);
+
     return Row(
         children: [
 
           Row(
             children: [
-              Icon(Icons.arrow_upward_rounded, size: 14, color: Colors.white),
+              InkWell(
+                onTap: () async{
+                  await answerViewModel.giveUpVote(answerModel.answerID);
+                },
+                child: Icon(Icons.arrow_upward_rounded, size: 14, color: Colors.white),
+              ),
               Text("${answerModel.getTotalUpVotesCount()}", style: TextStyle(fontSize:12, color: Colors.white)),
             ],
           ),
           SizedBox(width: 20),
           Row(
             children: [
-              Icon(Icons.arrow_downward_rounded, size: 14, color: Colors.white),
+              InkWell(
+                onTap: () async{
+                  await answerViewModel.giveDownVote(answerModel.answerID);
+                },
+                child: Icon(Icons.arrow_downward_rounded, size: 14, color: Colors.white),
+              ),
               Text("${answerModel.getTotalDownVotesCount()}", style: TextStyle(fontSize:12, color: Colors.white)),
             ],
           ),
