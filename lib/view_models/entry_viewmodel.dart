@@ -28,14 +28,15 @@ class EntryViewModel extends ChangeNotifier{
   final AnswersRepository answersRepository = locator<AnswersRepository>();
 
   EntryModel? model; // currentListeningEntryModel
-  List<AnswerModel> answers = List.of([]); // <answerID, answerModel>
-  LinkedHashMap<String, List<AnswerModel>> subAnswersMap = LinkedHashMap.of({}); // <mentionedAnswerID, List<AnswerModel>>
+  //List<AnswerModel> answers = List.of([]); // <answerID, answerModel>
+  //LinkedHashMap<String, List<AnswerModel>> subAnswersMap = LinkedHashMap.of({}); // <mentionedAnswerID, List<AnswerModel>>
 
   AnswerModel? currentListeningAnswerModel;
 
   Map<String, PlayerController> answerPlayerControllerMap = {}; // <answerID, PlayerController>: this map holds general answer player controllers (so, not only for the answers of current listening entry)
 
   final pageSize = 10;
+  DocumentSnapshot? lastVisibleDocumentSnapshot;
 
   // Services
   EntryService entryService = locator<EntryService>();
@@ -45,14 +46,17 @@ class EntryViewModel extends ChangeNotifier{
   AudioService audioService = locator<AudioService>();
 
   void init(){
-    answers = List.of([]);
-    subAnswersMap = LinkedHashMap.of({});
+    clear();
   }
 
   @override
   void dispose() {
     disposeAllAnswerPlayerControllers();
     super.dispose();
+  }
+
+  void clear(){
+    lastVisibleDocumentSnapshot = null;
   }
 
   void setEntryModel(EntryModel? entryModel){
@@ -121,7 +125,8 @@ class EntryViewModel extends ChangeNotifier{
                 answerID: "", mentionedAnswerID: mentionedAnswerID, mentionedUserID: mentionedUserID,
                 answerType: answerType,
                 audioUrl: recordedAudioFileLocalUrl, audioWaveData: audioWaveformData, audioDuration: audioDuration,
-                date: Timestamp.now(), totalVotes: totalVotesMap());
+                date: Timestamp.now(),
+                totalSubAnswers: 0, totalVotes: totalVotesMap());
 
             await answersService.createAnswer(answerModel);
           })
@@ -132,26 +137,31 @@ class EntryViewModel extends ChangeNotifier{
   }
 
   // Methods for fetching answers
-  Future<void> fetchSomeEntryAnswers(int pageKey, PagingController pagingController) async{
+  Future<void> fetchSomeEntryMainAnswers(int pageKey, PagingController pagingController, {bool firstFetch = false}) async{
     try{
       if (model == null){
         debugPrint("Could not fetched main answers, model is null");
         return;
       }
 
-      var startIndex = pageKey * pageSize;
+      debugPrint("fetchSomeEntryMainAnswers, pageKey: $pageKey, for entryID: ${model!.entryID}");
+
       var limit = pageSize;
 
-      final newEntryAnswers = await answersRepository.fetchSomeMainAnswers(model!.entryID, startIndex, limit);
+      final previouslyFetchedEntriesCount = pagingController.itemList?.length ?? 0;
+
+      final newEntryAnswersDocs = await answersRepository.fetchSomeMainAnswerDocuments(model!.entryID, lastVisibleDocumentSnapshot, limit);
+      final newEntryAnswers = answersRepository.getAnswerModelsFromDocuments(newEntryAnswersDocs);
       if (newEntryAnswers == null) {
         debugPrint("Could not fetch answers list, answersList is null");
         return;
       }
 
-      answers.addAll(newEntryAnswers);
+      if (newEntryAnswersDocs.length > 0){
+        lastVisibleDocumentSnapshot = newEntryAnswersDocs[newEntryAnswersDocs.length - 1];
+      }
 
-      final previouslyFetchedEntriesCount = pagingController.itemList?.length ?? 0;
-      final isLastPage = model!.getTotalAnswersCount() <= previouslyFetchedEntriesCount + newEntryAnswers.length;
+      final isLastPage = model!.getTotalMainAnswersCount() <= previouslyFetchedEntriesCount + newEntryAnswers.length;
 
       if (isLastPage) {
         pagingController.appendLastPage(newEntryAnswers);
@@ -161,31 +171,10 @@ class EntryViewModel extends ChangeNotifier{
         pagingController.appendPage(newEntryAnswers, nextPageKey);
       }
 
+      debugPrint("newEntryAnswers: ${newEntryAnswers.length} (pageKey: $pageKey)");
+
     }catch(e){
       pagingController.error = e;
-      return Future.error(Exception(e));
-    }
-  }
-
-    // TODO: implement fetchSomeSubAnswers
-    // This method fetches sub-answers only for the mentionedAnswerID
-  Future<void> fetchAllSubAnswers(String mentionedAnswerID) async{
-    try{
-      if (model == null){
-        debugPrint("Could not fetched sub answers for mentionedAnswerID: $mentionedAnswerID, model is null");
-        return;
-      }
-
-      final subAnswersList = await answersRepository.fetchAllSubAnswers(model!.entryID, mentionedAnswerID);
-      if (subAnswersList == null) {
-        debugPrint("Could not fetch sub answers list for mentionedAnswerID: $mentionedAnswerID, answersList is null");
-        return;
-      }
-
-      debugPrint("Fetched sub answers for mentionedAnswerID: $mentionedAnswerID, subAnswersList: $subAnswersList");
-      subAnswersMap[mentionedAnswerID] = subAnswersList;
-
-    }catch(e){
       return Future.error(Exception(e));
     }
   }

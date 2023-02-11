@@ -64,6 +64,10 @@ class EntryModel{
     return totalAnswers.values.reduce((value, element) => value + element);
   }
 
+  int getTotalMainAnswersCount(){
+    return getTotalSupporterAnswersCount() + getTotalNeutralAnswersCount() + getTotalOpponentAnswersCount();
+  }
+
   int getTotalSupporterAnswersCount(){
     return totalAnswers[AnswerType.support.name] ?? 0;
   }

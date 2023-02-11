@@ -14,7 +14,6 @@ import '../../../core/themes/custom_colors.dart';
 import '../../../view_models/answer_viewmodel.dart';
 import '../../../view_models/feeds_viewmodel.dart';
 import '../audiowave.dart';
-import 'mainanswerslist.dart';
 
 class AnswerListItem extends StatefulWidget
 {
@@ -32,8 +31,9 @@ class AnswerListItemState extends State<AnswerListItem>{
 
   @override
   void initState(){
-    debugPrint("AnswerListItemState.initState() called for answerID: ${widget.answerViewModel.model.answerID}");
+    //debugPrint("AnswerListItemState.initState() called for answerID: ${widget.answerViewModel.model.answerID}");
     entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
+
     super.initState();
   }
 
@@ -44,7 +44,7 @@ class AnswerListItemState extends State<AnswerListItem>{
     playerController = entryViewModel.createAnswerPlayerController(widget.answerViewModel.model.answerID);
 
     return FutureBuilder(
-      future: widget.answerViewModel.fetchData(entryViewModel),
+      future: widget.answerViewModel.fetchSomeSubAnswers(entryViewModel, firstFetch: true),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done){
           return Padding(
@@ -129,13 +129,12 @@ class AnswerListItemState extends State<AnswerListItem>{
                                 children: [
                                   Expanded(
                                     child: ValueListenableBuilder(
-                                        valueListenable: widget.answerViewModel.listedAnswerItemCount,
+                                        valueListenable: widget.answerViewModel.model.listedSubAnswerItemCount,
                                         builder: (BuildContext context, int value, Widget? child) {
                                           return Visibility
                                           (
-                                            visible: widget.answerViewModel.subAnswers.isNotEmpty && widget.answerViewModel.listedAnswerItemCount.value > 0,
-                                            // TODO: implement paginated subAnswers
-                                            child: SubAnswersList(answers: widget.answerViewModel.subAnswers.sublist(0, widget.answerViewModel.listedAnswerItemCount.value)),
+                                            visible: widget.answerViewModel.model.subAnswers.isNotEmpty && widget.answerViewModel.model.listedSubAnswerItemCount.value > 0,
+                                            child: SubAnswersList(answers: widget.answerViewModel.model.subAnswers.sublist(0, widget.answerViewModel.model.listedSubAnswerItemCount.value)), //
                                           );
                                         }
                                     ),
@@ -145,13 +144,17 @@ class AnswerListItemState extends State<AnswerListItem>{
 
                               // Load More Answers to this answer
                               ValueListenableBuilder(
-                                valueListenable: widget.answerViewModel.listedAnswerItemCount,
+                                valueListenable: widget.answerViewModel.model.listedSubAnswerItemCount,
                                 builder: (BuildContext context, int value, Widget? child){
                                   return Visibility(
-                                      visible: widget.answerViewModel.subAnswers.isNotEmpty && widget.answerViewModel.listedAnswerItemCount.value < widget.answerViewModel.subAnswers.length,
+                                      visible: widget.answerViewModel.canLoadMoreSubAnswers(),
                                       child: InkWell(
-                                          onTap: (){
-                                            widget.answerViewModel.listedAnswerItemCount.value = min(widget.answerViewModel.listedAnswerItemCount.value+widget.answerViewModel.paging, widget.answerViewModel.subAnswers.length);
+                                          onTap: () async{
+                                            widget.answerViewModel.fetchSomeSubAnswers(entryViewModel)
+                                              .catchError((onError){
+                                                debugPrint(onError.toString());
+                                            });
+                                            //widget.answerViewModel.model.listedSubAnswerItemCount.value = min(widget.answerViewModel.model.listedSubAnswerItemCount.value+widget.answerViewModel.model.pageSize, widget.answerViewModel.subAnswers.length);
                                           },
                                           child: Column(
                                             children: [
@@ -173,7 +176,7 @@ class AnswerListItemState extends State<AnswerListItem>{
 
                                                       Icon(Icons.mic, size: 14, color: Colors.white),
 
-                                                      Text("${widget.answerViewModel.subAnswers.length - widget.answerViewModel.listedAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
+                                                      Text("${widget.answerViewModel.model.totalSubAnswers - widget.answerViewModel.model.listedSubAnswerItemCount.value}", style: TextStyle(fontSize: 12, color: Colors.white))
                                                     ],
                                                   )
                                               ),
@@ -185,6 +188,8 @@ class AnswerListItemState extends State<AnswerListItem>{
                                   );
                                 }
                               )
+
+                              // TODO: add a button to hide when all subAnswers are loaded
                             ],
                           ),
                         )

@@ -46,13 +46,21 @@ class AnswerModel{
   final AnswerType answerType;
   final Timestamp date;
   final Map<String, int> totalVotes;
+  int totalSubAnswers;
+
+  final int pageSize = 10; // The number of sub answers to be displayed when user tries loading more sub-answers
+  final int pageSizeForFirstFetch = 3;
+  final ValueNotifier<int> listedSubAnswerItemCount = ValueNotifier<int>(0);
+  DocumentSnapshot? lastVisibleDocumentSnapshot;
+  List<AnswerModel> subAnswers = List.of([]);
 
   AnswerModel({
     required this.entryID, required this.answerID, required this.userID,
     this.mentionedAnswerID = '', this.mentionedUserID = '',
     required this.audioUrl, required this.audioWaveData, required this.audioDuration,
     required this.answerType,
-    required this.date, required this.totalVotes
+    required this.date,
+    required this.totalSubAnswers, required this.totalVotes
   });
 
   factory AnswerModel.fromMap(Map<String, dynamic> data){
@@ -67,6 +75,7 @@ class AnswerModel{
       audioDuration: data['audioDuration'],
       answerType: AnswerType.values.byName(data['answerType']),
       date: data['date'],
+      totalSubAnswers: data['totalSubAnswers'] ?? 0,
       totalVotes: data['totalVotes'].cast<String, int>(),
     );
   }
@@ -83,6 +92,7 @@ class AnswerModel{
       'audioDuration': audioDuration,
       'answerType': answerType.name,
       'date': date,
+      'totalSubAnswers': totalSubAnswers,
       'totalVotes': totalVotes
     };
   }

@@ -7,7 +7,11 @@ exports.onAnswerAdded = functions.firestore.document('answers/{answerId}').onCre
 
     functions.logger.log('Answer added', 'answerID:', answerId, 'userID:', answerData.userID, 'entryID:', answerData.entryID);
 
-    await updateTotalAnswer(answerData.entryID, answerData.answerType, +1);
+    await updateTotalAnswersCount(answerData.entryID, answerData.answerType, +1);
+
+    if (isSubAnswer(answerData)) {
+        await updateTotalSubAnswersCount(answerData.mentionedAnswerID, +1);
+    }
 
     return Promise.resolve();
 });
@@ -18,12 +22,16 @@ exports.onAnswerDeleted = functions.firestore.document('answers/{answerId}').onD
 
     functions.logger.log('Answer deleted', 'answerID:', answerId, 'userID:', answerData.userID, 'entryID:', answerData.entryID);
 
-    await updateTotalAnswer(answerData.entryID, answerData.answerType, -1);
+    await updateTotalAnswersCount(answerData.entryID, answerData.answerType, -1);
+
+    if (isSubAnswer(answerData)) {
+        await updateTotalSubAnswersCount(answerData.mentionedAnswerID, -1);
+    }
 
     return Promise.resolve();
 });
 
-async function updateTotalAnswer(entryID, answerType, offset) {
+async function updateTotalAnswersCount(entryID, answerType, offset) {
     const db = admin.firestore();
     functions.logger.log("totalAnswers will be updated", "entryID:", entryID, "offset:", offset);
     return db.runTransaction(async (transaction) => {
@@ -34,9 +42,32 @@ async function updateTotalAnswer(entryID, answerType, offset) {
         await transaction.update(entryDoc, { ['totalAnswers.' + answerType]: answerCount });
     })
     .then(() => {
-        functions.logger.log("updateTotalAnswer transaction success!");
+        functions.logger.log("updateTotalAnswersCount transaction success!");
     })
     .catch((error) => {
-        functions.logger.log("updateTotalAnswer transaction failed:", error);
+        functions.logger.log("updateTotalAnswersCount transaction failed:", error);
+    });
+}
+
+function isSubAnswer(answerData) {
+    return answerData.mentionedAnswerID != "";
+}
+
+async function updateTotalSubAnswersCount(mentionedAnswerID, offset) {
+    const db = admin.firestore();
+    functions.logger.log("totalSubAnswers will be updated", "mentionedAnswerID:", mentionedAnswerID, "offset:", offset);
+
+    return db.runTransaction(async (transaction) => {
+        var answerDoc = db.collection('answers').doc(mentionedAnswerID);
+        var answerDocSnapshot = await transaction.get(answerDoc);
+        var answerDocData = answerDocSnapshot.data();
+        var subAnswerCount = Math.max(answerDocData.totalSubAnswers + offset, 0);
+        await transaction.update(answerDoc, { totalSubAnswers: subAnswerCount });
+    })
+    .then(() => {
+        functions.logger.log("updateTotalSubAnswersCount transaction success!");
+    })
+    .catch((error) => {
+        functions.logger.log("updateTotalSubAnswersCount transaction failed:", error);
     });
 }

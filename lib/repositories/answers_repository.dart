@@ -27,16 +27,17 @@ class AnswersRepository{
     return getAnswerModelsFromDocuments(answersDocuments);
   }
 
-  Future fetchSomeMainAnswers(String entryID, int startIndex, int limit) async {
-    debugPrint("fetchSomeMainAnswers, entryID: $entryID, startIndex: $startIndex, limit: $limit");
-    var answersDocuments = await answersService.fetchSomeMainAnswersDocuments(entryID, startIndex, limit);
-    debugPrint("answersDocuments, answerRepo: $answersDocuments");
-    return getAnswerModelsFromDocuments(answersDocuments);
+  Future fetchSomeMainAnswerDocuments(String entryID, DocumentSnapshot? lastVisibleDoc, int limit) async {
+    debugPrint("answersRepo - fetchSomeMainAnswers, entryID: $entryID, lastVisibleDoc data: ${lastVisibleDoc?.data()}, limit: $limit");
+    var answersDocuments = await answersService.fetchSomeMainAnswersDocuments(entryID, lastVisibleDoc, limit);
+    debugPrint("answersRepo - mainAnswersDocuments, answerRepo: $answersDocuments");
+    return answersDocuments;
   }
 
-  Future fetchAllSubAnswers(String entryID, String mentionedAnswerID) async{
-    var answersDocuments = await answersService.fetchAllSubAnswersDocuments(entryID, mentionedAnswerID);
-    return getAnswerModelsFromDocuments(answersDocuments);
+  Future fetchSomeSubAnswerDocuments(String entryID, String mentionedAnswerID, DocumentSnapshot? lastVisibleDoc, int limit) async {
+    debugPrint("answersRepo - fetchSomeSubAnswers, entryID: $entryID, mentionedAnswerID: $mentionedAnswerID, lastVisibleDoc data: ${lastVisibleDoc?.data()} limit: $limit");
+    var answersDocuments = await answersService.fetchSomeSubAnswersDocuments(entryID, mentionedAnswerID, lastVisibleDoc, limit);
+    debugPrint("answersRepo - subAnswersDocuments, mentionedAnswerID: $mentionedAnswerID, answerRepo: $answersDocuments");
+    return answersDocuments;
   }
-
 }

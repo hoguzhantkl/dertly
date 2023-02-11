@@ -24,10 +24,14 @@ class MainAnswersListState extends State<MainAnswersList> {
 
   @override
   void initState() {
+    debugPrint("MainAnswersListState initState()");
     entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
 
     pagingController.addPageRequestListener((pageKey) async{
-      await entryViewModel.fetchSomeEntryAnswers(pageKey, pagingController);
+      await entryViewModel.fetchSomeEntryMainAnswers(pageKey, pagingController)
+          .catchError((onError) {
+            debugPrint("mainAnswerList, error while fetching some entry main answers, ${onError.toString()}");
+          });
     });
 
     super.initState();
@@ -35,6 +39,7 @@ class MainAnswersListState extends State<MainAnswersList> {
 
   @override
   void dispose() {
+    debugPrint("MainAnswersListState dispose()");
     pagingController.dispose();
     super.dispose();
   }
@@ -52,9 +57,11 @@ class MainAnswersListState extends State<MainAnswersList> {
             itemBuilder: (context, item, index) {
               return AnswerListItem(answerViewModel: AnswerViewModel(model: item));
             },
-            firstPageProgressIndicatorBuilder: (context) => const Center(
-              child: CircularProgressIndicator(),
-            ),
+            /*firstPageProgressIndicatorBuilder: (context) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },*/
             firstPageErrorIndicatorBuilder: (context) {
               pagingController.refresh();
               return const Center(

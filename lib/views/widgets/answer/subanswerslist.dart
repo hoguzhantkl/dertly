@@ -22,16 +22,16 @@ class SubAnswersList extends StatefulWidget{
 class SubAnswersListState extends State<SubAnswersList> {
   @override
   Widget build(BuildContext context) {
-    debugPrint("AnswerListState, answers.length: ${widget.answers.length}");
+    //debugPrint("SubAnswerListState, answers.length: ${widget.answers.length}");
     return ListView.builder(
         padding: const EdgeInsets.all(0),
         shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         itemCount: widget.answers.length,
         itemBuilder: (context, index) {
-          debugPrint("AnswerListState, index: $index");
+          //debugPrint("SubAnswerListState, index: $index");
           AnswerModel answerModel = widget.answers.elementAt(index); // widget.answersMap[widget.answersMap.keys.elementAt(index)]!;
-          debugPrint("AnswerListState, answerModel.answerID: ${answerModel.answerID}, mentionedAnswerID: ${answerModel.mentionedAnswerID}");
+          //debugPrint("SubAnswerListState, answerModel.answerID: ${answerModel.answerID}, mentionedAnswerID: ${answerModel.mentionedAnswerID}");
           return AnswerListItem(answerViewModel: AnswerViewModel(model: answerModel));
         }
     );

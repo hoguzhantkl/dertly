@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dertly/repositories/answers_repository.dart';
 import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -14,18 +15,57 @@ class AnswerViewModel extends ChangeNotifier{
   AuthService authService = locator<AuthService>();
   VoteService voteService = locator<VoteService>();
 
+  AnswersRepository answersRepository = locator<AnswersRepository>();
+
   final AnswerModel model;
 
-  List<AnswerModel> subAnswers = List.of([]);
-  final int paging = 2; // The number of sub answers to be displayed when user tries loading more sub-answers
-  final ValueNotifier<int> listedAnswerItemCount = ValueNotifier<int>(0);
+  void init(){
+    clear();
+  }
 
-  Future fetchData(EntryViewModel entryViewModel) async {
-    if (model.isMainAnswer())
-    {
-      debugPrint("Fetching all sub answers for main answer with answerID: ${model.answerID}");
-      await entryViewModel.fetchAllSubAnswers(model.answerID);
-      subAnswers = entryViewModel.subAnswersMap[model.answerID]!;
+  void clear(){
+    model.subAnswers = List.of([]);
+    model.listedSubAnswerItemCount.value = 0;
+    model.lastVisibleDocumentSnapshot = null;
+  }
+
+  Future<void> fetchSomeSubAnswers(EntryViewModel entryViewModel, {bool firstFetch = false}) async{
+    debugPrint("answerViewModel, mentionedAnswerID: ${model.answerID} fetchSomeSubAnswers has been called");
+    try{
+      if (model.isMainAnswer())
+      {
+        var mentionedAnswerID = model.answerID;
+
+        if (entryViewModel.model == null){
+          debugPrint("Could not fetched sub answers for mentionedAnswerID: $mentionedAnswerID, model in entryViewModel is null");
+          return;
+        }
+
+        if (firstFetch){
+          init();
+        }
+
+        debugPrint("answerViewModel, Fetching some sub answers for main answer with answerID: $mentionedAnswerID, totalSubAnswers: ${model.totalSubAnswers}, listedSubAnswerItemCount: ${model.listedSubAnswerItemCount.value}");
+        var limit = (firstFetch) ? model.pageSizeForFirstFetch : model.pageSize;
+
+        final newSubAnswersDocs = await answersRepository.fetchSomeSubAnswerDocuments(entryViewModel.model!.entryID, model.answerID, model.lastVisibleDocumentSnapshot, limit);
+        final newSubAnswers = answersRepository.getAnswerModelsFromDocuments(newSubAnswersDocs);
+        if (newSubAnswers == null) {
+          debugPrint("Could not fetch sub answers list for mentionedAnswerID: $mentionedAnswerID, answersList is null");
+          return;
+        }
+
+        if (newSubAnswersDocs.length > 0){
+          model.lastVisibleDocumentSnapshot = newSubAnswersDocs[newSubAnswersDocs.length - 1];
+        }
+
+        debugPrint("Fetched sub answers for mentionedAnswerID: $mentionedAnswerID, subAnswersList: $newSubAnswers");
+
+        model.subAnswers.addAll(newSubAnswers);
+        model.listedSubAnswerItemCount.value += newSubAnswers.length;
+      }
+    }catch(e){
+      return Future.error(Exception(e));
     }
   }
 
@@ -45,5 +85,10 @@ class AnswerViewModel extends ChangeNotifier{
 
   Future giveDownVote(String answerID) async{
     await giveVote(answerID, VoteType.downVote);
+  }
+
+  // Methods for General Answer Operations
+  bool canLoadMoreSubAnswers(){
+    return model.listedSubAnswerItemCount.value < model.totalSubAnswers;
   }
 }
