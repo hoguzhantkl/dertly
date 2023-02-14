@@ -113,7 +113,11 @@ async function addRecentEntry(entryID) {
         var recentDocData = recentDocSnapshot.data();
         var recentEntriesIDList = recentDocData.recentEntriesIDList;
 
-        if (recentEntriesIDList != undefined && recentEntriesIDList.length >= process.env.MAX_RECENT_ENTRIES) {
+        if (recentEntriesIDList == undefined){
+            recentEntriesIDList = [];
+        }
+
+        if (recentEntriesIDList.length >= process.env.MAX_RECENT_ENTRIES) {
             recentEntriesIDList.pop();
         }
 

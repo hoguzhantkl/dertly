@@ -10,9 +10,6 @@ class FeedsService{
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   AuthService authService = locator<AuthService>();
 
-  static const int trendEntriesPaginateLimit = 10;
-  DocumentSnapshot? lastTrendEntryDocSnapshot; // TODO: we can change this to index based pagination instead of doc based pagination?
-
   // Recents
   Future<dynamic> fetchRecentEntriesData() async{
     var feedsCollectionRef = firestore.collection("feeds");
@@ -27,31 +24,45 @@ class FeedsService{
   }
 
   // Trendings
-  Future<dynamic> fetchTrendEntriesDocuments({bool limited = true}) async{
-    var trendEntriesColRef = firestore.collection("feeds").doc("trendings").collection("list");
-    if (limited){
-      return await trendEntriesColRef.orderBy("score", descending: true).limit(trendEntriesPaginateLimit).get()
-          .then((documentSnapshots) {
-        if (documentSnapshots.docs.isNotEmpty) {
-          lastTrendEntryDocSnapshot = documentSnapshots.docs[documentSnapshots.docs.length - 1];
-        }
-        return documentSnapshots.docs;
-      });
+  Future<dynamic> fetchTrendEntriesData() async{
+    var feedsCollectionRef = firestore.collection("feeds");
+    var trendEntriesDocRef = feedsCollectionRef.doc("trendings");
+    var trendEntriesDocSnapshot = await trendEntriesDocRef.get();
+    if (trendEntriesDocSnapshot.exists){
+      return trendEntriesDocSnapshot.data();
     }
     else{
-      return await trendEntriesColRef.orderBy("score", descending: true).get()
-        .then((trendEntriesQuerySnapshot) {
-          return trendEntriesQuerySnapshot.docs;
-        });
+      return null;
     }
   }
 
-  Future<dynamic> fetchSomeTrendEntriesDocuments(int startIndex, int limit) async{
+  Future<dynamic> fetchTrendEntriesDocuments() async{
     var trendEntriesColRef = firestore.collection("feeds").doc("trendings").collection("list");
-    return await trendEntriesColRef.orderBy("score", descending: true)
-        .startAt([startIndex]).limit(limit).get()
-        .then((documentSnapshots) {
+    return await trendEntriesColRef.orderBy("score", descending: true).get()
+        .then((trendEntriesQuerySnapshot) {
+      return trendEntriesQuerySnapshot.docs;
+    });
+  }
+
+  Future<dynamic> fetchSomeTrendEntriesDocuments(DocumentSnapshot? lastVisibleDoc, int limit) async{
+    try{
+      var trendEntriesColRef = firestore.collection("feeds").doc("trendings").collection("list");
+
+      if (lastVisibleDoc == null){
+        return await trendEntriesColRef.orderBy("score", descending: true).limit(limit).get()
+            .then((documentSnapshots) {
           return documentSnapshots.docs;
         });
+      }
+
+      debugPrint("feedsService fetchSomeTrendEntries, lastVisibleDoc data: ${lastVisibleDoc.data()}");
+
+      return await trendEntriesColRef.orderBy("score", descending: true).startAfterDocument(lastVisibleDoc).limit(limit).get()
+          .then((documentSnapshots) {
+            return documentSnapshots.docs;
+          });
+    }catch(e){
+      return Future.error(Exception("Error while fetching some trend entries, error: $e"));
+    }
   }
 }

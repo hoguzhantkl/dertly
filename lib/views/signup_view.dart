@@ -20,11 +20,10 @@ class SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final router = locator<rtr.Router>();
+    AuthViewModel authViewModel = Provider.of<AuthViewModel>(context, listen: false);
 
-    AuthViewModel authViewModel =
-        Provider.of<AuthViewModel>(context, listen: false);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: <Widget>[
           Padding(
@@ -38,14 +37,14 @@ class SignUpScreenState extends State<SignUpScreen> {
                   icon: const Icon(Icons.arrow_back_rounded),
                 ),
                 const Text(
-                  "Hey!",
+                  "Sign Up",
                   style: TextStyle(fontSize: 24),
                 )
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 150, 20, 16),
+            padding: const EdgeInsets.fromLTRB(20, 70, 20, 16),
             child: Column(
               children: <Widget>[
                 Padding(

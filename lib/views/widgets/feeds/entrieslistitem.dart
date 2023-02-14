@@ -27,15 +27,18 @@ class EntriesListItem extends StatefulWidget{
 
 class EntriesListItemState extends State<EntriesListItem>{
   late PlayerController? playerController;
+  FeedsViewModel? feedsViewModel;
 
   @override
   void initState(){
-    playerController = Provider.of<FeedsViewModel>(context, listen: false).createEntryPlayerController(widget.entryID);
+    feedsViewModel = Provider.of<FeedsViewModel>(context, listen: false);
+    playerController = Provider.of<FeedsViewModel>(context, listen: false).getEntryPlayerController(widget.entryID);
     super.initState();
   }
 
   @override
   void dispose(){
+    feedsViewModel?.disposeEntryPlayerController(widget.entryID);
     super.dispose();
   }
 
@@ -58,7 +61,7 @@ class EntriesListItemState extends State<EntriesListItem>{
       direction: Axis.vertical,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 0.0),
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 2.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

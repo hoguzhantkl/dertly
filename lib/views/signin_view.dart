@@ -20,10 +20,7 @@ class SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final router = locator<rtr.Router>();
-
-    AuthViewModel authViewModel =
-        Provider.of<AuthViewModel>(context, listen: false);
+    AuthViewModel authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -38,14 +35,14 @@ class SignInScreenState extends State<SignInScreen> {
                   icon: const Icon(Icons.arrow_back_rounded),
                 ),
                 const Text(
-                  "Welcome Back!",
+                  "Welcome!",
                   style: TextStyle(fontSize: 24),
                 )
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 150, 20, 16),
+            padding: const EdgeInsets.fromLTRB(20, 70, 20, 0),
             child: Column(
               children: <Widget>[
                 Padding(
@@ -98,7 +95,7 @@ class SignInScreenState extends State<SignInScreen> {
                       },
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all(const Color(0xFF118275)),
+                        MaterialStateProperty.all(const Color(0xFF118275)),
                         shape: MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25.0))),
                         padding: MaterialStateProperty.all(
@@ -107,7 +104,7 @@ class SignInScreenState extends State<SignInScreen> {
                       child: const Text(
                         'Log me in',
                         style:
-                            TextStyle(color: CustomColors.beige, fontSize: 20),
+                        TextStyle(color: CustomColors.beige, fontSize: 20),
                       ),
                     ),
                   ),

@@ -58,6 +58,7 @@ class FeedsScreenState extends State<FeedsScreen> with SingleTickerProviderState
               Tab(text: 'FOLLOWERS'),
             ],
             indicatorColor: Theme.of(context).indicatorColor,
+            indicatorPadding: const EdgeInsets.only(bottom: 4.0),
             controller: tabController,
           )
         ),
@@ -66,7 +67,7 @@ class FeedsScreenState extends State<FeedsScreen> with SingleTickerProviderState
           child: TabBarView(
             controller: tabController,
             children: const <Widget>[
-              Center(child: Text("TRENDS")),
+              EntriesList(entryCategory: EntryCategory.trendings),
               EntriesList(entryCategory: EntryCategory.recents),
               Center(child: Text('YOURTURN')),
               Center(child: Text('FOLLOWERS')),

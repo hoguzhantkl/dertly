@@ -63,23 +63,27 @@ class FeedsViewModel extends ChangeNotifier{
     await fetchRecentEntryIDs();
 
     try{
-      var startIndex = min(pageKey * model.pageSize, model.recentEntriesIDList.length - 1);
-      var endIndex = min(startIndex + model.pageSize - 1, model.recentEntriesIDList.length - 1);
 
-      debugPrint("fetchSomeRecentEntries, pageKey: $pageKey, startIndex: $startIndex, endIndex: $endIndex");
+      var recentEntriesIDListLength = model.recentEntriesIDList.length;
+      var startIndex = min(pageKey * model.pageSize, recentEntriesIDListLength - 1);
+      var endIndex = min(startIndex + model.pageSize - 1, recentEntriesIDListLength - 1);
+
+      debugPrint("fetchSomeRecentEntries, pageKey: $pageKey, startIndex: $startIndex, endIndex: $endIndex, recentEntriesIDListLength: $recentEntriesIDListLength");
 
       List<EntryModel> newRecentEntries = [];
 
-      for (var i = startIndex; i <= endIndex; i++){
-        var entryID = model.recentEntriesIDList[i];
-        var entry = await entryRepository.fetchEntry(entryID);
-        if (entry == null){
-          debugPrint("Could not fetch entry data for entryID: $entryID");
-        }
-        else{
-          model.recentEntriesMap[entryID] = entry;
-          newRecentEntries.add(entry);
-          debugPrint("some, Fetched entry data for entryID: $entryID from data entryID ${model.recentEntriesMap[entryID]?.entryID}");
+      if (startIndex >= 0 && startIndex <= recentEntriesIDListLength && endIndex <= recentEntriesIDListLength){
+        for (var i = startIndex; i <= endIndex; i++){
+          var entryID = model.recentEntriesIDList[i];
+          var entry = await entryRepository.fetchEntry(entryID);
+          if (entry == null){
+            debugPrint("Could not fetch entry data for entryID: $entryID");
+          }
+          else{
+            model.recentEntriesMap[entryID] = entry;
+            newRecentEntries.add(entry);
+            debugPrint("some, Fetched entry data for entryID: $entryID from data entryID ${model.recentEntriesMap[entryID]?.entryID}");
+          }
         }
       }
 
@@ -102,21 +106,42 @@ class FeedsViewModel extends ChangeNotifier{
   }
 
   // Trendings
+  Future fetchTrendEntriesCount() async{
+    try{
+      final totalTrendEntriesCount = await feedsRepository.fetchTrendEntriesCount();
+      if (totalTrendEntriesCount == null) {
+        debugPrint("Could not fetch trend entries count, totalTrendEntriesCount is null");
+      }
+      else{
+        model.totalTrendEntriesCount = totalTrendEntriesCount;
+      }
+    }catch(e){
+      return Future.error(Exception(e));
+    }
+  }
 
   Future fetchSomeTrendEntries(int pageKey, PagingController pagingController) async{
+    await fetchTrendEntriesCount();
+
     try{
+      if (pageKey == 0){
+        model.clearTrendEntries();
+      }
+
       List<EntryModel> newTrendEntries = [];
 
-      var startIndex = pageKey * model.pageSize;
       var limit = model.pageSize;
 
-      var trendEntriesDocuments = await feedsRepository.fetchSomeTrendEntriesDocuments(startIndex, limit);
+      var trendEntriesDocuments = await feedsRepository.fetchSomeTrendEntriesDocuments(model.lastVisibleTrendEntryDocumentSnapshot, limit);
       if (trendEntriesDocuments != null){
         if (trendEntriesDocuments.isEmpty) {
           debugPrint("No trend entries found");
         }
 
-        for (var trendEntryDoc in trendEntriesDocuments){
+        var trendEntriesDocumentsCount = trendEntriesDocuments.length;
+
+        for (int i=0; i<trendEntriesDocumentsCount; i++){
+          var trendEntryDoc = trendEntriesDocuments[i];
           var entryID = trendEntryDoc["entryID"];
           EntryModel? entry = await entryRepository.fetchEntry(entryID);
           if (entry == null){
@@ -126,6 +151,10 @@ class FeedsViewModel extends ChangeNotifier{
             model.trendEntriesMap[entryID] = entry;
             newTrendEntries.add(entry);
             debugPrint("trend, Fetched entry data for entryID: $entryID from data entryID ${entry.entryID}");
+
+            if (i == trendEntriesDocumentsCount - 1){
+              model.lastVisibleTrendEntryDocumentSnapshot = trendEntryDoc;
+            }
           }
         }
 
@@ -177,7 +206,7 @@ class FeedsViewModel extends ChangeNotifier{
 
   // Methods for listening to entry
   PlayerController createEntryPlayerController(String entryID){
-    disposeEntryPlayerController(entryID);
+    //disposeEntryPlayerController(entryID);
 
     model.entryPlayerControllerMap[entryID] = PlayerController();
 
@@ -259,10 +288,16 @@ class FeedsViewModel extends ChangeNotifier{
   Future fetchSomeEntriesForCategory(EntryCategory entryCategory, int pageKey, PagingController pagingController) async{
     switch(entryCategory){
       case EntryCategory.trendings:
-        await fetchSomeTrendEntries(pageKey, pagingController);
+        await fetchSomeTrendEntries(pageKey, pagingController)
+          .catchError((onError) {
+            debugPrint("Could not fetch some trend entries, error: ${onError.toString()}");
+          });
         break;
       case EntryCategory.recents:
-        await fetchSomeRecentEntries(pageKey, pagingController);
+        await fetchSomeRecentEntries(pageKey, pagingController)
+          .catchError((onError) {
+            debugPrint("Could not fetch some recent entries, error: ${onError.toString()}");
+          });
         break;
       default:
         break;
@@ -271,6 +306,8 @@ class FeedsViewModel extends ChangeNotifier{
 
   LinkedHashMap<String, EntryModel> getEntriesMapForCategory(EntryCategory entryCategory){
     switch(entryCategory){
+      case EntryCategory.trendings:
+        return model.trendEntriesMap;
       case EntryCategory.recents:
         return model.recentEntriesMap;
       default:
@@ -279,12 +316,13 @@ class FeedsViewModel extends ChangeNotifier{
   }
 
   EntryModel? getEntryModel(String? entryID, EntryCategory displayedEntryCategory){
-    switch(displayedEntryCategory){
-      case EntryCategory.recents:
-        return model.recentEntriesMap[entryID];
-      default:
-        return null;
+    var entryMap = getEntriesMapForCategory(displayedEntryCategory);
+
+    if (entryMap.containsKey(entryID)){
+      return entryMap[entryID];
     }
+
+    return null;
   }
 
   EntryModel? getCurrentListeningEntryModel(){

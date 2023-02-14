@@ -28,6 +28,7 @@ class LandingScreenState extends State<LandingScreen> {
     final router = locator<rtr.Router>();
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: CustomColors.black,
       body: Padding(
         padding: const EdgeInsets.all(20),

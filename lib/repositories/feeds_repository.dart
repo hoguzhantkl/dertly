@@ -18,13 +18,22 @@ class FeedsRepository{
   }
 
   // Trendings
+  Future fetchTrendEntriesCount() async{
+    var trendEntriesData = await feedsService.fetchTrendEntriesData();
+    if (trendEntriesData != null){
+      return trendEntriesData["totalTrendEntries"];
+    }
+
+    return null;
+  }
+
   Future<List<QueryDocumentSnapshot>?> fetchAllTrendEntriesDocuments() async{
-    var trendEntriesDocuments = await feedsService.fetchTrendEntriesDocuments(limited: false);
+    var trendEntriesDocuments = await feedsService.fetchTrendEntriesDocuments();
     return trendEntriesDocuments;
   }
 
-  Future<List<QueryDocumentSnapshot>?> fetchSomeTrendEntriesDocuments(int startIndex, int limit) async{
-    var trendEntriesDocuments = await feedsService.fetchSomeTrendEntriesDocuments(startIndex, limit);
+  Future<List<QueryDocumentSnapshot>?> fetchSomeTrendEntriesDocuments(DocumentSnapshot? lastVisibleDoc, int limit) async{
+    var trendEntriesDocuments = await feedsService.fetchSomeTrendEntriesDocuments(lastVisibleDoc, limit);
     return trendEntriesDocuments;
   }
 }

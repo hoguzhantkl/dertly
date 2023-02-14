@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -30,10 +31,8 @@ class WaveNoOfSamples {
 }
 
 class FeedsModel{
-  final pageSize = 20;
-
   LinkedHashMap<String, EntryModel> trendEntriesMap = LinkedHashMap.of({});
-  int totalTrendEntriesCount = 0; // TODO: get this from db
+  int totalTrendEntriesCount = 0;
 
   List<String> recentEntriesIDList = [];
   LinkedHashMap<String, EntryModel> recentEntriesMap = LinkedHashMap.of({});
@@ -46,10 +45,26 @@ class FeedsModel{
   String currentListeningEntryID = "";
   EntryCategory currentListeningEntryCategory = EntryCategory.recents; // TODO: Change this to category where user is currently listening to an entry
 
+  final pageSize = 20;
+  DocumentSnapshot? lastVisibleTrendEntryDocumentSnapshot;
+
   void clear(){
+    debugPrint('FeedsViewModel: Cleared all data');
+    clearTrendEntries();
+    clearRecentEntries();
+  }
+
+  void clearTrendEntries(){
+    trendEntriesMap = LinkedHashMap.of({});
+    lastVisibleTrendEntryDocumentSnapshot = null;
+    debugPrint('FeedsViewModel: Cleared trend entries');
+    debugPrint('FeedsViewModel: trendEntriesMap: $trendEntriesMap');
+  }
+
+  void clearRecentEntries(){
     recentEntriesIDList.clear();
     recentEntriesMap = LinkedHashMap.of({});
-    debugPrint('FeedsViewModel: Cleared all data');
+    debugPrint('FeedsViewModel: Cleared recent entries');
     debugPrint('FeedsViewModel: recentEntriesIDList: $recentEntriesIDList');
     debugPrint('FeedsViewModel: recentEntriesMap: $recentEntriesMap');
   }

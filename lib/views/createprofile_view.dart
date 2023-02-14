@@ -32,13 +32,12 @@ class CreateProfileScreenState extends State<CreateProfileScreen>{
 
   @override
   Widget build(BuildContext context) {
-    //debugPrint("no of sample for the size: ${const PlayerWaveStyle(spacing: 6).getSamplesForWidth(280)}");
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
             const Text(
               "Create your Profile",
               style: TextStyle(fontSize: 24, color: CustomColors.white),
