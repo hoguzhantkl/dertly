@@ -64,6 +64,17 @@ class UserService{
     return userImageLocalPath;
   }
 
+  Future<String?> fetchOtherUserImage(String userID) async{
+    var userCollectionRef = firestore.collection("users");
+    var userDoc = await userCollectionRef.doc(userID).get();
+    if (userDoc.exists){
+      var userImageStorageUrl = userDoc.data()?["imageUrl"];
+      return await fetchUserImage(userImageStorageUrl);
+    }
+
+    return null;
+  }
+
   // TODO: We can implement listenUsernameAudio
   Future<String> fetchUsernameAudio(String audioStorageUrl) async{
     if (audioStorageUrl.isEmpty){

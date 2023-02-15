@@ -6,7 +6,7 @@ import 'package:dertly/models/answer_model.dart';
 import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/views/widgets/answer/answerinfos.dart';
 import 'package:dertly/views/widgets/answer/subanswerslist.dart';
-import 'package:dertly/views/widgets/answer/userimage.dart';
+import 'package:dertly/views/widgets/user/userimage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

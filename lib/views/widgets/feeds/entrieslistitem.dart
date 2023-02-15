@@ -1,11 +1,14 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dertly/core/themes/custom_colors.dart';
 import 'package:dertly/models/feeds_model.dart';
 import 'package:dertly/services/audio_service.dart';
+import 'package:dertly/services/user_service.dart';
 import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/views/widgets/audiowave.dart';
+import 'package:dertly/views/widgets/user/userimagebuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +16,7 @@ import '../../../locator.dart';
 import '../../../models/entry_model.dart';
 import '../../../services/entry_service.dart';
 import '../../../view_models/feeds_viewmodel.dart';
-import '../answer/userimage.dart';
+import '../user/userimage.dart';
 
 class EntriesListItem extends StatefulWidget{
   const EntriesListItem({super.key, required this.entryID, required this.displayedEntryCategory});
@@ -28,6 +31,8 @@ class EntriesListItem extends StatefulWidget{
 class EntriesListItemState extends State<EntriesListItem>{
   late PlayerController? playerController;
   FeedsViewModel? feedsViewModel;
+
+  UserService userService = locator<UserService>();
 
   @override
   void initState(){
@@ -65,7 +70,7 @@ class EntriesListItemState extends State<EntriesListItem>{
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const UserImage(width: 56, height: 56, borderRadius: 6),
+              UserImageBuilder(userID: model.userID),
               Expanded(
                 child: Column(
                   children: <Widget>[
