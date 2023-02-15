@@ -16,7 +16,7 @@ class UserImage extends StatelessWidget{
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
       child: Padding(
-        padding: const EdgeInsets.only(top: 4.0),
+        padding: const EdgeInsets.only(top: 0.0),
         child: file != null
             ? Image.file(
                 file!,

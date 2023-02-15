@@ -4,6 +4,7 @@ import 'package:dertly/views/widgets/answer/mainanswerslist.dart';
 import 'package:dertly/views/widgets/audiowave.dart';
 import 'package:dertly/views/widgets/bottomsheet/bottomsheetwidget.dart';
 import 'package:dertly/views/widgets/entry/entryinfos.dart';
+import 'package:dertly/views/widgets/user/userimagebuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -94,12 +95,19 @@ class EntryScreenState extends State<EntryScreen>{
                           padding: const EdgeInsets.only(left: 42, right: 42, top: 8),
                           child: Column(
                               children: [
-                                const ClipRRect(
+                                /*const ClipRRect(
                                   borderRadius: BorderRadius.all(Radius.circular(36)),
                                   child: Image(
                                     image: AssetImage("assets/images/placeholder.png"),
                                     fit: BoxFit.cover,
                                   ),
+                                ),*/
+
+                                UserImageBuilder(
+                                  userID: model.userID,
+                                  borderRadius: 36,
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.width * 0.6,
                                 ),
 
                                 const SizedBox(height: 12),
@@ -172,10 +180,9 @@ class EntryScreenState extends State<EntryScreen>{
                 const SizedBox(height: 8),
 
                 const Padding(
-                  padding: EdgeInsets.only(left: 8, right: 8),
-                  child: MainAnswersList()
+                    padding: EdgeInsets.only(left: 8, right: 8),
+                    child: MainAnswersList()
                 )
-
               ],
             ),
           ),

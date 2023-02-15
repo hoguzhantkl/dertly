@@ -7,6 +7,7 @@ import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/views/widgets/answer/answerinfos.dart';
 import 'package:dertly/views/widgets/answer/subanswerslist.dart';
 import 'package:dertly/views/widgets/user/userimage.dart';
+import 'package:dertly/views/widgets/user/userimagebuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -63,7 +64,7 @@ class AnswerListItemState extends State<AnswerListItem>{
                       //direction: Axis.horizontal,
 
                       children: [
-                        UserImage(),
+                        UserImageBuilder(userID: model.userID),
 
                         const SizedBox(width: 8),
 
@@ -82,7 +83,7 @@ class AnswerListItemState extends State<AnswerListItem>{
                                           children: [
                                             Icon(Icons.arrow_forward_ios_rounded, size: 18, color: Colors.white),
                                             const SizedBox(width: 4),
-                                            UserImage(),
+                                            UserImageBuilder(userID: model.mentionedUserID),
                                             const SizedBox(width: 8),
                                           ]
                                       )

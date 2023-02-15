@@ -24,6 +24,8 @@ class EntryInfosState extends State<EntryInfos> {
       return const SizedBox(width: 0, height: 0);
     }
 
+    var textFontSize = 14.0;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -35,7 +37,7 @@ class EntryInfosState extends State<EntryInfos> {
               },
               child: Icon(Icons.arrow_upward_rounded, size: 24),
             ),
-            Text("${listeningEntryModel.getTotalUpVotesCount()}", style: TextStyle(fontSize: 12)),
+            Text("${listeningEntryModel.getTotalUpVotesCount()}", style: TextStyle(fontSize: textFontSize)),
           ],
         ),
         const SizedBox(width: 10),
@@ -47,14 +49,14 @@ class EntryInfosState extends State<EntryInfos> {
               },
               child: Icon(Icons.arrow_downward_rounded, size: 24),
             ),
-            Text("${listeningEntryModel.getTotalDownVotesCount()}", style: TextStyle(fontSize: 12)),
+            Text("${listeningEntryModel.getTotalDownVotesCount()}", style: TextStyle(fontSize: textFontSize)),
           ],
         ),
         const SizedBox(width: 10),
         Column(
           children: [
             Icon(Icons.mic, size: 24),
-            Text("${listeningEntryModel.getTotalAnswersCount()}", style: TextStyle(fontSize: 12)),
+            Text("${listeningEntryModel.getTotalAnswersCount()}", style: TextStyle(fontSize: textFontSize)),
           ],
         ),
         const SizedBox(width: 10),
@@ -69,7 +71,7 @@ class EntryInfosState extends State<EntryInfos> {
         Column(
           children: [
             Icon(Icons.add, size: 24, color: Colors.green),
-            Text("${listeningEntryModel.getTotalSupporterAnswersCount()}", style: TextStyle(fontSize: 12)),
+            Text("${listeningEntryModel.getTotalSupporterAnswersCount()}", style: TextStyle(fontSize: textFontSize)),
           ],
         ),
         const SizedBox(width: 10),
@@ -77,7 +79,7 @@ class EntryInfosState extends State<EntryInfos> {
           children: [
             Icon(Icons.support_rounded, size: 24, color: Colors.grey),
             // TODO: create neutralAnswerCount in entryModel
-            Text("${listeningEntryModel.getTotalNeutralAnswersCount()}", style: TextStyle(fontSize: 12)),
+            Text("${listeningEntryModel.getTotalNeutralAnswersCount()}", style: TextStyle(fontSize: textFontSize)),
           ],
         ),
         const SizedBox(width: 10),
@@ -87,7 +89,7 @@ class EntryInfosState extends State<EntryInfos> {
           children: [
             Icon(Icons.dangerous_outlined, size: 24, color: Colors.red),
             // TODO: create opponentAnswerCount in entryModel
-            Text("${listeningEntryModel.getTotalOpponentAnswersCount()}", style: TextStyle(fontSize: 12)),
+            Text("${listeningEntryModel.getTotalOpponentAnswersCount()}", style: TextStyle(fontSize: textFontSize)),
           ],
         ),
       ],

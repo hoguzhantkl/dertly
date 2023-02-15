@@ -7,9 +7,12 @@ import 'package:flutter/material.dart';
 import '../../../locator.dart';
 
 class UserImageBuilder extends StatelessWidget{
-  const UserImageBuilder({super.key, required this.userID});
+  const UserImageBuilder({super.key, required this.userID, this.width = 46, this.height = 46, this.borderRadius = 6});
 
   final String userID;
+  final double width;
+  final double height;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,7 @@ class UserImageBuilder extends StatelessWidget{
             debugPrint("userImageFile: $userImageFile");
           }
 
-          return UserImage(file: userImageFile, width: 56, height: 56);
+          return UserImage(file: userImageFile, width: width, height: height, borderRadius: borderRadius);
         }
     );
 

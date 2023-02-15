@@ -70,7 +70,7 @@ class EntriesListItemState extends State<EntriesListItem>{
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              UserImageBuilder(userID: model.userID),
+              UserImageBuilder(userID: model.userID, width: 56, height: 56),
               Expanded(
                 child: Column(
                   children: <Widget>[
