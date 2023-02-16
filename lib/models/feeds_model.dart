@@ -43,7 +43,7 @@ class FeedsModel{
   Map<String, PlayerController> entryPlayerControllerMap = {}; // <entryID, ...>
 
   String currentListeningEntryID = "";
-  EntryCategory currentListeningEntryCategory = EntryCategory.recents; // TODO: Change this to category where user is currently listening to an entry
+  EntryCategory? currentListeningEntryCategory; // TODO: Change this to category where user is currently listening to an entry
 
   final pageSize = 20;
   DocumentSnapshot? lastVisibleTrendEntryDocumentSnapshot;

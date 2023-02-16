@@ -43,7 +43,7 @@ class EntriesListItemState extends State<EntriesListItem>{
 
   @override
   void dispose(){
-    feedsViewModel?.disposeEntryPlayerController(widget.entryID);
+    //feedsViewModel?.disposeEntryPlayerController(widget.entryID);
     super.dispose();
   }
 
@@ -85,7 +85,7 @@ class EntriesListItemState extends State<EntriesListItem>{
                               return IconButton(
                                   onPressed: () async
                                   {
-                                    await Provider.of<EntryViewModel>(context, listen: false).listenEntry(model, Provider.of<FeedsViewModel>(context, listen: false), playerController);
+                                    await Provider.of<EntryViewModel>(context, listen: false).listenEntry(model, entryCategory: widget.displayedEntryCategory, Provider.of<FeedsViewModel>(context, listen: false), playerController);
                                   },
                                   icon: Icon(playerState.isPlaying ? Icons.pause : Icons.play_arrow, size: 42)
                               );

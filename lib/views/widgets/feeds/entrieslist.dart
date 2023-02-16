@@ -37,6 +37,7 @@ class EntriesListState extends State<EntriesList> with AutomaticKeepAliveClientM
 
   @override
   void dispose() {
+    debugPrint("Disposing EntriesList for category: ${widget.entryCategory}");
     pagingController.dispose();
     super.dispose();
   }

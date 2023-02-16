@@ -239,11 +239,11 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
-  Future listenEntry(String? entryID, String? contentUrl, PlayerController playerController) async{
+  Future listenEntry(String? entryID, EntryCategory? entryCategory, String? contentUrl, PlayerController playerController) async{
     return await entryService.listenEntryContentAudio(contentUrl, playerController)
         .then((audioStorageUrl) async {
             if (audioStorageUrl != null){
-              await setCurrentListeningEntryID(entryID);
+              await setCurrentListeningEntryID(entryID, entryCategory);
               return true;
             }
           })
@@ -252,12 +252,16 @@ class FeedsViewModel extends ChangeNotifier{
         });
   }
 
-  Future<void> setCurrentListeningEntryID(String? entryID) async{
+  Future<void> setCurrentListeningEntryID(String? entryID, EntryCategory? entryCategory) async{
     if (model.currentListeningEntryID != entryID){
       await pauseCurrentListeningEntryAudio();
     }
 
     model.currentListeningEntryID = (entryID != null) ? entryID : "";
+    if (entryCategory != null)
+    {
+      model.currentListeningEntryCategory = entryCategory;
+    }
 
     var currentEntryModel = getCurrentListeningEntryModel();
     if (currentEntryModel != null){
@@ -304,7 +308,7 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
-  LinkedHashMap<String, EntryModel> getEntriesMapForCategory(EntryCategory entryCategory){
+  LinkedHashMap<String, EntryModel> getEntriesMapForCategory(EntryCategory? entryCategory){
     switch(entryCategory){
       case EntryCategory.trendings:
         return model.trendEntriesMap;
@@ -315,7 +319,7 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
-  EntryModel? getEntryModel(String? entryID, EntryCategory displayedEntryCategory){
+  EntryModel? getEntryModel(String? entryID, EntryCategory? displayedEntryCategory){
     var entryMap = getEntriesMapForCategory(displayedEntryCategory);
 
     if (entryMap.containsKey(entryID)){

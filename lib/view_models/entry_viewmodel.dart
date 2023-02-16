@@ -65,7 +65,7 @@ class EntryViewModel extends ChangeNotifier{
   }
 
   // Methods for listening to entry
-  Future listenEntry(EntryModel? entryModel, FeedsViewModel feedsViewModel, PlayerController? playerController) async{
+  Future listenEntry(EntryModel? entryModel, FeedsViewModel feedsViewModel, PlayerController? playerController, {EntryCategory? entryCategory}) async{
     if (entryModel == null){
       debugPrint("Entry cannot be listened, entryModel is null");
       return;
@@ -83,13 +83,13 @@ class EntryViewModel extends ChangeNotifier{
     }
     else if (playerState.isPaused){
       await clearCurrentListeningAnswerModel();
-      await feedsViewModel.setCurrentListeningEntryID(entryModel.entryID);
+      await feedsViewModel.setCurrentListeningEntryID(entryModel.entryID, entryCategory);
       await playerController.startPlayer(finishMode: FinishMode.pause);
     }
     else {
       await clearCurrentListeningAnswerModel();
 
-      await feedsViewModel.listenEntry(entryModel.entryID, entryModel.audioUrl, playerController);
+      await feedsViewModel.listenEntry(entryModel.entryID, entryCategory, entryModel.audioUrl, playerController);
     }
   }
 

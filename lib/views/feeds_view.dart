@@ -29,6 +29,7 @@ class FeedsScreenState extends State<FeedsScreen> with SingleTickerProviderState
 
   @override
   void dispose() {
+    debugPrint("feeds_view has been disposed");
     tabController.dispose();
     super.dispose();
   }

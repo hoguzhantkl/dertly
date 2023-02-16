@@ -2,6 +2,7 @@ import 'package:dertly/models/answer_model.dart';
 import 'package:dertly/view_models/entry_viewmodel.dart';
 import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/themes/custom_colors.dart';
@@ -49,9 +50,7 @@ class BottomSheetContentState extends State<BottomSheetContent>{
           return Container(
             height: MediaQuery.of(context).size.height,
             // TODO: Create a BottomSheetTheme in custom_themes
-            decoration: const BoxDecoration(
-              color: CustomColors.foreground,
-            ),
+            color: CustomColors.foreground,
             child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
