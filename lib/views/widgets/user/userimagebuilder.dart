@@ -16,6 +16,7 @@ class UserImageBuilder extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("UserImageBuilder build");
     UserService userService = locator<UserService>();
     return FutureBuilder(
         future: userService.fetchOtherUserImage(userID),

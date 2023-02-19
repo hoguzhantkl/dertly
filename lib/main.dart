@@ -11,6 +11,7 @@ import 'package:dertly/view_models/feeds_viewmodel.dart';
 import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'models/user_model.dart';
 import 'services/firebase_options.dart';
 
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthViewModel()),
-        ChangeNotifierProvider(create: (context) => UserViewModel(userRepository: locator<UserRepository>())),
+        ChangeNotifierProvider(create: (context) => UserViewModel(userRepository: locator<UserRepository>(), userModel: UserModel(userID: ""))),
         ChangeNotifierProvider(create: (context) => EntryViewModel(entryRepository: locator<EntryRepository>())),
         ChangeNotifierProvider(create: (context) => FeedsViewModel(feedsRepository: locator<FeedsRepository>())),
       ],

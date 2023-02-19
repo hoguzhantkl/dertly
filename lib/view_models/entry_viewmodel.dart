@@ -83,13 +83,13 @@ class EntryViewModel extends ChangeNotifier{
     }
     else if (playerState.isPaused){
       await clearCurrentListeningAnswerModel();
-      await feedsViewModel.setCurrentListeningEntryID(entryModel.entryID, entryCategory);
+      await feedsViewModel.setCurrentListeningEntryModel(entryModel);
       await playerController.startPlayer(finishMode: FinishMode.pause);
     }
     else {
       await clearCurrentListeningAnswerModel();
 
-      await feedsViewModel.listenEntry(entryModel.entryID, entryCategory, entryModel.audioUrl, playerController);
+      await feedsViewModel.listenEntry(entryModel, entryModel.audioUrl, playerController);
     }
   }
 
@@ -137,7 +137,7 @@ class EntryViewModel extends ChangeNotifier{
   }
 
   // Methods for fetching answers
-  Future<void> fetchSomeEntryMainAnswers(int pageKey, PagingController pagingController, {bool firstFetch = false}) async{
+  Future<void> fetchSomeEntryMainAnswers(int pageKey, PagingController pagingController) async{
     try{
       if (model == null){
         debugPrint("Could not fetched main answers, model is null");

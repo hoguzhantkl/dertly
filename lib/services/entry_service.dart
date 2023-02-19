@@ -51,6 +51,34 @@ class EntryService{
     }
   }
 
+  Future fetchUserEntryDocuments(var entryQuery) async{
+    QuerySnapshot documentSnapshots = await entryQuery.get();
+    return documentSnapshots.docs;
+  }
+  Future fetchSomeUserEntryDocuments(String userID, DocumentSnapshot? lastVisibleDoc, int limit) async{
+    try {
+      var entryCollectionRef = firestore.collection("entries");
+
+      if (lastVisibleDoc == null){
+        var entryQuery = entryCollectionRef.where("userID", isEqualTo: userID)
+            .orderBy("date", descending: true).limit(limit);
+
+        return await fetchUserEntryDocuments(entryQuery);
+      }
+
+      debugPrint("userService fetchSomeUserEntryDocuments, userID: $userID, lastVisibleDoc data: ${lastVisibleDoc.data()}");
+
+      // TODO: should we use lastVisibleDoc.data() instead of lastVisibleDoc?
+      var entryQuery = entryCollectionRef.where("userID", isEqualTo: userID)
+          .orderBy("date").startAfterDocument(lastVisibleDoc).limit(limit);
+
+      return await fetchUserEntryDocuments(entryQuery);
+
+    } catch(e){
+      return Future.error(Exception("Error while fetching some main answers, error: $e"));
+    }
+  }
+
   Future<dynamic> listenAudio(String? audioStorageUrl, PlayerController playerController, {noOfSamples = 100}) async{
     bool validateStorageUrl(){
       if (audioStorageUrl == null || audioStorageUrl.isEmpty) {

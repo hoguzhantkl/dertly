@@ -54,6 +54,8 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   void switchPage(int index) {
+    if (index == currentPageIndex) return;
+
     if (index == 0) {
       popCounter = 0;
     }

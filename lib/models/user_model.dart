@@ -1,7 +1,7 @@
 class UserModel {
   UserModel({required this.userID, this.imageUrl = "", this.audioUrl = ""});
 
-  final String userID;
+  String userID;
   String imageUrl;
   String audioUrl;
 
@@ -19,5 +19,10 @@ class UserModel {
       'imageUrl': imageUrl,
       'audioUrl': audioUrl,
     };
+  }
+
+  // TODO: Implement this method
+  int getTotalUserEntriesCount(){
+    return 0;
   }
 }

@@ -36,6 +36,7 @@ class AuthService extends ChangeNotifier{
     var counter = 0;
     await Future.doWhile(() async{
       counter++;
+      userViewModel.setUserID(getCurrentUserUID());
       bool success = await userViewModel.fetchUserData()
           .then((userData){
             if (userData == null) {

@@ -53,7 +53,7 @@ class EntriesListState extends State<EntriesList> with AutomaticKeepAliveClientM
         physics: const AlwaysScrollableScrollPhysics(),
         pagingController: pagingController,
         builderDelegate: PagedChildBuilderDelegate<EntryModel>(
-          itemBuilder: (context, item, index) => EntriesListItem(entryID: item.entryID, displayedEntryCategory: widget.entryCategory),
+          itemBuilder: (context, item, index) => EntriesListItem(entryModel: item, entryID: item.entryID, displayedEntryCategory: widget.entryCategory),
           firstPageErrorIndicatorBuilder: (context) {
             pagingController.refresh();
             return const Center(

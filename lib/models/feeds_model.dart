@@ -9,7 +9,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'answer_model.dart';
 import 'entry_model.dart';
 
-enum EntryCategory { trendings, recents, yourturn, follower }
+enum EntryCategory { trendings, recents, yourturn, follower, profile }
 
 class WaveNoOfSamples {
   static const int entry = 45;
@@ -42,6 +42,7 @@ class FeedsModel{
 
   Map<String, PlayerController> entryPlayerControllerMap = {}; // <entryID, ...>
 
+  EntryModel? currentListeningEntryModel;
   String currentListeningEntryID = "";
   EntryCategory? currentListeningEntryCategory; // TODO: Change this to category where user is currently listening to an entry
 

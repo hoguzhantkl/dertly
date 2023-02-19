@@ -8,9 +8,8 @@ class UserRepository{
   UserService userService = locator<UserService>();
   AuthService authService = locator<AuthService>();
 
-  Future fetchUserData() async{
-    final user = authService.getCurrentUser();
-    var userData = await userService.getUserData(user.uid);
+  Future fetchUserData(String userID) async{
+    var userData = await userService.getUserData(userID);
     if (userData == null) {
       return null;
     } else{

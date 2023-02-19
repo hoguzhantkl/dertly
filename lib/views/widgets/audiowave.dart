@@ -7,7 +7,7 @@ import '../../models/answer_model.dart';
 const double audioWaveWidth = 270;
 
 class AudioWave extends StatefulWidget{
-  const AudioWave({super.key, required this.playerController, required this.audioDuration, this.audioWaveData = const [], this.width = audioWaveWidth, this.height = 30});
+  const AudioWave({super.key, required this.playerController, required this.audioDuration, this.audioWaveData = const [], this.width = audioWaveWidth, this.height = 30, this.showDuration = true});
 
   final PlayerController playerController;
   final List<double> audioWaveData;
@@ -15,6 +15,7 @@ class AudioWave extends StatefulWidget{
 
   final double width;
   final double height;
+  final bool showDuration;
 
   static double getAudioWaveWidthForAnswer(AnswerType answerType){
     switch (answerType){
@@ -53,24 +54,28 @@ class AudioWaveState extends State<AudioWave>{
 
         const SizedBox(height: 6),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            StreamBuilder(
-              stream: widget.playerController.onCurrentDurationChanged,
-              builder: (context, snapshot) {
-                var currentDuration = snapshot.hasData ? Duration(milliseconds: snapshot.data as int) : Duration.zero;
-                var inMinSec = "${currentDuration.inMinutes.toString().padLeft(2, '0')}:${currentDuration.inSeconds.remainder(60).toString().padLeft(2, '0')}";
-                return Text(inMinSec, style: const TextStyle(fontSize: 12));
-              },
-            ),
+        // Duration
+        Visibility(
+          visible: widget.showDuration,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              StreamBuilder(
+                stream: widget.playerController.onCurrentDurationChanged,
+                builder: (context, snapshot) {
+                  var currentDuration = snapshot.hasData ? Duration(milliseconds: snapshot.data as int) : Duration.zero;
+                  var inMinSec = "${currentDuration.inMinutes.toString().padLeft(2, '0')}:${currentDuration.inSeconds.remainder(60).toString().padLeft(2, '0')}";
+                  return Text(inMinSec, style: const TextStyle(fontSize: 12));
+                },
+              ),
 
-            Text(
-              maxDurationText,
-              style: const TextStyle(fontSize: 12),
-            ),
-          ],
-        ),
+              Text(
+                maxDurationText,
+                style: const TextStyle(fontSize: 12),
+              ),
+            ],
+          ),
+        )
 
       ],
     );

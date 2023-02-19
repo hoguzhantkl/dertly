@@ -239,11 +239,11 @@ class FeedsViewModel extends ChangeNotifier{
     }
   }
 
-  Future listenEntry(String? entryID, EntryCategory? entryCategory, String? contentUrl, PlayerController playerController) async{
+  Future listenEntry(EntryModel? entryModel, String? contentUrl, PlayerController playerController) async{
     return await entryService.listenEntryContentAudio(contentUrl, playerController)
         .then((audioStorageUrl) async {
             if (audioStorageUrl != null){
-              await setCurrentListeningEntryID(entryID, entryCategory);
+              await setCurrentListeningEntryModel(entryModel);
               return true;
             }
           })
@@ -252,22 +252,17 @@ class FeedsViewModel extends ChangeNotifier{
         });
   }
 
-  Future<void> setCurrentListeningEntryID(String? entryID, EntryCategory? entryCategory) async{
-    if (model.currentListeningEntryID != entryID){
+  Future<void> setCurrentListeningEntryModel(EntryModel? entryModel) async{
+    if (model.currentListeningEntryModel?.entryID != entryModel?.entryID)//if (model.currentListeningEntryID != entryID){
+    {
       await pauseCurrentListeningEntryAudio();
     }
 
-    model.currentListeningEntryID = (entryID != null) ? entryID : "";
-    if (entryCategory != null)
-    {
-      model.currentListeningEntryCategory = entryCategory;
-    }
+    model.currentListeningEntryModel = entryModel;
 
-    var currentEntryModel = getCurrentListeningEntryModel();
-    if (currentEntryModel != null){
+    if (entryModel != null){
       showBottomSheet();
-    }
-    else {
+    }else{
       hideBottomSheet();
     }
   }
@@ -330,7 +325,7 @@ class FeedsViewModel extends ChangeNotifier{
   }
 
   EntryModel? getCurrentListeningEntryModel(){
-    return getEntryModel(model.currentListeningEntryID, model.currentListeningEntryCategory);
+    return model.currentListeningEntryModel;
   }
 
   // Methods for Bottom Sheet

@@ -19,8 +19,9 @@ import '../../../view_models/feeds_viewmodel.dart';
 import '../user/userimage.dart';
 
 class EntriesListItem extends StatefulWidget{
-  const EntriesListItem({super.key, required this.entryID, required this.displayedEntryCategory});
+  const EntriesListItem({super.key, this.entryModel, required this.entryID, required this.displayedEntryCategory});
 
+  final EntryModel? entryModel;
   final String entryID;
   final EntryCategory displayedEntryCategory;
 
@@ -47,14 +48,21 @@ class EntriesListItemState extends State<EntriesListItem>{
     super.dispose();
   }
 
+  /*
   EntryModel? getModel(){
+    if (widget.entryModel != null) {
+      return widget.entryModel;
+    }
+
     return Provider.of<FeedsViewModel>(context, listen: false).getEntryModel(widget.entryID, widget.displayedEntryCategory);
   }
+  */
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("EntriesListItem build()");
     final EntryViewModel entryViewModel = Provider.of<EntryViewModel>(context, listen: false);
-    final EntryModel? model = getModel();
+    final EntryModel? model = widget.entryModel;
 
     if (model == null)
     {
