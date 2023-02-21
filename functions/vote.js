@@ -1,7 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
-
 exports.giveVote8 = functions.region('europe-west1').https.onCall( async (data, context) => {
     const db = admin.firestore();
 

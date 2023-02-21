@@ -7,6 +7,7 @@ import 'package:dertly/models/feeds_model.dart';
 import 'package:dertly/services/audio_service.dart';
 import 'package:dertly/services/user_service.dart';
 import 'package:dertly/view_models/entry_viewmodel.dart';
+import 'package:dertly/view_models/user_viewmodel.dart';
 import 'package:dertly/views/widgets/audiowave.dart';
 import 'package:dertly/views/widgets/user/userimagebuilder.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,14 @@ class EntriesListItemState extends State<EntriesListItem>{
   }
   */
 
+  Widget getUserImage(){
+    if (widget.displayedEntryCategory == EntryCategory.profile){
+      return Provider.of<UserViewModel>(context, listen: false).getUserImage();
+    }
+
+    return UserImageBuilder(userID: widget.entryModel!.userID, width: 56, height: 56);
+  }
+
   @override
   Widget build(BuildContext context) {
     debugPrint("EntriesListItem build()");
@@ -78,7 +87,7 @@ class EntriesListItemState extends State<EntriesListItem>{
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              UserImageBuilder(userID: model.userID, width: 56, height: 56),
+              getUserImage(),
               Expanded(
                 child: Column(
                   children: <Widget>[

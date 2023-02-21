@@ -5,6 +5,7 @@ import 'package:dertly/models/user_temp_data_model.dart';
 import 'package:dertly/repositories/entry_repository.dart';
 import 'package:dertly/repositories/feeds_repository.dart';
 import 'package:dertly/repositories/user_repository.dart';
+import 'package:dertly/views/widgets/user/userimage.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:dertly/models/user_model.dart';
@@ -55,7 +56,7 @@ class UserViewModel extends ChangeNotifier{
 
   Future<void> fetchUserImage() async{
     try{
-      var userImageLocalPath = await userService.fetchUserImage(userModel!.imageUrl);
+      var userImageLocalPath = await userService.fetchUserImage(userModel.imageUrl);
       userTempDataModel.profileImageFilePath = userImageLocalPath;
     }catch(e){
       return Future.error(Exception(e));
@@ -64,7 +65,7 @@ class UserViewModel extends ChangeNotifier{
 
   Future<void> fetchUsernameAudio() async{
     try{
-      var userAudioLocalPath = await userService.fetchUsernameAudio(userModel!.audioUrl);
+      var userAudioLocalPath = await userService.fetchUsernameAudio(userModel.audioUrl);
       userTempDataModel.usernameAudioFilePath = userAudioLocalPath;
     }catch(e){
       return Future.error(Exception(e));
@@ -90,11 +91,12 @@ class UserViewModel extends ChangeNotifier{
         return;
       }
 
+      final isLastPage = userModel.totalEntries <= previouslyFetchedEntriesCount + newEntry.length
+                        || userModel.totalEntries <= pageKey * pageSize;
+
       if (newEntryDocs.length > 0){
         lastVisibleEntryDocumentSnapshot = newEntryDocs[newEntryDocs.length - 1];
       }
-
-      final isLastPage = userModel.getTotalUserEntriesCount() <= previouslyFetchedEntriesCount + newEntry.length;
 
       if (isLastPage) {
         pagingController.appendLastPage(newEntry);
@@ -110,5 +112,14 @@ class UserViewModel extends ChangeNotifier{
       pagingController.error = e;
       return Future.error(Exception(e));
     }
+  }
+
+  UserImage getUserImage({double width = 56, double height = 56}){
+    File? userImageFile;
+    userImageFile = File(userTempDataModel.profileImageFilePath);
+    if (!userImageFile.existsSync()){
+      userImageFile = null;
+    }
+    return UserImage(file: userImageFile, width: width, height: height);
   }
 }

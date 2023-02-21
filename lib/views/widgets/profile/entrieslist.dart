@@ -51,24 +51,22 @@ class ProfileEntriesListState extends State<ProfileEntriesList> with AutomaticKe
     super.build(context);
     debugPrint("Building ProfileEntriesList for userID: ${widget.userID}");
 
-    return RefreshIndicator(
-        onRefresh: () => Future.sync(() => pagingController.refresh()),
-        child: PagedListView<int, EntryModel>(
-          physics: const AlwaysScrollableScrollPhysics(),
-          pagingController: pagingController,
-          builderDelegate: PagedChildBuilderDelegate<EntryModel>(
-            itemBuilder: (context, item, index) => EntriesListItem(entryModel: item, entryID: item.entryID, displayedEntryCategory: widget.entryCategory),
-            firstPageErrorIndicatorBuilder: (context) {
-              pagingController.refresh();
-              return const Center(
-                child: Text("Error loading entries"),
-              );
-            },
-            noItemsFoundIndicatorBuilder: (context) => const Center(
-              child: Text("No entries found"),
-            ),
-          ),
-        )
+    return PagedListView<int, EntryModel>(
+      scrollController: ScrollController(),
+      //physics: const AlwaysScrollableScrollPhysics(),
+      pagingController: pagingController,
+      builderDelegate: PagedChildBuilderDelegate<EntryModel>(
+        itemBuilder: (context, item, index) => EntriesListItem(entryModel: item, entryID: item.entryID, displayedEntryCategory: widget.entryCategory),
+        firstPageErrorIndicatorBuilder: (context) {
+          pagingController.refresh();
+          return const Center(
+            child: Text("Error loading entries"),
+          );
+        },
+        noItemsFoundIndicatorBuilder: (context) => const Center(
+          child: Text("No entries found"),
+        ),
+      ),
     );
   }
 }

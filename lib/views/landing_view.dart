@@ -50,15 +50,12 @@ class LandingScreenState extends State<LandingScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(30.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    "An App without Text just Audio, talk how you like!",
-                    style: TextStyle(fontSize: 14, color: CustomColors.beige),
-                  ),
-                ],
-              ),
+              child: Center(
+                child: Text(
+                  "An App without Text just Audio, talk how you like!",
+                  style: TextStyle(fontSize: 14, color: CustomColors.beige),
+                ),
+              )
             ),
             Padding(
               padding: const EdgeInsets.only(top: 100, left: 20, right: 20),

@@ -89,7 +89,8 @@ class FeedsViewModel extends ChangeNotifier{
 
       final previouslyFetchedEntriesCount = pagingController.itemList?.length ?? 0;
 
-      final isLastPage = model.recentEntriesIDList.length <= previouslyFetchedEntriesCount + newRecentEntries.length;
+      final isLastPage = model.recentEntriesIDList.length <= previouslyFetchedEntriesCount + newRecentEntries.length
+                          || model.recentEntriesIDList.length <= pageKey * model.pageSize;
 
       if (isLastPage) {
         pagingController.appendLastPage(newRecentEntries);
@@ -160,7 +161,8 @@ class FeedsViewModel extends ChangeNotifier{
 
         final previouslyFetchedEntriesCount = pagingController.itemList?.length ?? 0;
 
-        final isLastPage = model.totalTrendEntriesCount <= previouslyFetchedEntriesCount + newTrendEntries.length;
+        final isLastPage = model.totalTrendEntriesCount <= previouslyFetchedEntriesCount + newTrendEntries.length
+              || model.totalTrendEntriesCount <= pageKey * model.pageSize;
 
         if (isLastPage) {
           pagingController.appendLastPage(newTrendEntries);

@@ -161,7 +161,8 @@ class EntryViewModel extends ChangeNotifier{
         lastVisibleDocumentSnapshot = newEntryAnswersDocs[newEntryAnswersDocs.length - 1];
       }
 
-      final isLastPage = model!.getTotalMainAnswersCount() <= previouslyFetchedEntriesCount + newEntryAnswers.length;
+      final isLastPage = model!.getTotalMainAnswersCount() <= previouslyFetchedEntriesCount + newEntryAnswers.length
+                        || model!.getTotalMainAnswersCount() <= pageKey * pageSize;
 
       if (isLastPage) {
         pagingController.appendLastPage(newEntryAnswers);

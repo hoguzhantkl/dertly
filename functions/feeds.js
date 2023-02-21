@@ -1,6 +1,8 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
+const user = require("./user.js");
+
 exports.onEntryAdded = functions.firestore.document('entries/{entryId}').onCreate( async (snap, context) => {
     const entryData = snap.data();
 
@@ -10,6 +12,7 @@ exports.onEntryAdded = functions.firestore.document('entries/{entryId}').onCreat
 
     await addRecentEntry(entryId);
     await tryAddToTrendEntry(entryData);
+    await user.updateTotalEntriesCount(entryData.userID, +1);
 
     return Promise.resolve();
 });
@@ -21,30 +24,43 @@ exports.onEntryRemoved = functions.firestore.document('entries/{entryId}').onDel
     functions.logger.log('Entry removed', 'entryID:', entryID, 'userID:', entryData.userID);
 
     // TODO: use transaction for removing entry from trendings and recents
-
-    // Remove the entry from trending if it is in.
-    var trendDoc = admin.firestore().collection('feeds').doc('trendings');
-    if (trendDoc != undefined){
-        var trendColRef = trendDoc.collection('list');
-        var entryDocInTrendings = await trendColRef.doc(entryID).get();
-        if (entryDocInTrendings.exists) {
-            await trendColRef.doc(entryID).delete();
-            await trendDoc.update({ totalTrendEntries: admin.firestore.FieldValue.increment(-1) });
+    const db = admin.firestore();
+    return db.runTransaction(async (transaction) => {
+        // Remove the entry from trending if it is in.
+        var trendDoc = admin.firestore().collection('feeds').doc('trendings');
+        if (trendDoc != undefined){
+            var trendColRef = trendDoc.collection('list');
+            var entryDocInTrendingsDoc = trendColRef.doc(entryID)
+            var entryDocInTrendings = await entryDocInTrendingsDoc.get();
+            if (entryDocInTrendings.exists) {
+                await transaction.delete(entryDocInTrendingsDoc);
+                await transaction.update(trendDoc, { totalTrendEntries: admin.firestore.FieldValue.increment(-1) });
+            }
         }
-    }
 
-    // Remove the entry from recents if it is in.
-    var recentDoc = admin.firestore().collection('feeds').doc('recents');
-    var recentDocSnapshot = await recentDoc.get();
-    var recentDocData = recentDocSnapshot.data();
-    var recentEntriesIDList = recentDocData.recentEntriesIDList;
+        // Remove the entry from recents if it is in.
+        var recentDoc = admin.firestore().collection('feeds').doc('recents');
+        var recentDocSnapshot = await recentDoc.get();
+        var recentDocData = recentDocSnapshot.data();
+        var recentEntriesIDList = recentDocData.recentEntriesIDList;
 
-    if (recentEntriesIDList != undefined) {
-        if (recentEntriesIDList.includes(entryID)) {
-            functions.logger.log("Entry is being removed from recents:", entryID);
-            await recentDoc.update({recentEntriesIDList: admin.firestore.FieldValue.arrayRemove(entryID)});
+        if (recentEntriesIDList != undefined) {
+            if (recentEntriesIDList.includes(entryID)) {
+                functions.logger.log("Entry is being removed from recents:", entryID);
+                await transaction.update(recentDoc, {recentEntriesIDList: admin.firestore.FieldValue.arrayRemove(entryID)});
+            }
         }
-    }
+
+        await user.updateTotalEntriesCount(entryData.userID, -1);
+
+        await deleteAllEntryAnswers(entryID);
+    })
+    .then(() => {
+        functions.logger.log("onEntryRemoved transaction success!");
+    })
+    .catch((error) => {
+        functions.logger.log("onEntryRemoved transaction failed:", error);
+    });
 });
 
 // TODO: func tryAddToTrendEntry should be called when entry is created or updated with answer or up/down votes
@@ -131,4 +147,27 @@ async function addRecentEntry(entryID) {
     .catch((error) => {
         functions.logger.log("AddRecentEntry transaction failed: ", error);
     });
+}
+
+async function deleteAllEntryAnswers(entryID){
+    const db = admin.firestore();
+    functions.logger.log("All answers of entry", entryID, "are being deleted");
+
+    var currentBatch = db.batch();
+    var currentBatchCount = 0;
+    var batches = [currentBatch];
+    var answerColRef = db.collection('answers');
+    var query = answerColRef.where('entryID', '==', entryID);
+    var querySnapshot = await query.get();
+    querySnapshot.forEach(async (doc) => {
+        currentBatch.delete(doc.ref);
+        currentBatchCount++;
+        if (currentBatchCount >= 500){
+            currentBatchCount = 0;
+            currentBatch = db.batch();
+            batches.push(currentBatch);
+        }
+    });
+
+    return await Promise.all(batches.map(batch => batch.commit()));
 }

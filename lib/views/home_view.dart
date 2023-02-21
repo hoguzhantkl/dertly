@@ -42,6 +42,7 @@ class HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 0;
   int popCounter = 0;
   bool isAppBarVisible = true;
+  bool isFloatingActionButtonVisible = true;
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class HomeScreenState extends State<HomeScreen> {
     previousPageIndex = currentPageIndex;
     currentPageIndex = index;
     isAppBarVisible = currentPageIndex == 0;
+    isFloatingActionButtonVisible = currentPageIndex == 0;
   }
 
   @override
@@ -102,22 +104,29 @@ class HomeScreenState extends State<HomeScreen> {
           floatingActionButton: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              RecordAudioButton(
-                  heroTag: "recordEntryAudio",
-                  onRecordingFinishedCallback: () async {
-                    await Provider.of<FeedsViewModel>(context, listen: false)
-                        .createEntry();
-                  }),
-              const SizedBox(height: 10),
-              FloatingActionButton(
-                heroTag: "signOut",
-                onPressed: () {
-                  Provider.of<AuthViewModel>(context, listen: false).signOut();
-                },
-                tooltip: 'Sign Out',
-                child: const Icon(Icons.logout),
+              Visibility(
+                visible: isFloatingActionButtonVisible,
+                child: Column(
+                  children: [
+                    RecordAudioButton(
+                        heroTag: "recordEntryAudio",
+                        onRecordingFinishedCallback: () async {
+                          await Provider.of<FeedsViewModel>(context, listen: false)
+                              .createEntry();
+                        }),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: "signOut",
+                      onPressed: () {
+                        Provider.of<AuthViewModel>(context, listen: false).signOut();
+                      },
+                      tooltip: 'Sign Out',
+                      child: const Icon(Icons.logout),
+                    ),
+                    const SizedBox(height: 60),
+                  ],
+                ),
               ),
-              const SizedBox(height: 60),
             ],
           ),
           bottomSheet: ValueListenableBuilder(

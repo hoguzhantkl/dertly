@@ -25,8 +25,8 @@ class UserImage extends StatelessWidget{
                 fit: BoxFit.cover,
               )
             : Container(
-              width: 56,
-              height: 56,
+              width: width,
+              height: height,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.white10, width: 2),
                 borderRadius: BorderRadius.circular(6),
